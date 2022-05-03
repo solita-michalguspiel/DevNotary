@@ -2,9 +2,19 @@ plugins {
     kotlin("multiplatform")
     kotlin("native.cocoapods")
     id("com.android.library")
+    id("com.squareup.sqldelight")
+
 }
 
 version = "1.0"
+
+object SqlDelight {
+    const val version = "1.5.3"
+    const val runtime = "com.squareup.sqldelight:runtime:$version"
+    const val android = "com.squareup.sqldelight:android-driver:$version"
+    const val native = "com.squareup.sqldelight:native-driver:$version"
+}
+
 
 kotlin {
     android()
@@ -23,8 +33,17 @@ kotlin {
     }
 
     sourceSets["commonMain"].dependencies {
+        // Coroutines:
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
+        // DI with kodein:
         implementation("org.kodein.di:kodein-di:7.10.0")
+        // Firebase auth and firestore:
+        implementation("dev.gitlive:firebase-auth:1.6.1")
+        implementation("dev.gitlive:firebase-firestore:1.6.1")
+        // Database with sqldelight:
+        implementation(SqlDelight.runtime)
+        // Kotlinx-datetime:
+        implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
     }
 
     sourceSets {
@@ -32,6 +51,7 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
+
             }
         }
         val androidMain by getting
@@ -57,11 +77,28 @@ kotlin {
     }
 }
 
+dependencies {
+    commonMainApi("dev.icerock.moko:mvvm-core:0.13.0") // only ViewModel, EventsDispatcher, Dispatchers.UI
+    commonMainApi("dev.icerock.moko:mvvm-flow:0.13.0") // api mvvm-core, CFlow for native and binding extensions
+    commonMainApi("dev.icerock.moko:mvvm-livedata:0.13.0") // api mvvm-core, LiveData and extensions
+    commonMainApi("dev.icerock.moko:mvvm-state:0.13.0") // api mvvm-livedata, ResourceState class and extensions
+    commonMainApi("dev.icerock.moko:mvvm-livedata-resources:0.13.0") // api mvvm-core, moko-resources, extensions for LiveData with moko-resources
+
+    commonTestImplementation("dev.icerock.moko:mvvm-test:0.13.0") // test utilities
+}
+
 android {
     compileSdk = 32
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
         minSdk = 21
         targetSdk = 32
+    }
+
+}
+
+sqldelight {
+    database("dev_notary_db") { // This will be the name of the generated database class.
+        packageName = "com.solita.devnotary"
     }
 }
