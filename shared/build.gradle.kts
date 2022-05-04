@@ -4,6 +4,7 @@ plugins {
     id("com.android.library")
     id("com.squareup.sqldelight")
     kotlin("plugin.serialization") version "1.6.10"
+    id("io.kotest.multiplatform") version "5.0.2"
 }
 
 version = "1.0"
@@ -36,7 +37,6 @@ kotlin {
         // Coroutines:
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
 
-
         // DI with kodein:
         implementation("org.kodein.di:kodein-di:7.10.0")
         // Firebase auth and firestore:
@@ -48,9 +48,14 @@ kotlin {
         implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
         //Key-value data storage
         implementation("com.russhwolf:multiplatform-settings-no-arg:0.9")
-
-        //
+        //Serialization
         implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+    }
+
+    sourceSets["commonTest"].dependencies {
+        implementation ("io.kotest:kotest-assertions-core:5.3.0")
+        implementation("com.russhwolf:multiplatform-settings-test:0.9")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.1")
     }
 
     sourceSets {
@@ -58,7 +63,8 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
-
+                implementation ("io.kotest:kotest-assertions-core:5.3.0")
+                implementation("com.russhwolf:multiplatform-settings-test:0.9")
             }
         }
         val androidMain by getting

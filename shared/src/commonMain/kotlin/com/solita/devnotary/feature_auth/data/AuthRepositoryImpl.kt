@@ -35,7 +35,7 @@ class AuthRepositoryImpl : AuthRepository {
     override suspend fun getCurrentUserDocument(): Flow<Response<User>> = channelFlow {
         try {
             if (!isUserAuthenticated()) {
-                send(Response.Error("User is not signed in"))
+                send(Response.Empty)
             } else {
                 val userId = getCurrentUserId()!!
                 usersReference.document(userId).snapshots.collectLatest { snap ->

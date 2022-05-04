@@ -7,10 +7,7 @@ import com.solita.devnotary.feature_auth.domain.use_case.*
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.firestore.firestore
-import org.kodein.di.DI
-import org.kodein.di.bindConstant
-import org.kodein.di.bindSingleton
-
+import org.kodein.di.*
 
 val di = DI {
     val firebaseFirestore = Firebase.firestore
@@ -27,17 +24,15 @@ val di = DI {
 
     bindSingleton {
         AuthUseCases(
-            getCurrentUserDocument = GetCurrentUserDocument(),
-            sendEmailLink = SendEmailLink(),
-            signOut = SignOut(),
-            isUserAuthenticated = IsUserAuthenticated(),
-            signInWithEmailLink = SignInWithEmailLink()
+            getCurrentUserDocument = GetCurrentUserDocument(instance()),
+            sendEmailLink = SendEmailLink(instance()),
+            signOut = SignOut(instance()),
+            isUserAuthenticated = IsUserAuthenticated(instance()),
+            signInWithEmailLink = SignInWithEmailLink(instance())
         )
     }
 
     bindSingleton { Settings() }
 
     bindConstant(USER_FIREBASE_REFERENCE) { firebaseFirestore.collection("users") }
-
-
 }

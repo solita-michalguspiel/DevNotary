@@ -10,12 +10,13 @@ import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.kodein.di.DI
 import org.kodein.di.instance
 
-class AuthViewModel(val intent: String) : ViewModel() {
+class AuthViewModel(val intent: String, dependencyInjection : DI = di) : ViewModel(){
 
-    private val useCases : AuthUseCases by di.instance()
-    private val settings : Settings by di.instance()
+    private val useCases : AuthUseCases by dependencyInjection.instance()
+    private val settings : Settings by dependencyInjection.instance()
 
     private val _userAuthState : MutableStateFlow<Response<Boolean>> = MutableStateFlow(Response.Empty)
     val userAuthState : StateFlow<Response<Boolean>> = _userAuthState
@@ -51,7 +52,7 @@ class AuthViewModel(val intent: String) : ViewModel() {
         }
     }
 
-    private fun signInWithLink(){
+     fun signInWithLink(){
         val email = settings.getString(CURRENT_EMAIL_KEY)
         viewModelScope.launch {
            useCases.signInWithEmailLink(email = email, emailLink = intent).collect{ response ->
@@ -60,11 +61,12 @@ class AuthViewModel(val intent: String) : ViewModel() {
         }
     }
 
-    private fun signOut(){
+    fun signOut(){
         viewModelScope.launch {
             useCases.signOut.invoke().collect{ response ->
                 println(response)
             _userAuthState.value = response
+                getCurrentUserDocument()
             }
         }
     }
