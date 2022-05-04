@@ -3,7 +3,7 @@ plugins {
     kotlin("native.cocoapods")
     id("com.android.library")
     id("com.squareup.sqldelight")
-
+    kotlin("plugin.serialization") version "1.6.10"
 }
 
 version = "1.0"
@@ -35,6 +35,8 @@ kotlin {
     sourceSets["commonMain"].dependencies {
         // Coroutines:
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
+
+
         // DI with kodein:
         implementation("org.kodein.di:kodein-di:7.10.0")
         // Firebase auth and firestore:
@@ -44,6 +46,11 @@ kotlin {
         implementation(SqlDelight.runtime)
         // Kotlinx-datetime:
         implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
+        //Key-value data storage
+        implementation("com.russhwolf:multiplatform-settings-no-arg:0.9")
+
+        //
+        implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
     }
 
     sourceSets {

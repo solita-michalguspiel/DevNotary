@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     kotlin("android")
+    id("com.google.gms.google-services")
 }
 
 val composeVersion = "1.1.1"
@@ -49,4 +50,10 @@ dependencies {
     //NAVIGATION
     val nav_version = "2.4.2"
     implementation("androidx.navigation:navigation-compose:$nav_version")
+
+    // FIREBASE
+    implementation("com.google.firebase:firebase-common-ktx:20.1.0")
+
+    //Key-Value storage
+    implementation("com.russhwolf:multiplatform-settings:0.9")
 }
