@@ -6,7 +6,11 @@ import com.solita.devnotary.dev_notary_db
 import com.solita.devnotary.feature_auth.data.AuthRepositoryImpl
 import com.solita.devnotary.feature_auth.domain.use_case.*
 import com.solita.devnotary.feature_notes.data.local.DbArgs
+import com.solita.devnotary.feature_notes.data.local.LocalNotesRepositoryImpl
 import com.solita.devnotary.feature_notes.data.local.getSqlDriver
+import com.solita.devnotary.feature_notes.data.remote.RemoteNotesRepositoryImpl
+import com.solita.devnotary.feature_notes.domain.use_case.local_notes_use_cases.*
+import com.solita.devnotary.feature_notes.domain.use_case.remote_notes_use_cases.*
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.firestore.firestore
@@ -30,6 +34,10 @@ val di = DI {
 
     bindSingleton { AuthRepositoryImpl() }
 
+    bindSingleton { LocalNotesRepositoryImpl() }
+
+    bindSingleton { RemoteNotesRepositoryImpl() }
+
     bindSingleton {
         AuthUseCases(
             getCurrentUserDocument = GetCurrentUserDocument(instance()),
@@ -47,4 +55,24 @@ val di = DI {
     bindSingleton { dev_notary_db(instance()) }
 
     bindConstant(USER_FIREBASE_REFERENCE) { firebaseFirestore.collection("users") }
+
+    bindSingleton {
+        LocalNotesUseCases(
+            addNote = AddNote(instance()),
+            deleteNote = DeleteNote(instance()),
+            editNote = EditNote(instance()),
+            getNotes = GetNotes(instance())
+        )
+    }
+    bindSingleton {
+        RemoteNotesUseCases(
+            shareNote = ShareNote(instance()),
+            unshareNote = UnshareNote(instance()),
+            deleteSharedNote = DeleteSharedNote(instance()),
+            getSharedNotes = GetSharedNotes(instance()),
+            saveSharedNote = SaveSharedNote(instance()),
+            editSharedNote = EditSharedNote(instance())
+        )
+    }
+
 }
