@@ -58,6 +58,13 @@ kotlin {
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.1")
     }
 
+    sourceSets["androidMain"].dependencies {
+        implementation(SqlDelight.android)
+       // implementation("org.kodein.di:kodein-di:7.10.0")
+        implementation("org.kodein.di:kodein-di-framework-compose:7.10.0")
+
+    }
+
     sourceSets {
         val commonMain by getting
         val commonTest by getting {

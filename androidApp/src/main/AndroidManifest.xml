@@ -3,6 +3,7 @@
     package="com.solita.devnotary.android">
 
     <application
+        android:name="com.solita.devnotary.feature_notes.data.local.MainApplication"
         android:allowBackup="false"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">

@@ -56,4 +56,9 @@ dependencies {
 
     //Key-Value storage
     implementation("com.russhwolf:multiplatform-settings:0.9")
+    // kodein
+    implementation("org.kodein.di:kodein-di:7.10.0")
+    implementation("org.kodein.di:kodein-di-framework-compose:7.10.0")
+
+
 }

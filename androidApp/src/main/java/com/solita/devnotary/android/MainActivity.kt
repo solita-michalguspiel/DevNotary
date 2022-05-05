@@ -13,13 +13,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.solita.devnotary.Greeting
-import com.solita.devnotary.di.di
 import com.solita.devnotary.feature_auth.presentation.AuthViewModel
 
 fun greet(): String {
     return Greeting().greeting()
 }
-
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

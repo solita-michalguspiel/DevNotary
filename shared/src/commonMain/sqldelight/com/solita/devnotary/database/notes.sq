@@ -1,0 +1,15 @@
+CREATE TABLE note(
+note_id TEXT NOT NULL,
+title TEXT NOT NULL,
+content TEXT NOT NULL,
+date_time TEXT NOT NULL,
+color TEXT NOT NULL
+);
+
+insert:
+INSERT INTO note(note_id,title,content,date_time,color)
+VALUES(?,?,?,?,?);
+
+selectAll:
+SELECT *
+FROM note;
