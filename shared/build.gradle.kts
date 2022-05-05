@@ -56,20 +56,27 @@ kotlin {
         implementation ("io.kotest:kotest-assertions-core:5.3.0")
         implementation("com.russhwolf:multiplatform-settings-test:0.9")
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.1")
+        implementation("org.xerial:sqlite-jdbc:3.34.0")
+        implementation(SqlDelight.runtime)
     }
 
     sourceSets["androidMain"].dependencies {
         implementation(SqlDelight.android)
-       // implementation("org.kodein.di:kodein-di:7.10.0")
         implementation("org.kodein.di:kodein-di-framework-compose:7.10.0")
-
     }
+
+    sourceSets["androidTest"].dependencies {
+        implementation("androidx.test:core:1.4.0")
+        implementation("org.robolectric:robolectric:4.8")
+        }
 
     sourceSets {
         val commonMain by getting
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
+                implementation(kotlin("test-common"))
+                implementation(kotlin("test-annotations-common"))
                 implementation ("io.kotest:kotest-assertions-core:5.3.0")
                 implementation("com.russhwolf:multiplatform-settings-test:0.9")
             }
@@ -103,7 +110,6 @@ dependencies {
     commonMainApi("dev.icerock.moko:mvvm-livedata:0.13.0") // api mvvm-core, LiveData and extensions
     commonMainApi("dev.icerock.moko:mvvm-state:0.13.0") // api mvvm-livedata, ResourceState class and extensions
     commonMainApi("dev.icerock.moko:mvvm-livedata-resources:0.13.0") // api mvvm-core, moko-resources, extensions for LiveData with moko-resources
-
     commonTestImplementation("dev.icerock.moko:mvvm-test:0.13.0") // test utilities
 }
 
@@ -113,6 +119,11 @@ android {
     defaultConfig {
         minSdk = 21
         targetSdk = 32
+    }
+    testOptions{
+        unitTests{
+            isIncludeAndroidResources = true
+        }
     }
 
 }
