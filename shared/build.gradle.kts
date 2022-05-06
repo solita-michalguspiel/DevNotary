@@ -45,18 +45,18 @@ kotlin {
         implementation("dev.gitlive:firebase-firestore:1.6.1")
         // Database with sqldelight:
         implementation(SqlDelight.runtime)
-        implementation (SqlDelight.coroutinesExtension)
+        implementation(SqlDelight.coroutinesExtension)
 
         // Kotlinx-datetime:
         implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
         //Key-value data storage
         implementation("com.russhwolf:multiplatform-settings-no-arg:0.9")
         //Serialization
-        implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+        implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
     }
 
     sourceSets["commonTest"].dependencies {
-        implementation ("io.kotest:kotest-assertions-core:5.3.0")
+        implementation("io.kotest:kotest-assertions-core:5.3.0")
         implementation("com.russhwolf:multiplatform-settings-test:0.9")
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.1")
         implementation("org.xerial:sqlite-jdbc:3.34.0")
@@ -71,7 +71,7 @@ kotlin {
     sourceSets["androidTest"].dependencies {
         implementation("androidx.test:core:1.4.0")
         implementation("org.robolectric:robolectric:4.8")
-        }
+    }
 
     sourceSets {
         val commonMain by getting
@@ -80,7 +80,7 @@ kotlin {
                 implementation(kotlin("test"))
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
-                implementation ("io.kotest:kotest-assertions-core:5.3.0")
+                implementation("io.kotest:kotest-assertions-core:5.3.0")
                 implementation("com.russhwolf:multiplatform-settings-test:0.9")
             }
         }
@@ -123,8 +123,8 @@ android {
         minSdk = 21
         targetSdk = 32
     }
-    testOptions{
-        unitTests{
+    testOptions {
+        unitTests {
             isIncludeAndroidResources = true
         }
     }
@@ -134,5 +134,82 @@ android {
 sqldelight {
     database("dev_notary_db") { // This will be the name of the generated database class.
         packageName = "com.solita.devnotary"
+    }
+}
+
+tasks.withType(Test::class.java) {
+
+    testLogging {
+        events(
+            org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+            org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
+            org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED,
+            org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_OUT,
+            org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_ERROR
+        )
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        showExceptions = true
+        showCauses = true
+        showStackTraces = true
+
+        debug {
+            events(
+                org.gradle.api.tasks.testing.logging.TestLogEvent.STARTED,
+                org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+                org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
+                org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED,
+                org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_ERROR,
+                org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_OUT,
+            )
+            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        }
+        info.events = debug.events
+        info.exceptionFormat = debug.exceptionFormat
+
+        val failedTests = mutableListOf<TestDescriptor>()
+        val skippedTests = mutableListOf<TestDescriptor>()
+
+        addTestListener(object : TestListener {
+            override fun beforeSuite(suite: TestDescriptor) {}
+            override fun beforeTest(testDescriptor: TestDescriptor) {}
+            override fun afterTest(testDescriptor: TestDescriptor, result: TestResult) {
+                when (result.resultType) {
+                    TestResult.ResultType.FAILURE -> failedTests.add(testDescriptor)
+                    TestResult.ResultType.SKIPPED -> skippedTests.add(testDescriptor)
+                }
+            }
+
+            override fun afterSuite(suite: TestDescriptor, result: TestResult) {
+                if (suite.parent == null) { // root suite
+                    logger.lifecycle("----")
+                    logger.lifecycle("Test result: ${result.resultType}")
+                    logger.lifecycle(
+                        "Test summary: ${result.testCount} tests, " +
+                                "${result.successfulTestCount} succeeded, " +
+                                "${result.failedTestCount} failed, " +
+                                "${result.skippedTestCount} skipped"
+                    )
+                    if (failedTests.isNotEmpty()) {
+                        logger.lifecycle("\tFailed Tests:")
+                        failedTests.forEach {
+                            parent?.let { parent ->
+                                logger.lifecycle("\t\t${parent.name} - ${it.name}")
+                            } ?: logger.lifecycle("\t\t${it.name}")
+                        }
+                    }
+
+                    if (skippedTests.isNotEmpty()) {
+                        logger.lifecycle("\tSkipped Tests:")
+                        skippedTests.forEach {
+                            parent?.let { parent ->
+                                logger.lifecycle("\t\t${parent.name} - ${it.name}")
+                            } ?: logger.lifecycle("\t\t${it.name}")
+                        }
+                    }
+
+
+                }
+            }
+        })
     }
 }
