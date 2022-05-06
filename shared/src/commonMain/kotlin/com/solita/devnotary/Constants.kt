@@ -9,4 +9,6 @@ object Constants {
     const val ERROR_MESSAGE = "Oops.. something went wrong"
 
     const val USER_FIREBASE_REFERENCE = "user_firebase_reference"
+
+    const val SHARED_NOTES_FIREBASE_REFERENCE = "shared_notes_firebase_reference"
 }

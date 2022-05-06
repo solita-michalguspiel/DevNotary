@@ -4,6 +4,7 @@ import com.solita.devnotary.database.Note
 import com.solita.devnotary.di.di
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.feature_notes.domain.use_case.local_notes_use_cases.LocalNotesUseCases
+import com.solita.devnotary.feature_notes.domain.use_case.remote_notes_use_cases.RemoteNotesUseCases
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,17 +14,18 @@ import org.kodein.di.instance
 
 class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
 
-    private val useCases: LocalNotesUseCases by dependencyInjection.instance()
+    private val localUseCases: LocalNotesUseCases by dependencyInjection.instance()
+    private val remoteUseCases: RemoteNotesUseCases by dependencyInjection.instance()
 
     private val _noteModificationStatus: MutableStateFlow<Response<Boolean>> =
         MutableStateFlow(Response.Empty)
     val noteModificationStatus: StateFlow<Response<Boolean>> = _noteModificationStatus
 
-    val getNotes get() =  useCases.getNotes.invoke()
+    val getNotes get() =  localUseCases.getNotes.invoke()
 
     fun addNote(note: Note) {
         viewModelScope.launch {
-            useCases.addNote.invoke(note).collect { response ->
+            localUseCases.addNote.invoke(note).collect { response ->
                 _noteModificationStatus.value = response
             }
         }
@@ -31,7 +33,7 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
 
     fun editNote(note: Note){
         viewModelScope.launch {
-            useCases.editNote.invoke(note = note).collect{ response ->
+            localUseCases.editNote.invoke(note = note).collect{ response ->
                 _noteModificationStatus.value = response
             }
         }
@@ -39,7 +41,7 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
 
     fun deleteNote(noteId: String){
         viewModelScope.launch {
-            useCases.deleteNote.invoke(noteId).collect{response ->
+            localUseCases.deleteNote.invoke(noteId).collect{ response ->
                 _noteModificationStatus.value = response
             }
         }

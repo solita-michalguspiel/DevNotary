@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.solita.devnotary.Greeting
 import com.solita.devnotary.feature_auth.presentation.AuthViewModel
+import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 
 fun greet(): String {
     return Greeting().greeting()
@@ -25,13 +26,13 @@ class MainActivity : ComponentActivity() {
         val intent = intent
         setContent {
             MaterialTheme{
-                MainView(AuthViewModel(intent.data.toString()))
+                MainView(AuthViewModel(intent.data.toString()), notesViewModel = NotesViewModel())
             }
         }
     }
 }
 @Composable
-fun MainView(authViewModel: AuthViewModel) {
+fun MainView(authViewModel: AuthViewModel,notesViewModel: NotesViewModel) {
     Column(
         Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,

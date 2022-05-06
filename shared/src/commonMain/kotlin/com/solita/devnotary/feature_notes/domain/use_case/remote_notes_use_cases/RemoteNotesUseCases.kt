@@ -5,6 +5,5 @@ data class RemoteNotesUseCases(
     val shareNote: ShareNote,
     val unshareNote: UnshareNote,
     val deleteSharedNote: DeleteSharedNote,
-    val saveSharedNote: SaveSharedNote,
     val editSharedNote: EditSharedNote
     )

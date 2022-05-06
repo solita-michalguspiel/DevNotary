@@ -1,6 +1,7 @@
 package com.solita.devnotary.di
 
 import com.russhwolf.settings.Settings
+import com.solita.devnotary.Constants.SHARED_NOTES_FIREBASE_REFERENCE
 import com.solita.devnotary.Constants.USER_FIREBASE_REFERENCE
 import com.solita.devnotary.dev_notary_db
 import com.solita.devnotary.feature_auth.data.AuthRepositoryImpl
@@ -56,6 +57,8 @@ val di = DI {
 
     bindConstant(USER_FIREBASE_REFERENCE) { firebaseFirestore.collection("users") }
 
+    bindConstant(SHARED_NOTES_FIREBASE_REFERENCE){firebaseFirestore.collection("shared_notes")}
+
     bindSingleton {
         LocalNotesUseCases(
             addNote = AddNote(instance()),
@@ -70,7 +73,6 @@ val di = DI {
             unshareNote = UnshareNote(instance()),
             deleteSharedNote = DeleteSharedNote(instance()),
             getSharedNotes = GetSharedNotes(instance()),
-            saveSharedNote = SaveSharedNote(instance()),
             editSharedNote = EditSharedNote(instance())
         )
     }
