@@ -34,7 +34,7 @@ val di = DI {
 
     bindSingleton { AuthRepositoryImpl() }
 
-    bindSingleton { LocalNotesRepositoryImpl() }
+    bindSingleton { LocalNotesRepositoryImpl(instance()) }
 
     bindSingleton { RemoteNotesRepositoryImpl() }
 

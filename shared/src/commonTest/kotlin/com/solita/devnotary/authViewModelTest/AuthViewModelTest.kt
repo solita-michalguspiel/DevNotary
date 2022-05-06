@@ -1,9 +1,10 @@
-package com.solita.devnotary
+package com.solita.devnotary.authViewModelTest
 
 import com.russhwolf.settings.MockSettings
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.feature_auth.domain.use_case.*
 import com.solita.devnotary.feature_auth.presentation.AuthViewModel
+import com.solita.devnotary.randomUser
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

@@ -12,6 +12,6 @@ interface LocalNotesRepository {
 
     suspend fun editNote(note: Note): Flow<Response<Boolean>>
 
-    suspend fun getNotes():Flow<Response<List<Note>>>
+    fun getNotes():Flow<List<Note>>
 
 }

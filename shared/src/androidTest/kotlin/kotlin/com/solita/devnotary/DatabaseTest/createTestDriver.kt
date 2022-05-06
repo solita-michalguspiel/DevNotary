@@ -1,4 +1,4 @@
-package com.solita.devnotary.DatabaseTest
+package com.solita.devnotary.databaseTest
 
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider

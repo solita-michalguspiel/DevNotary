@@ -1,47 +1,54 @@
-package com.solita.devnotary.feature_notes.data.local
+package com.solita.devnotary.noteFeatViewModelTest
 
+import com.solita.devnotary.Constants
 import com.solita.devnotary.Constants.ERROR_MESSAGE
 import com.solita.devnotary.database.Note
-import com.solita.devnotary.dev_notary_db
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.feature_notes.domain.repository.LocalNotesRepository
-import com.squareup.sqldelight.runtime.coroutines.asFlow
-import com.squareup.sqldelight.runtime.coroutines.mapToList
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class LocalNotesRepositoryImpl(private val database : dev_notary_db) : LocalNotesRepository {
+class LocalNotesRepoTestImpl : LocalNotesRepository {
+
+    private var tempList = mutableListOf<Note>()
+
     override suspend fun addNote(note: Note): Flow<Response<Boolean>> = flow{
         try {
             emit(Response.Loading)
-            database.notesQueries.insert(note.note_id,note.title,note.content,note.date_time,note.color)
+            tempList.add(note)
+            delay(70)//simulate some delay
             emit(Response.Success(true))
         }catch (e : Exception){
             emit(Response.Error(e.message ?: ERROR_MESSAGE))
         }
     }
 
-    override suspend fun deleteNote(noteId : String): Flow<Response<Boolean>> = flow{
+    override suspend fun deleteNote(noteId: String): Flow<Response<Boolean>> = flow{
         try {
             emit(Response.Loading)
-            database.notesQueries.delete(noteId)
+            val indexOfRemovedNote = tempList.map { it.note_id }.indexOf(noteId)
+            tempList.remove(tempList[indexOfRemovedNote])
+            delay(200)
             emit(Response.Success(true))
         }catch (e : Exception){
-            emit(Response.Error(e.message ?: ERROR_MESSAGE))
+            emit(Response.Error(ERROR_MESSAGE))
         }
     }
 
     override suspend fun editNote(note: Note): Flow<Response<Boolean>> = flow{
         try {
             emit(Response.Loading)
-            database.notesQueries.update(note.title,note.content,note.color,note.note_id)
+            delay(200) // to simulate some delay
+            val indexOfChangedNote = tempList.map { it.note_id }.indexOf(note.note_id)
+            tempList[indexOfChangedNote] = note
             emit(Response.Success(true))
         }catch (e : Exception){
-            emit(Response.Error(e.message ?: ERROR_MESSAGE))
+            emit(Response.Error(ERROR_MESSAGE))
         }
     }
 
-    override fun getNotes(): Flow<List<Note>> {
-      return  database.notesQueries.selectAll().asFlow().mapToList()
+    override  fun getNotes(): Flow<List<Note>> = flow {
+    emit(tempList)
     }
 }

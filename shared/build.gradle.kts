@@ -10,10 +10,11 @@ plugins {
 version = "1.0"
 
 object SqlDelight {
-    const val version = "1.5.3"
+    private const val version = "1.5.3"
     const val runtime = "com.squareup.sqldelight:runtime:$version"
     const val android = "com.squareup.sqldelight:android-driver:$version"
     const val native = "com.squareup.sqldelight:native-driver:$version"
+    const val coroutinesExtension = "com.squareup.sqldelight:coroutines-extensions:$version"
 }
 
 
@@ -44,6 +45,8 @@ kotlin {
         implementation("dev.gitlive:firebase-firestore:1.6.1")
         // Database with sqldelight:
         implementation(SqlDelight.runtime)
+        implementation (SqlDelight.coroutinesExtension)
+
         // Kotlinx-datetime:
         implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
         //Key-value data storage

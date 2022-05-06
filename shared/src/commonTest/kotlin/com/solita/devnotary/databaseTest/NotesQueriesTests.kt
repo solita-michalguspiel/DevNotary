@@ -1,4 +1,4 @@
-package com.solita.devnotary.DatabaseTest
+package com.solita.devnotary.databaseTest
 
 import com.solita.devnotary.database.Note
 import com.solita.devnotary.database.NotesQueries
@@ -21,8 +21,8 @@ class NotesQueriesTests: RobolectricTests() {
     )
     private val secondNote  = firstNote.copy("fou23", color = "purple")
     private val  thirdNote = firstNote.copy("bue2", color = "purple")
-
     private val noteList = listOf(firstNote,secondNote,thirdNote)
+
 
     private fun addNote(note: Note){
         noteQueries.insert(

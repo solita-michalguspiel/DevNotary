@@ -1,8 +1,9 @@
-package com.solita.devnotary
+package com.solita.devnotary.authViewModelTest
 
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.domain.User
 import com.solita.devnotary.feature_auth.domain.repository.AuthRepository
+import com.solita.devnotary.randomUser
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
