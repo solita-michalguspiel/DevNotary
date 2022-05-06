@@ -1,4 +1,4 @@
-package com.solita.devnotary.databaseTest
+package com.solita.devnotary.DatabaseTest
 
 import com.squareup.sqldelight.db.SqlDriver
 

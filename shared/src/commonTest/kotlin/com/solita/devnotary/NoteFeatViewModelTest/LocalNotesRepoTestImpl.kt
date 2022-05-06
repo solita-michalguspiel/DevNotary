@@ -1,4 +1,4 @@
-package com.solita.devnotary.noteFeatViewModelTest
+package com.solita.devnotary.NoteFeatViewModelTest
 
 import com.solita.devnotary.Constants
 import com.solita.devnotary.Constants.ERROR_MESSAGE
@@ -20,7 +20,7 @@ class LocalNotesRepoTestImpl : LocalNotesRepository {
             delay(70)//simulate some delay
             emit(Response.Success(true))
         }catch (e : Exception){
-            emit(Response.Error(e.message ?: ERROR_MESSAGE))
+            emit(Response.Error(e.message ?: Constants.ERROR_MESSAGE))
         }
     }
 

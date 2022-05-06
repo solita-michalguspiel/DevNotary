@@ -1,4 +1,4 @@
-package com.solita.devnotary.noteFeatViewModelTest
+package com.solita.devnotary.NoteFeatViewModelTest
 
 import com.solita.devnotary.Constants.ERROR_MESSAGE
 import com.solita.devnotary.database.Note

@@ -1,4 +1,4 @@
-package com.solita.devnotary.databaseTest
+package com.solita.devnotary.DatabaseTest
 
 import com.solita.devnotary.database.Note
 import com.solita.devnotary.database.NotesQueries

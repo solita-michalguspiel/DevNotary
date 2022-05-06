@@ -1,4 +1,4 @@
-package com.solita.devnotary.authViewModelTest
+package com.solita.devnotary.AuthViewModelTest
 
 import com.russhwolf.settings.MockSettings
 import com.solita.devnotary.domain.Response

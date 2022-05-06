@@ -1,4 +1,4 @@
-package com.solita.devnotary.authViewModelTest
+package com.solita.devnotary.AuthViewModelTest
 
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.domain.User
