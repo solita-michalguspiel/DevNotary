@@ -62,7 +62,7 @@ class AuthRepositoryImpl : AuthRepository {
             auth.sendSignInLinkToEmail(email, actionCodeSettings)
             emit(Response.Success(true))
         } catch (e: Exception) {
-            println(e.message ?: ERROR_MESSAGE)
+            emit(Response.Error(e.message ?: ERROR_MESSAGE))
         }
     }
 

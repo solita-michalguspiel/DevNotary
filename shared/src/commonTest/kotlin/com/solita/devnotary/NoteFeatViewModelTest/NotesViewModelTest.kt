@@ -3,7 +3,9 @@ package com.solita.devnotary.NoteFeatViewModelTest
 import com.solita.devnotary.Constants.ERROR_MESSAGE
 import com.solita.devnotary.database.Note
 import com.solita.devnotary.domain.Response
+import com.solita.devnotary.feature_notes.domain.model.SharedNote
 import com.solita.devnotary.feature_notes.domain.use_case.local_notes_use_cases.*
+import com.solita.devnotary.feature_notes.domain.use_case.remote_notes_use_cases.*
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.Dispatchers
@@ -26,6 +28,7 @@ class NotesViewModelTest {
     private val mainThreadSurrogate = newSingleThreadContext("UI thread")
     private val testDispatcher = StandardTestDispatcher()
 
+
     private val testDI = DI {
         bindSingleton {
             LocalNotesUseCases(
@@ -35,9 +38,21 @@ class NotesViewModelTest {
                 getNotes = GetNotes(instance())
             )
         }
-        bindSingleton { LocalNotesRepoTestImpl() }
-    }
+        bindSingleton {
+            RemoteNotesUseCases(
+                shareNote = ShareNote(instance()),
+                unshareNote = UnshareNote(instance()),
+                deleteSharedNote = DeleteSharedNote(instance()),
+                getSharedNotes = GetSharedNotes(instance()),
+                editSharedNote = EditSharedNote(instance())
+            )
+        }
 
+        bindSingleton { LocalNotesRepoTestImpl() }
+        bindSingleton { RemoteNotesRepoTestImpl() }
+
+    }
+    private val remoteNotesRepository : RemoteNotesRepoTestImpl by testDI.instance()
 
     private val firstNote = Note(
         "fidhsbagoipngöklsagagew",
@@ -52,6 +67,7 @@ class NotesViewModelTest {
 
     @BeforeTest
     fun setup() {
+
         Dispatchers.setMain(testDispatcher)
         viewModel = NotesViewModel(testDI)
     }
@@ -67,7 +83,7 @@ class NotesViewModelTest {
     fun givenNoteWasAdded_StateOfNoteModShouldChangeToLoadingAndThenToSuccess(): TestResult =
         runTest {
             launch {
-                viewModel.addNote(firstNote)
+                viewModel.addNote(firstNote.note_id,firstNote.title,firstNote.content,firstNote.color)
             }
             advanceTimeBy(30)
             viewModel.noteModificationStatus.value shouldBe Response.Loading
@@ -78,11 +94,14 @@ class NotesViewModelTest {
     @Test
     fun givenNoteIsAdded_AndGetNotesIsCalled_NoteShouldBeRetrieved(): TestResult = runTest {
         launch {
-            viewModel.addNote(firstNote)
+            viewModel.addNote(firstNote.note_id,firstNote.title,firstNote.content,firstNote.color)
         }
         advanceUntilIdle()
         viewModel.getNotes.collectLatest {
-            it shouldBe listOf(firstNote)
+
+            it.first().note_id shouldBe firstNote.note_id
+            it.first().title shouldBe firstNote.title
+            it.first().content shouldBe firstNote.content
         }
     }
 
@@ -91,7 +110,7 @@ class NotesViewModelTest {
         runTest {
             val changedFirstNote = firstNote.copy(content = "ChangedContent")
             launch {
-                viewModel.addNote(firstNote)
+                viewModel.addNote(firstNote.note_id,firstNote.title,firstNote.content,firstNote.color)
                 viewModel.editNote(changedFirstNote)
             }
             advanceTimeBy(50)
@@ -106,8 +125,8 @@ class NotesViewModelTest {
     @Test
     fun givenNoteIsDeleted_NoteModStateShouldChangeToLoadingThenSuccess(): TestResult = runTest {
         launch {
-            viewModel.addNote(thirdNote)
-            viewModel.addNote(secondNote)
+            viewModel.addNote(thirdNote.note_id,thirdNote.title,thirdNote.content,thirdNote.color)
+            viewModel.addNote(secondNote.note_id,secondNote.title,secondNote.content,secondNote.color)
         }
         advanceUntilIdle()
         launch {
@@ -118,15 +137,15 @@ class NotesViewModelTest {
         advanceUntilIdle()
         viewModel.noteModificationStatus.value shouldBe Response.Success(true)
         viewModel.getNotes.collectLatest {
-            it shouldBe listOf(thirdNote)
+            it.map { it.note_id } shouldBe listOf(thirdNote.note_id)
         }
     }
 
     @Test
     fun removingNoteIdThatNotExists_ShouldChangeNoteModStateToError(): TestResult = runTest {
         launch {
-            viewModel.addNote(firstNote)
-            viewModel.addNote(secondNote)
+            viewModel.addNote(firstNote.note_id,firstNote.title,firstNote.content,firstNote.color)
+            viewModel.addNote(secondNote.note_id,secondNote.title,secondNote.content,secondNote.color)
         }
         advanceUntilIdle()
         launch {
@@ -139,8 +158,8 @@ class NotesViewModelTest {
     @Test
     fun editingNoteIdThatNotExists_ShouldChangeNoteModStateToError(): TestResult = runTest {
         launch {
-            viewModel.addNote(firstNote)
-            viewModel.addNote(secondNote)
+            viewModel.addNote(firstNote.note_id,firstNote.title,firstNote.content,firstNote.color)
+            viewModel.addNote(secondNote.note_id,secondNote.title,secondNote.content,secondNote.color)
         }
         advanceUntilIdle()
         launch {
@@ -151,8 +170,27 @@ class NotesViewModelTest {
     }
 
 
+    @Test
+    fun givenUserIdIsNull_AndGetSharedNotesIsCalled_SharedNotesStateShouldBeError() : TestResult = runTest{
+        remoteNotesRepository.currentUserId = null
+        launch {   viewModel.getSharedNotes() }
+        advanceUntilIdle()
+        viewModel.sharedNotesState.value shouldBe Response.Error("User is not logged in")
+    }
 
-
+    @Test
+    fun givenThereIsSharedNoteAndGetSharedNotesIsCalled_SharedNoteShouldAppearInSharedNotesState() : TestResult = runTest {
+        launch {
+            viewModel.shareNote(remoteNotesRepository.appUser1, firstNote)
+        }
+        advanceUntilIdle()
+        remoteNotesRepository.currentUserId = remoteNotesRepository.appUser1 // SIMULATING THAT USER 1 IS USING APP
+        launch { viewModel.getSharedNotes() }
+        advanceUntilIdle()
+        viewModel.sharedNotesState.value shouldBe Response.Success(mutableListOf(SharedNote(firstNote.note_id,remoteNotesRepository.appUser3,
+            remoteNotesRepository.currentUserId!!,firstNote.title,firstNote.content,"TODAY",firstNote.color))
+        )
+    }
 
 }
 

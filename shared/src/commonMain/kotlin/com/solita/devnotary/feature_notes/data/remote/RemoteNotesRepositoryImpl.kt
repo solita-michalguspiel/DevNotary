@@ -14,6 +14,7 @@ import dev.gitlive.firebase.firestore.FirebaseFirestore
 import dev.gitlive.firebase.firestore.ServerTimestampBehavior
 import dev.gitlive.firebase.firestore.where
 import kotlinx.coroutines.flow.*
+import kotlinx.datetime.Clock
 import org.kodein.di.instance
 
 class RemoteNotesRepositoryImpl : RemoteNotesRepository {
@@ -42,7 +43,8 @@ class RemoteNotesRepositoryImpl : RemoteNotesRepository {
     try {
         emit(Response.Loading)
         println("User ID: $userId")
-        val sharedNote = SharedNote(note.note_id,userId!!,sharedUserId,note.title,note.content,"TODAY",note.color)
+        val sharedNote = SharedNote(note.note_id,userId!!,sharedUserId,note.title,note.content,
+            Clock.System.now().toString(),note.color)
         sharedNotesReference.document.set(sharedNote)
         emit(Response.Success(true))
     }catch (e:Exception){
