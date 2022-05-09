@@ -103,7 +103,6 @@ class AuthRepositoryImpl : AuthRepository {
             }
         } catch (e: Exception) {
             val response = (Response.Error(e.message ?: ERROR_MESSAGE))
-            println("ERROR : $response")
             send(response)
         }
     }

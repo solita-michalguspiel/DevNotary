@@ -10,7 +10,6 @@ import org.robolectric.RobolectricTestRunner
 
 internal actual fun createTestDriver(): SqlDriver {
     val app = ApplicationProvider.getApplicationContext<Application>()
-    println("CREATED SOMETHING!!!")
     return AndroidSqliteDriver(dev_notary_db.Schema, app, null)
 }
 
