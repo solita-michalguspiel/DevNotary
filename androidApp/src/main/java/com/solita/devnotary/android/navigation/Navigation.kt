@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.solita.devnotary.android.domain.Screen
+import com.solita.devnotary.android.feature_auth.ProfileScreen
 import com.solita.devnotary.android.feature_auth.SignInScreen
 import com.solita.devnotary.android.feature_notes.AddNoteScreen
 import com.solita.devnotary.android.feature_notes.LocalNotesScreen
@@ -26,6 +27,9 @@ fun Navigation() {
 
         composable(Screen.SignInScreen.route) {
             SignInScreen(navController)
+        }
+        composable(Screen.ProfileScreen.route){
+            ProfileScreen(navController = navController)
         }
 
         composable(Screen.LocalNotesScreen.route) {

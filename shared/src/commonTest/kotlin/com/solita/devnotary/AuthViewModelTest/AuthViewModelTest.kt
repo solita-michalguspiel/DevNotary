@@ -26,6 +26,8 @@ class AuthViewModelTest {
     private val mainThreadSurrogate = newSingleThreadContext("UI thread")
     private val testDispatcher = StandardTestDispatcher()
 
+    val intentData = "someRandomLinkData"
+
     private val testDI = DI {
         bindSingleton { AuthRepoTestImpl() }
         bindSingleton {
@@ -52,23 +54,10 @@ class AuthViewModelTest {
     }
 
     @Test
-    fun givenViewModelIntentIsDifferentThanNull_AuthStateShouldChangeToSuccessTrue(): TestResult =
-        runTest {
-            launch {
-                viewModel = AuthViewModel(
-                    "somerandomlinkdata",
-                    dependencyInjection = testDI
-                )
-            }
-            advanceUntilIdle()
-            viewModel.userAuthState.value shouldBe Response.Success(true)
-        }
-
-    @Test
     fun givenViewModelIntentIsDifferentThanNullAndSignOutIsCalled_AuthStateShouldChangeToSuccessFalse(): TestResult =
         runTest {
             launch {
-                viewModel = AuthViewModel("someRandomLinkData", dependencyInjection = testDI)
+                viewModel = AuthViewModel(dependencyInjection = testDI)
                 viewModel.signOut()
             }
             advanceUntilIdle()
@@ -79,7 +68,7 @@ class AuthViewModelTest {
     fun givenIntentIsEmptyAndSendEmailLinkIsCalled_SendLinkStateShouldChangeToSuccessTrue(): TestResult =
         runTest {
             launch {
-                viewModel = AuthViewModel("someRandomLinkData", dependencyInjection = testDI)
+                viewModel = AuthViewModel(dependencyInjection = testDI)
                 viewModel.sendLinkState.value shouldBe Response.Empty
                 viewModel.sendEmailLink("RandomEmailAddress@example.com")
             }
@@ -91,7 +80,7 @@ class AuthViewModelTest {
     fun givenUserIsNotLoggedInAndIntentIsNull_GetCurrentUserDocument_ShouldChangeUserStatusIntoError(): TestResult =
         runTest {
             launch {
-                viewModel = AuthViewModel("null", dependencyInjection = testDI)
+                viewModel = AuthViewModel( dependencyInjection = testDI)
                 viewModel.getCurrentUserDocument()
             }
             advanceUntilIdle()
@@ -101,7 +90,7 @@ class AuthViewModelTest {
     @Test
     fun givenUserIsNotLoggedInAndIntentIsNull_IsUserLoggedInShouldReturnFalse() = runTest {
         launch {
-            viewModel = AuthViewModel("null", dependencyInjection = testDI)
+            viewModel = AuthViewModel(dependencyInjection = testDI)
         }
         advanceUntilIdle()
         viewModel.isUserAuthenticated shouldBe false
@@ -110,9 +99,9 @@ class AuthViewModelTest {
     @Test
     fun givenUserIsNotLoggedInIntentIsNullButSignInWithLinkIsCalled_GetCurrentUserDocument_ShouldChangeUserStatusIntoSuccess() = runTest{
         launch {
-            viewModel = AuthViewModel("null", dependencyInjection = testDI)
+            viewModel = AuthViewModel(dependencyInjection = testDI)
             viewModel.userAuthState.value shouldBe Response.Empty
-            viewModel.signInWithLink()
+            viewModel.signInWithLink(intentData)
         }
         advanceUntilIdle()
         viewModel.userAuthState.value shouldBe Response.Success(true)
@@ -121,9 +110,9 @@ class AuthViewModelTest {
     @Test
     fun givenTheUserHasLoggedIn_ThereforeUserDocumentShouldBeAvailableInUserState() = runTest {
         launch {
-            viewModel = AuthViewModel("null", dependencyInjection = testDI)
+            viewModel = AuthViewModel(dependencyInjection = testDI)
             viewModel.userState.value shouldBe Response.Empty
-            viewModel.signInWithLink()
+            viewModel.signInWithLink(intentData)
             viewModel.getCurrentUserDocument()
         }
         advanceUntilIdle()
@@ -133,12 +122,12 @@ class AuthViewModelTest {
     @Test
     fun givenUserLogedInAndThenLogedOut_UserDocShouldBeUnavailableAndStatesShouldChangeAccordigly() = runTest{
         launch {
-            viewModel = AuthViewModel("null", dependencyInjection = testDI)
+            viewModel = AuthViewModel( dependencyInjection = testDI)
             viewModel.userAuthState.value shouldBe Response.Empty
         }
         advanceUntilIdle()
         launch {
-            viewModel.signInWithLink()
+            viewModel.signInWithLink(intentData)
         }
         advanceUntilIdle()
         viewModel.userAuthState.value shouldBe Response.Success(true)
@@ -152,9 +141,9 @@ class AuthViewModelTest {
     @Test
     fun givenUserWasLoggedInButLoggedOut_StateOfUserShouldChangeToEmpty() = runTest{
         launch {
-            viewModel = AuthViewModel("null", dependencyInjection = testDI)
+            viewModel = AuthViewModel( dependencyInjection = testDI)
             viewModel.userAuthState.value shouldBe Response.Empty
-            viewModel.signInWithLink()
+            viewModel.signInWithLink(intentData)
             viewModel.getCurrentUserDocument()
         }
         advanceUntilIdle()

@@ -6,6 +6,8 @@ object Constants {
     const val ANDROID_PACKAGE_NAME = "com.solita.devnotary.android"
     const val CURRENT_EMAIL_KEY = "email_key"
 
+    const val RESEND_EMAIL_TIME = 60
+
     const val ERROR_MESSAGE = "Oops.. something went wrong"
 
     const val USER_FIREBASE_REFERENCE = "user_firebase_reference"

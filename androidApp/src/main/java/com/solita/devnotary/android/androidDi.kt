@@ -12,6 +12,6 @@ val androidDi  = DI{
 
     bindSingleton { NotesViewModel() }
 
-    bindSingleton { AuthViewModel(signInIntent.data.toString()) }
+    bindSingleton { AuthViewModel() }
 
 }

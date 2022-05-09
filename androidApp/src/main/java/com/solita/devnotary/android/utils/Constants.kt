@@ -9,4 +9,7 @@ object Constants {
     const val NOTE_COLOR = "note_color"
     const val NOTE_TYPE = "note_type"
 
+    const val NULL = "null"
+    const val RESEND_EMAIL_TIME = 60
+
 }

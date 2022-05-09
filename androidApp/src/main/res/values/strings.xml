@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Common -->
+    <string name="error">Error!</string>
+    <string name="back">Back</string>
+
+    <!-- SignIn screen -->
+    <string name="get_email">Get email</string>
+    <string name="dev_notary">Dev Notary</string>
+    <string name="link_sent">Link sent!</string>
+    <string name="sign_in_with_email_prompt">Sign in with email</string>
+    <string name="resend_email_prompt">Send again in %1$s seconds</string>
+
+
+    <!-- Profile screen -->
+    <!-- LocalNotes screen -->
+    <!-- Sign in screen -->
+
+
+
+</resources>

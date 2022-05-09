@@ -2,6 +2,7 @@ package com.solita.devnotary.android.domain
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.ui.graphics.vector.ImageVector
 
@@ -17,6 +18,7 @@ sealed class Screen(
     object SharedNotesScreen : Screen("shared_notes_screen",icon = Icons.Default.Share, title = "Shared", "Shared notes")
     object NoteDetailsScreen : Screen("note_details_screen")
     object AddNoteScreen : Screen("add_notes_screen")
+    object ProfileScreen : Screen("profile_screen", icon = Icons.Default.Person,title = "Profile","Profile button")
 
 
     object BottomNavItems {
