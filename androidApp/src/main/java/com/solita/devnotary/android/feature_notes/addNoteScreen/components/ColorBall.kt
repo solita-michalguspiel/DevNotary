@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ColorBall(color: Color, isChosen : Boolean = false) {
-Canvas(modifier = Modifier.size(30.dp), onDraw = {
+Canvas(modifier = Modifier.size(40.dp), onDraw = {
     if(isChosen)drawCircle(Color.Black,style = Stroke(width = 2.5f))
     else drawCircle(Color.Black,style = Stroke(width = 0.5f))
     drawCircle(color,style = Fill)

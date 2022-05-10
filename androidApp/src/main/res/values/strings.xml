@@ -20,7 +20,8 @@
     <!-- LocalNotes screen -->
     <string name="view_details">View details</string>
 
-    <!-- Sign in screen -->
+    <!-- Add note screen -->
+    <string name="add_note">Add note</string>
 
 
 

@@ -53,6 +53,8 @@ kotlin {
         implementation("com.russhwolf:multiplatform-settings-no-arg:0.9")
         //Serialization
         implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+        // UUID
+        implementation ("com.benasher44:uuid:0.4.0")
     }
 
     sourceSets["commonTest"].dependencies {

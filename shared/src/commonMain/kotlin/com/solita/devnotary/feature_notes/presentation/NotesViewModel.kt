@@ -1,5 +1,6 @@
 package com.solita.devnotary.feature_notes.presentation
 
+import com.benasher44.uuid.Uuid
 import com.solita.devnotary.database.Note
 import com.solita.devnotary.di.di
 import com.solita.devnotary.domain.ComposableViewModel
@@ -11,9 +12,8 @@ import com.solita.devnotary.feature_notes.domain.use_case.users_use_cases.UsersU
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.datetime.*
+import kotlinx.datetime.Clock
 import org.kodein.di.DI
 import org.kodein.di.instance
 
@@ -36,8 +36,10 @@ class NotesViewModel(dependencyInjection: DI = di) : ComposableViewModel, ViewMo
 
     val getNotes get() =  localUseCases.getNotes.invoke()
 
-    fun addNote(noteId: String,title: String,content :String,color:String) {
-        val note = Note(noteId,title,content,Clock.System.now().toString(),color)
+    fun addNote( noteId : String? = null,title: String,content :String,color:String) {
+        val id = noteId ?: Uuid(1L,0L).toString()
+        println("New id! : $id")
+        val note = Note(id,title,content,Clock.System.now().toString(),color)
         viewModelScope.launch {
             localUseCases.addNote.invoke(note).collect { response ->
                 _noteModificationStatus.value = response
