@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import org.kodein.di.DI
 import org.kodein.di.instance
+import kotlin.random.Random
 
 class NotesViewModel(dependencyInjection: DI = di) : ComposableViewModel, ViewModel() {
 
@@ -27,19 +28,28 @@ class NotesViewModel(dependencyInjection: DI = di) : ComposableViewModel, ViewMo
         MutableStateFlow(Response.Empty)
     val noteModificationStatus: StateFlow<Response<Boolean>> = _noteModificationStatus
 
-    private val _sharedNotesState : MutableStateFlow<Response<List<SharedNote>>> = MutableStateFlow(Response.Empty)
-    val sharedNotesState : StateFlow<Response<List<SharedNote>>> = _sharedNotesState
+    private val _sharedNotesState: MutableStateFlow<Response<List<SharedNote>>> =
+        MutableStateFlow(Response.Empty)
+    val sharedNotesState: StateFlow<Response<List<SharedNote>>> = _sharedNotesState
 
-    private val _noteSharingState : MutableStateFlow<Response<Boolean>> =
+    private val _noteSharingState: MutableStateFlow<Response<Boolean>> =
         MutableStateFlow(Response.Empty)
     val noteSharingState: StateFlow<Response<Boolean>> = _noteSharingState
 
-    val getNotes get() =  localUseCases.getNotes.invoke()
+    val getNotes get() = localUseCases.getNotes.invoke()
 
-    fun addNote( noteId : String? = null,title: String,content :String,color:String) {
-        val id = noteId ?: Uuid(1L,0L).toString()
+    var titleInput = MutableStateFlow("")
+    var contentInput = MutableStateFlow("")
+    var chosenColor = MutableStateFlow("")
+
+
+    fun addNote(noteId: String? = null) {
+        val id = noteId ?: Uuid(
+            Random(Clock.System.now().epochSeconds).nextLong(),
+            Random(Clock.System.now().epochSeconds).nextLong()
+        ).toString()
         println("New id! : $id")
-        val note = Note(id,title,content,Clock.System.now().toString(),color)
+        val note = Note(id, titleInput.value, contentInput.value, Clock.System.now().toString(), chosenColor.value)
         viewModelScope.launch {
             localUseCases.addNote.invoke(note).collect { response ->
                 _noteModificationStatus.value = response
@@ -47,57 +57,57 @@ class NotesViewModel(dependencyInjection: DI = di) : ComposableViewModel, ViewMo
         }
     }
 
-    fun editNote(note: Note){
+    fun editNote(note: Note) {
         viewModelScope.launch {
-            localUseCases.editNote.invoke(note = note).collect{ response ->
+            localUseCases.editNote.invoke(note = note).collect { response ->
                 _noteModificationStatus.value = response
             }
         }
     }
 
-    fun deleteNote(noteId: String){
+    fun deleteNote(noteId: String) {
         viewModelScope.launch {
-            localUseCases.deleteNote.invoke(noteId).collect{ response ->
+            localUseCases.deleteNote.invoke(noteId).collect { response ->
                 _noteModificationStatus.value = response
             }
         }
     }
 
-    fun getSharedNotes(){
+    fun getSharedNotes() {
         viewModelScope.launch {
             remoteUseCases.getSharedNotes.invoke().collect { response ->
-            _sharedNotesState.value = response
+                _sharedNotesState.value = response
             }
         }
     }
 
-    fun shareNote(sharedUserId : String,note : Note){
+    fun shareNote(sharedUserId: String, note: Note) {
         viewModelScope.launch {
-            remoteUseCases.shareNote.invoke(sharedUserId,note).collect{ response ->
+            remoteUseCases.shareNote.invoke(sharedUserId, note).collect { response ->
                 _noteSharingState.value = response
             }
         }
     }
 
-    fun deleteSharedNote(noteId: String){
+    fun deleteSharedNote(noteId: String) {
         viewModelScope.launch {
-            remoteUseCases.deleteSharedNote.invoke(noteId = noteId).collect{ response ->
+            remoteUseCases.deleteSharedNote.invoke(noteId = noteId).collect { response ->
                 _noteSharingState.value = response
             }
         }
     }
 
-    fun editSharedNote(noteId: String, note: Note){
+    fun editSharedNote(noteId: String, note: Note) {
         viewModelScope.launch {
-            remoteUseCases.editSharedNote.invoke(noteId,note).collect{ response ->
+            remoteUseCases.editSharedNote.invoke(noteId, note).collect { response ->
                 _noteSharingState.value = response
             }
         }
     }
 
-    fun unShareNote(sharedUserId: String,noteId: String){
+    fun unShareNote(sharedUserId: String, noteId: String) {
         viewModelScope.launch {
-            remoteUseCases.unshareNote.invoke(sharedUserId, noteId).collect{ response ->
+            remoteUseCases.unshareNote.invoke(sharedUserId, noteId).collect { response ->
                 _noteSharingState.value = response
             }
         }

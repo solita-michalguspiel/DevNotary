@@ -83,7 +83,10 @@ class NotesViewModelTest {
     fun givenNoteWasAdded_StateOfNoteModShouldChangeToLoadingAndThenToSuccess(): TestResult =
         runTest {
             launch {
-                viewModel.addNote(firstNote.note_id,firstNote.title,firstNote.content,firstNote.color)
+                viewModel.titleInput.value = firstNote.title
+                viewModel.contentInput.value = firstNote.content
+                viewModel.chosenColor.value = firstNote.color
+                viewModel.addNote(firstNote.note_id)
             }
             advanceTimeBy(30)
             viewModel.noteModificationStatus.value shouldBe Response.Loading
@@ -94,7 +97,10 @@ class NotesViewModelTest {
     @Test
     fun givenNoteIsAdded_AndGetNotesIsCalled_NoteShouldBeRetrieved(): TestResult = runTest {
         launch {
-            viewModel.addNote(firstNote.note_id,firstNote.title,firstNote.content,firstNote.color)
+            viewModel.titleInput.value = firstNote.title
+            viewModel.contentInput.value = firstNote.content
+            viewModel.chosenColor.value = firstNote.color
+            viewModel.addNote(firstNote.note_id)
         }
         advanceUntilIdle()
         viewModel.getNotes.collectLatest {
@@ -110,7 +116,10 @@ class NotesViewModelTest {
         runTest {
             val changedFirstNote = firstNote.copy(content = "ChangedContent")
             launch {
-                viewModel.addNote(firstNote.note_id,firstNote.title,firstNote.content,firstNote.color)
+                viewModel.titleInput.value = firstNote.title
+                viewModel.contentInput.value = firstNote.content
+                viewModel.chosenColor.value = firstNote.color
+                viewModel.addNote(firstNote.note_id)
                 viewModel.editNote(changedFirstNote)
             }
             advanceTimeBy(50)
@@ -122,11 +131,14 @@ class NotesViewModelTest {
             viewModel.noteModificationStatus.value shouldBe Response.Success(true)
         }
 
+
     @Test
     fun givenNoteIsDeleted_NoteModStateShouldChangeToLoadingThenSuccess(): TestResult = runTest {
         launch {
-            viewModel.addNote(thirdNote.note_id,thirdNote.title,thirdNote.content,thirdNote.color)
-            viewModel.addNote(secondNote.note_id,secondNote.title,secondNote.content,secondNote.color)
+            setNote(thirdNote)
+            viewModel.addNote(thirdNote.note_id)
+            setNote(secondNote)
+            viewModel.addNote(secondNote.note_id)
         }
         advanceUntilIdle()
         launch {
@@ -144,8 +156,10 @@ class NotesViewModelTest {
     @Test
     fun removingNoteIdThatNotExists_ShouldChangeNoteModStateToError(): TestResult = runTest {
         launch {
-            viewModel.addNote(firstNote.note_id,firstNote.title,firstNote.content,firstNote.color)
-            viewModel.addNote(secondNote.note_id,secondNote.title,secondNote.content,secondNote.color)
+            setNote(firstNote)
+            viewModel.addNote(firstNote.note_id)
+            setNote(secondNote)
+            viewModel.addNote(secondNote.note_id)
         }
         advanceUntilIdle()
         launch {
@@ -158,8 +172,8 @@ class NotesViewModelTest {
     @Test
     fun editingNoteIdThatNotExists_ShouldChangeNoteModStateToError(): TestResult = runTest {
         launch {
-            viewModel.addNote(firstNote.note_id,firstNote.title,firstNote.content,firstNote.color)
-            viewModel.addNote(secondNote.note_id,secondNote.title,secondNote.content,secondNote.color)
+            viewModel.addNote(firstNote.note_id)
+            viewModel.addNote(secondNote.note_id)
         }
         advanceUntilIdle()
         launch {
@@ -191,6 +205,13 @@ class NotesViewModelTest {
             remoteNotesRepository.currentUserId!!,firstNote.title,firstNote.content,"TODAY",firstNote.color))
         )
     }
+
+    private fun setNote(note: Note){
+        viewModel.titleInput.value = note.title
+        viewModel.contentInput.value = note.content
+        viewModel.chosenColor.value = note.color
+    }
+
 
 }
 

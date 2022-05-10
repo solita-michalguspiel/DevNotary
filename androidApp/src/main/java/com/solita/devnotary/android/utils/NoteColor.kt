@@ -12,7 +12,7 @@ class NoteColor(private val color: String) {
     fun getColor(): Color {
         return when (color) {
             "red" -> LocalColors.current.Red
-            "blue" -> LocalColors.current.Blue
+            "blue" -> LocalColors.current.LightBlue
             "green" -> LocalColors.current.Green
             "pink" -> LocalColors.current.Pink
             "yellow" -> LocalColors.current.Yellow
@@ -24,13 +24,13 @@ class NoteColor(private val color: String) {
 
 }
 
-enum class AvailableColors(val color: Color,val colorName : String) {
-    RED(Colors().Red,"red"),
-    BLUE(Colors().Blue,"blue"),
-    GREEN(Colors().Green,"green"),
-    PINK(Colors().Pink,"pink"),
-    YELLOW(Colors().Yellow,"yellow"),
-    WHITE(Colors().White,"white")
+enum class AvailableColors(val color: Color, val colorName: String) {
+    RED(Colors().Red, "red"),
+    BLUE(Colors().LightBlue, "blue"),
+    GREEN(Colors().Green, "green"),
+    PINK(Colors().Pink, "pink"),
+    YELLOW(Colors().Yellow, "yellow"),
+    WHITE(Colors().White, "white")
 }
 
 val getAvailableColors
