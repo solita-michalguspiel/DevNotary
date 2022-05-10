@@ -4,6 +4,7 @@
     <!-- Common -->
     <string name="error">Error!</string>
     <string name="back">Back</string>
+    <string name="fab_desc">Add note</string>
 
     <!-- SignIn screen -->
     <string name="get_email">Get email</string>
@@ -17,6 +18,8 @@
     <string name="sign_out">Sign out</string>
     <string name="call_to_action_prompt">Go ahead and add or read notes!</string>
     <!-- LocalNotes screen -->
+    <string name="view_details">View details</string>
+
     <!-- Sign in screen -->
 
 
