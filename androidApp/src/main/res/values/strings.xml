@@ -12,8 +12,10 @@
     <string name="sign_in_with_email_prompt">Sign in with email</string>
     <string name="resend_email_prompt">Send again in %1$s seconds</string>
 
-
     <!-- Profile screen -->
+    <string name="welcome_prompt">Hello! %1$s</string>
+    <string name="sign_out">Sign out</string>
+    <string name="call_to_action_prompt">Go ahead and add or read notes!</string>
     <!-- LocalNotes screen -->
     <!-- Sign in screen -->
 

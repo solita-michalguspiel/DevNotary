@@ -22,7 +22,7 @@ sealed class Screen(
 
 
     object BottomNavItems {
-        val bottomNavItems = listOf(LocalNotesScreen, SharedNotesScreen)
+        val bottomNavItems = listOf(LocalNotesScreen, SharedNotesScreen,ProfileScreen)
     }
 
     fun withArgs(vararg args: String): String {

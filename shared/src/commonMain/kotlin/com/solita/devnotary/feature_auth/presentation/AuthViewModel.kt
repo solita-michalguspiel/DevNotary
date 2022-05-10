@@ -1,7 +1,6 @@
 package com.solita.devnotary.feature_auth.presentation
 
 import com.russhwolf.settings.Settings
-import com.solita.devnotary.Constants
 import com.solita.devnotary.Constants.CURRENT_EMAIL_KEY
 import com.solita.devnotary.Constants.RESEND_EMAIL_TIME
 import com.solita.devnotary.di.di
@@ -18,7 +17,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.kodein.di.DI
 import org.kodein.di.instance
-import kotlin.time.measureTime
 
 class AuthViewModel(dependencyInjection: DI = di) : ComposableViewModel,
     ViewModel() {
@@ -45,7 +43,7 @@ class AuthViewModel(dependencyInjection: DI = di) : ComposableViewModel,
 
     val resendEmailTimer = MutableStateFlow(0)
 
-    var job : Job? = null
+    private var job: Job? = null
 
     fun getCurrentUserDocument() {
         viewModelScope.launch {
@@ -61,7 +59,7 @@ class AuthViewModel(dependencyInjection: DI = di) : ComposableViewModel,
         settings.putString(CURRENT_EMAIL_KEY, emailAddress)
         viewModelScope.launch {
             useCases.sendEmailLink.invoke(emailAddress).collect { response ->
-                if(response == Response.Success(true)) startTimer(RESEND_EMAIL_TIME)
+                if (response == Response.Success(true)) startTimer(RESEND_EMAIL_TIME)
                 _sendLinkState.value = response
                 if (response is Response.Error) reactToError(response.message)
             }
@@ -74,7 +72,7 @@ class AuthViewModel(dependencyInjection: DI = di) : ComposableViewModel,
             useCases.signInWithEmailLink(email = email, intent = intent).collect { response ->
                 _userAuthState.value = response
                 if (response is Response.Error) reactToError(response.message)
-                when (response){
+                when (response) {
                     is Response.Error -> reactToError(response.message)
                     is Response.Success -> stopTimer()
                     else -> {}
@@ -95,21 +93,22 @@ class AuthViewModel(dependencyInjection: DI = di) : ComposableViewModel,
         }
     }
 
-    fun reactToError(error : String){
+    private fun reactToError(error: String) {
         errorMessageState.value = error
         openDialogState.value = true
 
     }
 
-    fun resetError(){
+    fun resetError() {
         openDialogState.value = false
         errorMessageState.value = ""
     }
-    private fun startTimer(seconds :Int){
+
+    private fun startTimer(seconds: Int) {
         var timer = seconds
         job = viewModelScope.launch {
             coroutineScope {
-                for (i in 0 until seconds){
+                for (i in 0 until seconds) {
                     delay(1000)
                     timer -= 1
                     println(timer)
@@ -118,9 +117,14 @@ class AuthViewModel(dependencyInjection: DI = di) : ComposableViewModel,
             }
         }
     }
-    private fun stopTimer(){
+
+    private fun stopTimer() {
         job?.cancel()
         resendEmailTimer.value = 0
+        _sendLinkState.value = Response.Empty
+    }
+
+    fun resetSendLinkState() {
         _sendLinkState.value = Response.Empty
     }
 }

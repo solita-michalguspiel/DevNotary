@@ -70,7 +70,9 @@ fun SignInScreen(navController: NavController) {
                     scope.launch {
                         scaffoldState.snackbarHostState.showSnackbar(linkSentMessage)
                     }
+                    authViewModel.resetSendLinkState()
                 }
+                is Response.Empty ->{}
                 else -> Log.e("TAG", "Error!")
             }
             if (sendEmailLinkState.value == Response.Loading) ProgressIndicator()
