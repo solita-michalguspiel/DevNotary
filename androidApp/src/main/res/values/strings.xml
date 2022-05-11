@@ -20,9 +20,14 @@
     <!-- LocalNotes screen -->
     <string name="view_details">View details</string>
 
-    <!-- Add note screen -->
+    <!--  note screen -->
     <string name="add_note">Add note</string>
-
+    <string name="edit_note">Edit note</string>
+    <string name="delete_note">Delete note</string>
+    <string name="save_note">Save note</string>
+    <string name="save_note_locally">Save note Locally</string>
+    <string name="share_note">Share note</string>
+    <string name="note_added">Note added!</string>
 
 
 </resources>

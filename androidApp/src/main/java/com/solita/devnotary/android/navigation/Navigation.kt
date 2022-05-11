@@ -11,8 +11,9 @@ import com.solita.devnotary.android.feature_auth.ProfileScreen
 import com.solita.devnotary.android.feature_auth.SignInScreen
 import com.solita.devnotary.android.feature_notes.AddNoteScreen
 import com.solita.devnotary.android.feature_notes.LocalNotesScreen
-import com.solita.devnotary.android.feature_notes.NoteDetailsScreen
+import com.solita.devnotary.android.feature_notes.LocalNoteDetailsScreen
 import com.solita.devnotary.android.feature_notes.SharedNotesScreen
+import com.solita.devnotary.android.feature_notes.noteDetailsScreen.SharedNoteDetailsScreen
 import com.solita.devnotary.android.utils.Constants.NOTE_COLOR
 import com.solita.devnotary.android.utils.Constants.NOTE_CONTENT
 import com.solita.devnotary.android.utils.Constants.NOTE_ID
@@ -39,7 +40,35 @@ fun Navigation() {
             SharedNotesScreen(navController)
         }
         composable(
-            Screen.NoteDetailsScreen.withArgs(
+            "${Screen.LocalNoteDetailsScreen.route}/{$NOTE_ID}/{$NOTE_TITLE}/{$NOTE_CONTENT}/{$NOTE_TIME_DATE}/{$NOTE_COLOR}", arguments = listOf(
+                navArgument(NOTE_ID) {
+                    type = NavType.StringType
+                },
+                navArgument(NOTE_TITLE) {
+                    type = NavType.StringType
+                },
+                navArgument(NOTE_CONTENT) {
+                    type = NavType.StringType
+                },
+                navArgument(NOTE_TIME_DATE) {
+                    type = NavType.StringType
+                },
+                navArgument(NOTE_COLOR) {
+                    type = NavType.StringType
+                },
+
+            )
+        ) {
+            LocalNoteDetailsScreen(navController,
+                it.arguments?.getString(NOTE_ID).toString(),
+                it.arguments?.getString(NOTE_TITLE).toString(),
+                it.arguments?.getString(NOTE_CONTENT).toString(),
+                it.arguments?.getString(NOTE_TIME_DATE).toString(),
+                it.arguments?.getString(NOTE_COLOR).toString(),
+                )
+        }
+        composable(
+            Screen.SharedNoteDetailsScreen.withArgs(
                 NOTE_ID,
                 NOTE_TITLE,
                 NOTE_CONTENT,
@@ -73,7 +102,14 @@ fun Navigation() {
                 }
             )
         ) {
-            NoteDetailsScreen(navController)
+            SharedNoteDetailsScreen(navController,
+                it.arguments?.getString(NOTE_ID).toString(),
+                it.arguments?.getString(NOTE_TITLE).toString(),
+                it.arguments?.getString(NOTE_CONTENT).toString(),
+                it.arguments?.getString(NOTE_TIME_DATE).toString(),
+                it.arguments?.getString(NOTE_COLOR).toString(),
+                it.arguments?.getString(NOTE_TYPE).toString(),
+            )
         }
         composable(Screen.AddNoteScreen.route) {
             AddNoteScreen()

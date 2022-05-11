@@ -85,7 +85,7 @@ class NotesViewModelTest {
             launch {
                 viewModel.titleInput.value = firstNote.title
                 viewModel.contentInput.value = firstNote.content
-                viewModel.chosenColor.value = firstNote.color
+                viewModel.noteColor.value = firstNote.color
                 viewModel.addNote(firstNote.note_id)
             }
             advanceTimeBy(30)
@@ -99,7 +99,7 @@ class NotesViewModelTest {
         launch {
             viewModel.titleInput.value = firstNote.title
             viewModel.contentInput.value = firstNote.content
-            viewModel.chosenColor.value = firstNote.color
+            viewModel.noteColor.value = firstNote.color
             viewModel.addNote(firstNote.note_id)
         }
         advanceUntilIdle()
@@ -118,7 +118,7 @@ class NotesViewModelTest {
             launch {
                 viewModel.titleInput.value = firstNote.title
                 viewModel.contentInput.value = firstNote.content
-                viewModel.chosenColor.value = firstNote.color
+                viewModel.noteColor.value = firstNote.color
                 viewModel.addNote(firstNote.note_id)
                 viewModel.editNote(changedFirstNote)
             }
@@ -209,7 +209,7 @@ class NotesViewModelTest {
     private fun setNote(note: Note){
         viewModel.titleInput.value = note.title
         viewModel.contentInput.value = note.content
-        viewModel.chosenColor.value = note.color
+        viewModel.noteColor.value = note.color
     }
 
 

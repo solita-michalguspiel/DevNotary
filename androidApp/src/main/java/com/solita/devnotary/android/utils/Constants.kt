@@ -12,4 +12,9 @@ object Constants {
     const val NULL = "null"
     const val RESEND_EMAIL_TIME = 60
 
+    const val LOCAL_NOTE = "local"
+    const val SHARED_NOTE = "shared"
+    const val NEW_NOTE = "new_note"
+
+
 }

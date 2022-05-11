@@ -23,7 +23,7 @@ fun LocalNotesScreen(navController: NavController) {
         floatingActionButton = { MyFloatingActionButton(navController = navController) }
     )
     { paddingValues ->
-        LocalNotesContent(notesState = notesState, paddingValues = paddingValues)
+        LocalNotesContent(notesState = notesState, paddingValues = paddingValues,navController)
     }
 }
 

@@ -4,6 +4,7 @@
 
     <application
         android:name="com.solita.devnotary.feature_notes.data.local.MainApplication"
+        android:windowSoftInputMode="adjustResize"
         android:allowBackup="false"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">

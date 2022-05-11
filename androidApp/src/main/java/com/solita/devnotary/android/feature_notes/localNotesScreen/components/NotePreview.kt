@@ -9,25 +9,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.solita.devnotary.android.R
 import com.solita.devnotary.android.androidDi
+import com.solita.devnotary.android.domain.Screen
 import com.solita.devnotary.android.ui.LocalElevation
 import com.solita.devnotary.android.ui.LocalSpacing
 import com.solita.devnotary.android.ui.Shape
 import com.solita.devnotary.android.ui.Typography
+import com.solita.devnotary.android.utils.Constants.LOCAL_NOTE
 import com.solita.devnotary.android.utils.NoteColor
 import com.solita.devnotary.database.Note
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
-import com.solita.devnotary.utils.formatIso8601ToString
-import kotlinx.datetime.toLocalDate
-import kotlinx.datetime.toLocalDateTime
 import org.kodein.di.instance
 
 
 @Composable
-fun NotePreview(note: Note) {
-   val viewModel : NotesViewModel by androidDi.instance()
+fun NotePreview(note: Note, navController: NavController) {
+    val viewModel: NotesViewModel by androidDi.instance()
 
 
     Card(
@@ -50,12 +53,16 @@ fun NotePreview(note: Note) {
                 )
             )
             Text(
-                text = note.content.take(70) + "...",
+                text = note.content,
                 style = Typography.body2,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(
-                    LocalSpacing.current.default
-                )
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Start,
+                modifier = Modifier
+                    .padding(
+                        LocalSpacing.current.default
+                    )
+                    .heightIn(0.dp, 30.dp)
             )
             Row(
                 Modifier
@@ -69,7 +76,17 @@ fun NotePreview(note: Note) {
             ) {
                 Text(text = viewModel.formatDateTime(note.date_time), style = Typography.caption)
                 TextButton(
-                    onClick = { /*TODO Navigate to details screen with correct args*/ },
+                    onClick = {
+                        navController
+                            .navigate(
+                                Screen.LocalNoteDetailsScreen.withArgs(
+                                    note.note_id,
+                                    note.title,
+                                    note.content,
+                                    note.date_time,
+                                    note.color)
+                            )
+                    },
                     modifier = Modifier
                 ) {
                     Text(text = stringResource(id = R.string.view_details))
@@ -91,6 +108,6 @@ fun PreviewNotePreview() {
         "2015-12-31T12:30:00Z", "green",
     )
 
-    NotePreview(note = testNote)
+    NotePreview(note = testNote, rememberNavController())
 
 }
