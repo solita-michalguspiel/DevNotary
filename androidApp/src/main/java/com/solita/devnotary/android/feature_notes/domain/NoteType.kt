@@ -1,4 +1,4 @@
-package com.solita.devnotary.android.utils
+package com.solita.devnotary.android.feature_notes.domain
 
 import com.solita.devnotary.android.utils.Constants.LOCAL_NOTE
 import com.solita.devnotary.android.utils.Constants.NEW_NOTE

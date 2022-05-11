@@ -1,6 +1,9 @@
 package com.solita.devnotary.feature_notes.presentation
 
 import com.benasher44.uuid.Uuid
+import com.solita.devnotary.Constants
+import com.solita.devnotary.Constants.BLANK_NOTE_ERROR
+import com.solita.devnotary.Constants.NO_TITLE_ERROR
 import com.solita.devnotary.database.Note
 import com.solita.devnotary.di.di
 import com.solita.devnotary.domain.ComposableViewModel
@@ -40,8 +43,8 @@ class NotesViewModel(dependencyInjection: DI = di) : ComposableViewModel, ViewMo
     val getNotes get() = localUseCases.getNotes.invoke()
 
     var isEditEnabled = MutableStateFlow(true)
-    var noteId :String? = null
-    var noteDateTime :String? = null
+    var noteId :String = ""
+    var noteDateTime :String = ""
     var titleInput = MutableStateFlow("")
     var contentInput = MutableStateFlow("")
     var noteColor = MutableStateFlow("")
@@ -52,11 +55,11 @@ class NotesViewModel(dependencyInjection: DI = di) : ComposableViewModel, ViewMo
             Random(Clock.System.now().epochSeconds).nextLong()
         ).toString()
         if (titleInput.value.isBlank()) {
-            _noteModificationStatus.value = Response.Error("Can't add note without title")
+            _noteModificationStatus.value = Response.Error(NO_TITLE_ERROR)
             return
         }
         if (contentInput.value.isBlank()) {
-            _noteModificationStatus.value = Response.Error("Can't add blank note")
+            _noteModificationStatus.value = Response.Error(BLANK_NOTE_ERROR)
             return
         }
         val note = Note(
@@ -75,7 +78,7 @@ class NotesViewModel(dependencyInjection: DI = di) : ComposableViewModel, ViewMo
 
 
     fun editNote() {
-       val note = Note(noteId!!,titleInput.value,contentInput.value,noteDateTime!!,noteColor.value)
+       val note = Note(noteId,titleInput.value,contentInput.value, noteDateTime,noteColor.value)
         viewModelScope.launch {
             localUseCases.editNote.invoke(note = note).collect { response ->
                 _noteModificationStatus.value = response
@@ -85,7 +88,7 @@ class NotesViewModel(dependencyInjection: DI = di) : ComposableViewModel, ViewMo
 
     fun deleteNote() {
         viewModelScope.launch {
-            localUseCases.deleteNote.invoke(noteId!!).collect { response ->
+            localUseCases.deleteNote.invoke(noteId).collect { response ->
                 _noteModificationStatus.value = response
             }
         }
@@ -142,6 +145,6 @@ class NotesViewModel(dependencyInjection: DI = di) : ComposableViewModel, ViewMo
     fun resetInputs(){
         titleInput.value = ""
         contentInput.value = ""
-        noteColor.value = "white"
+        noteColor.value = Constants.WHITE_COLOR
     }
 }

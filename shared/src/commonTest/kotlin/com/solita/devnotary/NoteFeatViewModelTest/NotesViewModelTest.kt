@@ -63,7 +63,6 @@ class NotesViewModelTest {
     )
     private val secondNote = firstNote.copy("fou23", color = "purple")
     private val thirdNote = firstNote.copy("bue2", color = "purple")
-    private val noteList = listOf(firstNote, secondNote, thirdNote)
 
     @BeforeTest
     fun setup() {
@@ -114,19 +113,18 @@ class NotesViewModelTest {
     @Test
     fun givenNoteIsEdited_NoteShouldGetEditedAndStateOfNoteModShouldChangeToLoadingAndThenToSuccess(): TestResult =
         runTest {
-            val changedFirstNote = firstNote.copy(content = "ChangedContent")
             launch {
-                viewModel.titleInput.value = firstNote.title
-                viewModel.contentInput.value = firstNote.content
-                viewModel.noteColor.value = firstNote.color
+                setNote(firstNote)
                 viewModel.addNote(firstNote.note_id)
-                viewModel.editNote(changedFirstNote)
+                viewModel.noteId = firstNote.note_id
+                viewModel.contentInput.value = "ChangedContent"
+                viewModel.editNote()
             }
             advanceTimeBy(50)
             viewModel.noteModificationStatus.value shouldBe Response.Loading
             advanceUntilIdle()
             viewModel.getNotes.collectLatest {
-                it shouldBe listOf(changedFirstNote)
+                it.first().content shouldBe "ChangedContent"
             }
             viewModel.noteModificationStatus.value shouldBe Response.Success(true)
         }
@@ -142,7 +140,8 @@ class NotesViewModelTest {
         }
         advanceUntilIdle()
         launch {
-            viewModel.deleteNote(secondNote.note_id)
+            viewModel.noteId = secondNote.note_id
+            viewModel.deleteNote()
         }
         advanceTimeBy(50)
         viewModel.noteModificationStatus.value shouldBe Response.Loading
@@ -163,7 +162,8 @@ class NotesViewModelTest {
         }
         advanceUntilIdle()
         launch {
-            viewModel.deleteNote(thirdNote.note_id)
+            viewModel.noteId = thirdNote.note_id
+            viewModel.deleteNote()
         }
         advanceUntilIdle()
         viewModel.noteModificationStatus.value shouldBe Response.Error(ERROR_MESSAGE)
@@ -177,7 +177,9 @@ class NotesViewModelTest {
         }
         advanceUntilIdle()
         launch {
-            viewModel.editNote(thirdNote)
+            viewModel.noteId = "Some uuid that does not exists"
+            viewModel.noteDateTime = "Some date"
+            viewModel.editNote()
         }
         advanceUntilIdle()
         viewModel.noteModificationStatus.value shouldBe Response.Error(ERROR_MESSAGE)

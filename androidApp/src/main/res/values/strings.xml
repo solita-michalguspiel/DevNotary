@@ -28,6 +28,8 @@
     <string name="save_note_locally">Save note Locally</string>
     <string name="share_note">Share note</string>
     <string name="note_added">Note added!</string>
+    <string name="note_title_label">Note title</string>
+    <string name="note_content_label">Note content</string>
 
 
 </resources>
