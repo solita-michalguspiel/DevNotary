@@ -9,6 +9,7 @@ import com.solita.devnotary.feature_notes.domain.model.SharedNote
 import com.solita.devnotary.feature_notes.domain.use_case.local_notes_use_cases.LocalNotesUseCases
 import com.solita.devnotary.feature_notes.domain.use_case.remote_notes_use_cases.RemoteNotesUseCases
 import com.solita.devnotary.feature_notes.domain.use_case.users_use_cases.UsersUseCases
+import com.solita.devnotary.utils.formatIso8601ToString
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -48,7 +49,6 @@ class NotesViewModel(dependencyInjection: DI = di) : ComposableViewModel, ViewMo
             Random(Clock.System.now().epochSeconds).nextLong(),
             Random(Clock.System.now().epochSeconds).nextLong()
         ).toString()
-        println("New id! : $id")
         val note = Note(id, titleInput.value, contentInput.value, Clock.System.now().toString(), chosenColor.value)
         viewModelScope.launch {
             localUseCases.addNote.invoke(note).collect { response ->
@@ -111,6 +111,10 @@ class NotesViewModel(dependencyInjection: DI = di) : ComposableViewModel, ViewMo
                 _noteSharingState.value = response
             }
         }
+    }
+
+    fun formatDateTime(date : String): String{
+        return formatIso8601ToString(date)
     }
 
 }

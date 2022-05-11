@@ -11,16 +11,25 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.solita.devnotary.android.R
+import com.solita.devnotary.android.androidDi
 import com.solita.devnotary.android.ui.LocalElevation
 import com.solita.devnotary.android.ui.LocalSpacing
 import com.solita.devnotary.android.ui.Shape
 import com.solita.devnotary.android.ui.Typography
 import com.solita.devnotary.android.utils.NoteColor
 import com.solita.devnotary.database.Note
+import com.solita.devnotary.feature_notes.presentation.NotesViewModel
+import com.solita.devnotary.utils.formatIso8601ToString
+import kotlinx.datetime.toLocalDate
+import kotlinx.datetime.toLocalDateTime
+import org.kodein.di.instance
 
 
 @Composable
 fun NotePreview(note: Note) {
+   val viewModel : NotesViewModel by androidDi.instance()
+
+
     Card(
         shape = Shape().bitRoundedCornerShape,
         backgroundColor = NoteColor(note.color).getColor().copy(alpha = 0.9f),
@@ -58,7 +67,7 @@ fun NotePreview(note: Note) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = note.date_time, style = Typography.caption)
+                Text(text = viewModel.formatDateTime(note.date_time), style = Typography.caption)
                 TextButton(
                     onClick = { /*TODO Navigate to details screen with correct args*/ },
                     modifier = Modifier
@@ -79,7 +88,7 @@ fun PreviewNotePreview() {
         "Database plan",
         "Internal Database - For the private notes -  SQL,   Note(  ID,  Title,  Desc,  TimeDate,  Color,)" +
                 "External Database - For shared notes -  Firebase  SharedNote(  ownerUserID,  sharedUserID,  Title,  Desc,  SharedDate,  Color)",
-        "20.03.2022 15:33", "green",
+        "2015-12-31T12:30:00Z", "green",
     )
 
     NotePreview(note = testNote)

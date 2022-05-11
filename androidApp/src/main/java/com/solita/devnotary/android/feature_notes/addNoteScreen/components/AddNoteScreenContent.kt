@@ -37,7 +37,7 @@ fun AddNoteScreenContent() {
             backgroundColor = NoteColor(chosenColor.value).getColor(),
             elevation = LocalElevation.current.medium
         ) {
-            Column() {
+            Column {
                 TextField(
                     value = titleInput.value,
                     onValueChange = { if (titleInput.value.length < 30) viewModel.titleInput.value = it },

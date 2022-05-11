@@ -76,7 +76,7 @@ fun Navigation() {
             NoteDetailsScreen(navController)
         }
         composable(Screen.AddNoteScreen.route) {
-            AddNoteScreen(navController)
+            AddNoteScreen()
         }
 
     }
