@@ -19,6 +19,7 @@ import com.solita.devnotary.android.feature_notes._sharedComponents.LocalNoteBut
 import com.solita.devnotary.android.feature_notes._sharedComponents.SaveNoteLocallyButton
 import com.solita.devnotary.android.feature_notes.domain.NoteType
 import com.solita.devnotary.android.feature_notes.domain.getNoteType
+import com.solita.devnotary.android.ui.Colors
 import com.solita.devnotary.android.ui.LocalElevation
 import com.solita.devnotary.android.ui.LocalSpacing
 import com.solita.devnotary.android.ui.Shape
@@ -105,10 +106,11 @@ fun NoteContent(
                     text = formatIso8601ToString(
                         noteDateTime.toString()
                     ), textAlign = TextAlign.End, style = Typography.body2,
+                    color = Colors().LightBlack,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(
-                            end = LocalSpacing.current.xSmall,
+                            end = LocalSpacing.current.small,
                             bottom = LocalSpacing.current.xSmall
                         )
                 )

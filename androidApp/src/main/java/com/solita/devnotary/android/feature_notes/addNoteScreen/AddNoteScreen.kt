@@ -11,6 +11,7 @@ import androidx.compose.ui.res.stringResource
 import com.solita.devnotary.android.R
 import com.solita.devnotary.android.androidDi
 import com.solita.devnotary.android.components.ProgressIndicator
+import com.solita.devnotary.android.feature_notes._sharedUtils.showScaffold
 import com.solita.devnotary.android.feature_notes.addNoteScreen.components.NoteContent
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
@@ -43,10 +44,3 @@ fun AddNoteScreen() {
     }
 }
 
-fun ScaffoldState.showScaffold(message : String, coroutineScope: CoroutineScope){
-    val viewModel: NotesViewModel by androidDi.instance()
-    coroutineScope.launch {
-        this@showScaffold.snackbarHostState.showSnackbar(message)
-    }
-    viewModel.resetNoteModificationStatus()
-}

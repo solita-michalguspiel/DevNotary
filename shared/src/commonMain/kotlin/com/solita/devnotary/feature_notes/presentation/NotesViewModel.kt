@@ -7,6 +7,7 @@ import com.solita.devnotary.Constants.NO_TITLE_ERROR
 import com.solita.devnotary.database.Note
 import com.solita.devnotary.di.di
 import com.solita.devnotary.domain.ComposableViewModel
+import com.solita.devnotary.domain.Operation
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.feature_notes.domain.model.SharedNote
 import com.solita.devnotary.feature_notes.domain.use_case.local_notes_use_cases.LocalNotesUseCases
@@ -28,9 +29,9 @@ class NotesViewModel(dependencyInjection: DI = di) : ComposableViewModel, ViewMo
     private val remoteUseCases: RemoteNotesUseCases by dependencyInjection.instance()
     private val usersUseCases: UsersUseCases by dependencyInjection.instance()
 
-    private val _noteModificationStatus: MutableStateFlow<Response<Boolean>> =
+    private val _noteModificationStatus: MutableStateFlow<Response<Operation>> =
         MutableStateFlow(Response.Empty)
-    val noteModificationStatus: StateFlow<Response<Boolean>> = _noteModificationStatus
+    val noteModificationStatus: StateFlow<Response<Operation>> = _noteModificationStatus
 
     private val _sharedNotesState: MutableStateFlow<Response<List<SharedNote>>> =
         MutableStateFlow(Response.Empty)
@@ -48,6 +49,8 @@ class NotesViewModel(dependencyInjection: DI = di) : ComposableViewModel, ViewMo
     var titleInput = MutableStateFlow("")
     var contentInput = MutableStateFlow("")
     var noteColor = MutableStateFlow("")
+
+    var isConfirmDeleteDialogOpen = MutableStateFlow(false)
 
     fun addNote(noteId: String? = null) {
         val id = noteId ?: Uuid(
@@ -82,8 +85,14 @@ class NotesViewModel(dependencyInjection: DI = di) : ComposableViewModel, ViewMo
         viewModelScope.launch {
             localUseCases.editNote.invoke(note = note).collect { response ->
                 _noteModificationStatus.value = response
+                if(response is Response.Success) isEditEnabled.value = false
             }
         }
+    }
+
+    fun deleteNoteAndCloseDialog(){
+        deleteNote()
+        isConfirmDeleteDialogOpen.value = false
     }
 
     fun deleteNote() {
@@ -147,4 +156,8 @@ class NotesViewModel(dependencyInjection: DI = di) : ComposableViewModel, ViewMo
         contentInput.value = ""
         noteColor.value = Constants.WHITE_COLOR
     }
+
+
+
+
 }

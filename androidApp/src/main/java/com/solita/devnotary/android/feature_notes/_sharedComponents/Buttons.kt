@@ -27,7 +27,9 @@ fun LocalNoteButtons(modifier: Modifier, isEditEnabledState: State<Boolean>) {
 fun SaveButton() {
     val viewModel: NotesViewModel by androidDi.instance()
     Button(
-        onClick = { viewModel.editNote() },
+        onClick = {
+            viewModel.editNote()
+                  },
         modifier = Modifier.padding(LocalSpacing.current.xSmall)
     ) {
         Text(text = stringResource(id = R.string.save_note))
@@ -50,7 +52,7 @@ fun DeleteButton() {
     val viewModel: NotesViewModel by androidDi.instance()
     Button(
         onClick = {
-            viewModel.deleteNote()
+         viewModel.isConfirmDeleteDialogOpen.value = true
         }, modifier = Modifier
             .padding(
                 LocalSpacing.current.xSmall
