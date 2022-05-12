@@ -11,15 +11,16 @@ import androidx.compose.ui.res.stringResource
 import com.solita.devnotary.android.R
 import com.solita.devnotary.android.androidDi
 import com.solita.devnotary.android.ui.LocalSpacing
+import com.solita.devnotary.domain.NoteScreenState
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import org.kodein.di.instance
 
 
 @Composable
-fun LocalNoteButtons(modifier: Modifier, isEditEnabledState: State<Boolean>) {
+fun LocalNoteButtons(modifier: Modifier, isEditEnabled: Boolean) {
     Row(modifier = modifier.padding(LocalSpacing.current.small)) {
         DeleteButton()
-        if (isEditEnabledState.value) SaveButton() else EditButton()
+        if (isEditEnabled) SaveButton() else EditButton()
     }
 }
 
@@ -67,7 +68,7 @@ fun EditButton() {
     val viewModel: NotesViewModel by androidDi.instance()
     Button(
         onClick = {
-            viewModel.isEditEnabled.value = true
+            viewModel.changeNoteScreenState(NoteScreenState.LocalNoteEdit)
         }, modifier = Modifier
             .padding(
                 LocalSpacing.current.xSmall

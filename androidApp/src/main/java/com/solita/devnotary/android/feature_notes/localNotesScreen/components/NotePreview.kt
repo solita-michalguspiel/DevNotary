@@ -22,8 +22,14 @@ import com.solita.devnotary.android.ui.LocalSpacing
 import com.solita.devnotary.android.ui.Shape
 import com.solita.devnotary.android.ui.Typography
 import com.solita.devnotary.android.utils.Constants.LOCAL_NOTE
+import com.solita.devnotary.android.utils.Constants.NOTE_COLOR
+import com.solita.devnotary.android.utils.Constants.NOTE_CONTENT
+import com.solita.devnotary.android.utils.Constants.NOTE_ID
+import com.solita.devnotary.android.utils.Constants.NOTE_TIME_DATE
+import com.solita.devnotary.android.utils.Constants.NOTE_TITLE
 import com.solita.devnotary.android.utils.NoteColor
 import com.solita.devnotary.database.Note
+import com.solita.devnotary.domain.NoteScreenState
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import org.kodein.di.instance
 
@@ -77,15 +83,11 @@ fun NotePreview(note: Note, navController: NavController) {
                 Text(text = viewModel.formatDateTime(note.date_time), style = Typography.caption)
                 TextButton(
                     onClick = {
+                        viewModel.changeNoteScreenState(NoteScreenState.LocalNote)
                         navController
                             .navigate(
-                                Screen.LocalNoteDetailsScreen.withArgs(
-                                    note.note_id,
-                                    note.title,
-                                    note.content,
-                                    note.date_time,
-                                    note.color)
-                            )
+                                Screen.NoteScreen.route +
+                                        "?$NOTE_ID=${note.note_id}&$NOTE_TITLE=${note.title}&$NOTE_CONTENT=${note.content}&$NOTE_TIME_DATE=${note.date_time}&$NOTE_COLOR=${note.color}")
                     },
                     modifier = Modifier
                 ) {

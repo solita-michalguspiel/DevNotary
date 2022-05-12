@@ -16,8 +16,7 @@ sealed class Screen(
     object SignInScreen : Screen("sign_in_screen")
     object LocalNotesScreen : Screen("local_notes_screen",icon = Icons.Default.Home, title = "Home","Home button")
     object SharedNotesScreen : Screen("shared_notes_screen",icon = Icons.Default.Share, title = "Shared", "Shared notes")
-    object LocalNoteDetailsScreen : Screen("local_note_details_screen")
-    object SharedNoteDetailsScreen : Screen("shared_note_details_screen")
+    object NoteScreen : Screen("note_screen")
     object AddNoteScreen : Screen("add_notes_screen")
     object ProfileScreen : Screen("profile_screen", icon = Icons.Default.Person,title = "Profile","Profile button")
 

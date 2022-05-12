@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.solita.devnotary.android.androidDi
@@ -33,7 +34,7 @@ fun ColorBallsRow() {
                 },
                 modifier = Modifier.padding(horizontal = LocalSpacing.current.xSmall)
             ) {
-                if (viewModel.noteColor.value == it.colorName) ColorBall(
+                if (viewModel.noteColor.collectAsState().value == it.colorName) ColorBall(
                     it.color,
                     true
                 ) else ColorBall(color = it.color, false)

@@ -7,6 +7,7 @@ import com.solita.devnotary.Constants.NO_TITLE_ERROR
 import com.solita.devnotary.database.Note
 import com.solita.devnotary.di.di
 import com.solita.devnotary.domain.ComposableViewModel
+import com.solita.devnotary.domain.NoteScreenState
 import com.solita.devnotary.domain.Operation
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.feature_notes.domain.model.SharedNote
@@ -43,17 +44,25 @@ class NotesViewModel(dependencyInjection: DI = di) : ComposableViewModel, ViewMo
 
     val getNotes get() = localUseCases.getNotes.invoke()
 
-    var isEditEnabled = MutableStateFlow(true)
+    private var _noteScreenState : MutableStateFlow<NoteScreenState?> = MutableStateFlow(null)
+    val noteScreenState : StateFlow<NoteScreenState?> = _noteScreenState
+
+    fun changeNoteScreenState(screenState: NoteScreenState){
+        _noteScreenState.value = screenState
+    }
+
+
     var noteId :String = ""
     var noteDateTime :String = ""
     var titleInput = MutableStateFlow("")
     var contentInput = MutableStateFlow("")
     var noteColor = MutableStateFlow("")
 
+    var isFabVisible = MutableStateFlow(true)
     var isConfirmDeleteDialogOpen = MutableStateFlow(false)
 
-    fun addNote(noteId: String? = null) {
-        val id = noteId ?: Uuid(
+    fun addNote(providedId: String? = null) {
+        val id = providedId ?: Uuid(
             Random(Clock.System.now().epochSeconds).nextLong(),
             Random(Clock.System.now().epochSeconds).nextLong()
         ).toString()
@@ -74,6 +83,11 @@ class NotesViewModel(dependencyInjection: DI = di) : ComposableViewModel, ViewMo
         )
         viewModelScope.launch {
             localUseCases.addNote.invoke(note).collect { response ->
+                if(response is Response.Success) {
+                    noteDateTime = note.date_time
+                    noteId = note.note_id
+                    changeNoteScreenState(NoteScreenState.LocalNote)
+                }
                 _noteModificationStatus.value = response
             }
         }
@@ -85,7 +99,7 @@ class NotesViewModel(dependencyInjection: DI = di) : ComposableViewModel, ViewMo
         viewModelScope.launch {
             localUseCases.editNote.invoke(note = note).collect { response ->
                 _noteModificationStatus.value = response
-                if(response is Response.Success) isEditEnabled.value = false
+                if(response is Response.Success) changeNoteScreenState(NoteScreenState.LocalNote)
             }
         }
     }
@@ -157,7 +171,29 @@ class NotesViewModel(dependencyInjection: DI = di) : ComposableViewModel, ViewMo
         noteColor.value = Constants.WHITE_COLOR
     }
 
+    fun fillContent(
+        noteId: String?,
+        noteTitle: String?,
+        noteContent: String?,
+        noteDateTime: String?,
+        noteColor: String?
+    ) {
+        if (noteId != null) this.noteId = noteId
+        if (noteTitle != null) this.titleInput.value = noteTitle
+        if (noteContent != null) this.contentInput.value = noteContent
+        if (noteDateTime != null) this.noteDateTime = noteDateTime
+        if (noteColor != null) this.noteColor.value = noteColor
+    }
 
+
+
+    fun showFab(){
+        isFabVisible.value = true
+    }
+
+    fun hideFab(){
+        isFabVisible.value = false
+    }
 
 
 }

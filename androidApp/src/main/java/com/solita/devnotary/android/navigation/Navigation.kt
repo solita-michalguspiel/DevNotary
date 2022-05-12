@@ -9,17 +9,14 @@ import androidx.navigation.navArgument
 import com.solita.devnotary.android.domain.Screen
 import com.solita.devnotary.android.feature_auth.ProfileScreen
 import com.solita.devnotary.android.feature_auth.SignInScreen
-import com.solita.devnotary.android.feature_notes.AddNoteScreen
 import com.solita.devnotary.android.feature_notes.LocalNotesScreen
-import com.solita.devnotary.android.feature_notes.LocalNoteDetailsScreen
+import com.solita.devnotary.android.feature_notes.NoteScreen
 import com.solita.devnotary.android.feature_notes.SharedNotesScreen
-import com.solita.devnotary.android.feature_notes.noteDetailsScreen.SharedNoteDetailsScreen
 import com.solita.devnotary.android.utils.Constants.NOTE_COLOR
 import com.solita.devnotary.android.utils.Constants.NOTE_CONTENT
 import com.solita.devnotary.android.utils.Constants.NOTE_ID
 import com.solita.devnotary.android.utils.Constants.NOTE_TIME_DATE
 import com.solita.devnotary.android.utils.Constants.NOTE_TITLE
-import com.solita.devnotary.android.utils.Constants.NOTE_TYPE
 
 @Composable
 fun Navigation() {
@@ -29,7 +26,7 @@ fun Navigation() {
         composable(Screen.SignInScreen.route) {
             SignInScreen(navController)
         }
-        composable(Screen.ProfileScreen.route){
+        composable(Screen.ProfileScreen.route) {
             ProfileScreen(navController = navController)
         }
 
@@ -40,80 +37,41 @@ fun Navigation() {
             SharedNotesScreen(navController)
         }
         composable(
-            "${Screen.LocalNoteDetailsScreen.route}/{$NOTE_ID}/{$NOTE_TITLE}/{$NOTE_CONTENT}/{$NOTE_TIME_DATE}/{$NOTE_COLOR}", arguments = listOf(
+            route =
+            Screen.NoteScreen.route +
+                    "?$NOTE_ID={$NOTE_ID}&$NOTE_TITLE={$NOTE_TITLE}&$NOTE_CONTENT={$NOTE_CONTENT}&$NOTE_TIME_DATE={$NOTE_TIME_DATE}&$NOTE_COLOR={$NOTE_COLOR}",
+            arguments = listOf(
                 navArgument(NOTE_ID) {
                     type = NavType.StringType
+                    nullable = true
                 },
                 navArgument(NOTE_TITLE) {
                     type = NavType.StringType
+                    nullable = true
                 },
                 navArgument(NOTE_CONTENT) {
                     type = NavType.StringType
+                    nullable = true
                 },
                 navArgument(NOTE_TIME_DATE) {
                     type = NavType.StringType
+                    nullable = true
                 },
                 navArgument(NOTE_COLOR) {
                     type = NavType.StringType
+                    nullable = true
                 },
 
-            )
-        ) {
-            LocalNoteDetailsScreen(navController,
-                it.arguments?.getString(NOTE_ID).toString(),
-                it.arguments?.getString(NOTE_TITLE).toString(),
-                it.arguments?.getString(NOTE_CONTENT).toString(),
-                it.arguments?.getString(NOTE_TIME_DATE).toString(),
-                it.arguments?.getString(NOTE_COLOR).toString(),
                 )
-        }
-        composable(
-            Screen.SharedNoteDetailsScreen.withArgs(
-                NOTE_ID,
-                NOTE_TITLE,
-                NOTE_CONTENT,
-                NOTE_TIME_DATE,
-                NOTE_COLOR,
-                NOTE_TYPE
-            ), arguments = listOf(
-                navArgument(NOTE_ID) {
-                    type = NavType.StringType
-                    nullable = false
-                },
-                navArgument(NOTE_TITLE) {
-                    type = NavType.StringType
-                    nullable = false
-                },
-                navArgument(NOTE_CONTENT) {
-                    type = NavType.StringType
-                    nullable = false
-                },
-                navArgument(NOTE_TIME_DATE) {
-                    type = NavType.StringType
-                    nullable = false
-                },
-                navArgument(NOTE_COLOR) {
-                    type = NavType.StringType
-                    nullable = false
-                },
-                navArgument(NOTE_TYPE) {
-                    type = NavType.StringType
-                    nullable = false
-                }
-            )
         ) {
-            SharedNoteDetailsScreen(navController,
+            NoteScreen(
+                navController,
                 it.arguments?.getString(NOTE_ID).toString(),
                 it.arguments?.getString(NOTE_TITLE).toString(),
                 it.arguments?.getString(NOTE_CONTENT).toString(),
                 it.arguments?.getString(NOTE_TIME_DATE).toString(),
                 it.arguments?.getString(NOTE_COLOR).toString(),
-                it.arguments?.getString(NOTE_TYPE).toString(),
             )
         }
-        composable(Screen.AddNoteScreen.route) {
-            AddNoteScreen()
-        }
-
     }
 }
