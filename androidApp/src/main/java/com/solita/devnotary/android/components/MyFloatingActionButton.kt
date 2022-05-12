@@ -1,7 +1,9 @@
 package com.solita.devnotary.android.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.runtime.Composable

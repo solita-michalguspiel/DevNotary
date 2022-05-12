@@ -188,11 +188,13 @@ class NotesViewModel(dependencyInjection: DI = di) : ComposableViewModel, ViewMo
 
 
     fun showFab(){
-        isFabVisible.value = true
+        println("Showing fab!")
+        if(!isFabVisible.value)isFabVisible.value = true
     }
 
     fun hideFab(){
-        isFabVisible.value = false
+        println("Hiding fab!")
+        if(isFabVisible.value)isFabVisible.value = false
     }
 
 

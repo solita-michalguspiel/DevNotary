@@ -1,10 +1,15 @@
 package com.solita.devnotary.android.feature_notes
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalDensity
 import androidx.navigation.NavController
 import com.solita.devnotary.android.androidDi
 import com.solita.devnotary.android.components.MyFloatingActionButton
@@ -24,22 +29,31 @@ fun LocalNotesScreen(navController: NavController) {
     val notesState = notesViewModel.getNotes.collectAsState(listOf())
     val coroutineScope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
+
+    val isFabVisible = notesViewModel.isFabVisible.collectAsState()
+
+
+    val density = LocalDensity.current
+
+
     Scaffold(
         bottomBar = { MyBottomNavigationDrawer(navController = navController) },
         floatingActionButton = {
-            if(notesViewModel.isFabVisible.collectAsState().value)MyFloatingActionButton(navController = navController)
+            AnimatedVisibility(visible = isFabVisible.value,
+            enter = fadeIn(), exit = fadeOut()){
+                println("This is called!")
+                MyFloatingActionButton(navController = navController)
+            }
                                },
         scaffoldState = scaffoldState
     )
     { paddingValues ->
         when(val noteModificationStatus = notesViewModel.noteModificationStatus.collectAsState().value){
            is Response.Success<Operation> -> {
-               println("Got some response ${noteModificationStatus.data}")
                notesViewModel.resetNoteModificationStatus()
                scaffoldState.showScaffold(noteModificationStatus.data.message,coroutineScope)
            }
             else -> {
-                println("Got some response ${noteModificationStatus}")
             }
         }
         LocalNotesContent(notesState = notesState, paddingValues = paddingValues,navController)

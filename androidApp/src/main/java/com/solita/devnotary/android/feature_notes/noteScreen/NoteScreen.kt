@@ -52,6 +52,10 @@ fun NoteScreen(
                     scaffoldState.showAddNewNoteScaffold(coroutineScope)
                 }
             }
+            is Response.Error -> {
+                scaffoldState.showScaffold(noteModification.message,coroutineScope)
+                viewModel.resetNoteModificationStatus()
+            }
             else -> {}
         }
 

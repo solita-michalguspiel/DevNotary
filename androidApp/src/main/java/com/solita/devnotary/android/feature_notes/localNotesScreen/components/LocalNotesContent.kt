@@ -18,12 +18,12 @@ import org.kodein.di.instance
 fun LocalNotesContent(notesState: State<List<Note>>, paddingValues: PaddingValues,navController: NavController) {
     val viewModel : NotesViewModel by androidDi.instance()
     val lazyListState  = rememberLazyListState()
+    if(lazyListState.isScrollingUp()) viewModel.showFab() else viewModel.hideFab()
     Box(
         Modifier
             .fillMaxSize()
             .padding(paddingValues)
     ) {
-        if(lazyListState.isScrollingUp()) viewModel.showFab() else viewModel.hideFab()
         LazyColumn(Modifier.fillMaxSize(), state = lazyListState) {
             items(notesState.value) {
                 NotePreview(note = it,navController)
@@ -31,7 +31,6 @@ fun LocalNotesContent(notesState: State<List<Note>>, paddingValues: PaddingValue
         }
     }
 }
-
 @Composable
 private fun LazyListState.isScrollingUp(): Boolean {
     var previousIndex by remember(this) { mutableStateOf(firstVisibleItemIndex) }
