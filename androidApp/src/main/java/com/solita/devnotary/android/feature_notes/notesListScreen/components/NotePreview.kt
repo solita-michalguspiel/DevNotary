@@ -27,7 +27,7 @@ import com.solita.devnotary.android.utils.Constants.NOTE_ID
 import com.solita.devnotary.android.utils.Constants.NOTE_TIME_DATE
 import com.solita.devnotary.android.utils.Constants.NOTE_TITLE
 import com.solita.devnotary.android.utils.NoteColor
-import com.solita.devnotary.database.Note
+import com.solita.devnotary.feature_notes.domain.model.Note
 import com.solita.devnotary.feature_notes.presentation.NoteScreenState
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import org.kodein.di.instance
@@ -79,14 +79,14 @@ fun NotePreview(note: Note, navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = viewModel.formatDateTime(note.date_time), style = Typography.caption)
+                Text(text = viewModel.formatDateTime(note.dateTime), style = Typography.caption)
                 TextButton(
                     onClick = {
                         viewModel.changeNoteScreenState(NoteScreenState.LocalNote)
                         navController
                             .navigate(
                                 Screen.NoteScreen.route +
-                                        "?$NOTE_ID=${note.note_id}&$NOTE_TITLE=${note.title}&$NOTE_CONTENT=${note.content}&$NOTE_TIME_DATE=${note.date_time}&$NOTE_COLOR=${note.color}")
+                                        "?$NOTE_ID=${note.noteId}&$NOTE_TITLE=${note.title}&$NOTE_CONTENT=${note.content}&$NOTE_TIME_DATE=${note.dateTime}&$NOTE_COLOR=${note.color}")
                     },
                     modifier = Modifier
                 ) {
@@ -102,11 +102,12 @@ fun NotePreview(note: Note, navController: NavController) {
 @Composable
 fun PreviewNotePreview() {
     val testNote = Note(
-        "testid",
-        "Database plan",
-        "Internal Database - For the private notes -  SQL,   Note(  ID,  Title,  Desc,  TimeDate,  Color,)" +
+        noteId = "testid",
+        title = "Database plan",
+        content = "Internal Database - For the private notes -  SQL,   Note(  ID,  Title,  Desc,  TimeDate,  Color,)" +
                 "External Database - For shared notes -  Firebase  SharedNote(  ownerUserID,  sharedUserID,  Title,  Desc,  SharedDate,  Color)",
-        "2015-12-31T12:30:00Z", "green",
+        dateTime ="2015-12-31T12:30:00Z",
+        color = "green",
     )
 
     NotePreview(note = testNote, rememberNavController())

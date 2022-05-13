@@ -1,8 +1,8 @@
 package com.solita.devnotary.NoteFeatViewModelTest
 
 import com.solita.devnotary.Constants.ERROR_MESSAGE
-import com.solita.devnotary.database.Note
 import com.solita.devnotary.domain.Response
+import com.solita.devnotary.feature_notes.domain.model.Note
 import com.solita.devnotary.feature_notes.domain.model.SharedNote
 import com.solita.devnotary.feature_notes.domain.repository.RemoteNotesRepository
 import kotlinx.coroutines.flow.Flow
@@ -23,7 +23,9 @@ class RemoteNotesRepoTestImpl : RemoteNotesRepository {
     private val userId get() = currentUserId
 
     override suspend fun getSharedNotes() = channelFlow {
-        if (userId == null)send(Response.Error("User is not logged in"))
+        if (userId == null){
+            send(Response.Error("User is not logged in"))
+        }
         else{
             try {
                 send(Response.Loading)
@@ -38,7 +40,7 @@ class RemoteNotesRepoTestImpl : RemoteNotesRepository {
     override suspend fun shareNote(sharedUserId: String, note: Note): Flow<Response<Boolean>> = flow{
         try {
             emit(Response.Loading)
-            val sharedNote = SharedNote(note.note_id,userId!!,sharedUserId,note.title,note.content,"TODAY",note.color)
+            val sharedNote = SharedNote(note.noteId,userId!!,sharedUserId,note.title,note.content,"TODAY",note.color)
             sharedNotesList.add(sharedNote)
             emit(Response.Success(true))
         }catch (e:Exception){

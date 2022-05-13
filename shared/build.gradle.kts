@@ -5,6 +5,7 @@ plugins {
     id("com.squareup.sqldelight")
     kotlin("plugin.serialization") version "1.6.10"
     id("io.kotest.multiplatform") version "5.0.2"
+    id("kotlin-parcelize")
 }
 
 version = "1.0"
@@ -115,6 +116,7 @@ dependencies {
     commonMainApi("dev.icerock.moko:mvvm-livedata:0.13.0") // api mvvm-core, LiveData and extensions
     commonMainApi("dev.icerock.moko:mvvm-state:0.13.0") // api mvvm-livedata, ResourceState class and extensions
     commonMainApi("dev.icerock.moko:mvvm-livedata-resources:0.13.0") // api mvvm-core, moko-resources, extensions for LiveData with moko-resources
+    commonMainApi("dev.icerock.moko:parcelize:0.8.0")
     commonTestImplementation("dev.icerock.moko:mvvm-test:0.13.0") // test utilities
 }
 

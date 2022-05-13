@@ -8,7 +8,6 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.platform.LocalDensity
 import androidx.navigation.NavController
 import com.solita.devnotary.android.androidDi
 import com.solita.devnotary.android.composables.MyFloatingActionButton
@@ -26,8 +25,6 @@ import org.kodein.di.instance
 fun LocalNotesScreen(navController: NavController) {
 
     val notesViewModel: NotesViewModel by androidDi.instance()
-
-    val notesState = notesViewModel.getNotes.collectAsState(listOf())
     val coroutineScope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
 
@@ -40,7 +37,6 @@ fun LocalNotesScreen(navController: NavController) {
                 visible = isFabVisible.value,
                 enter = fadeIn(), exit = fadeOut()
             ) {
-                println("This is called!")
                 MyFloatingActionButton(
                     onClick = {
                         notesViewModel.changeNoteScreenState(NoteScreenState.NewNote)
@@ -60,7 +56,7 @@ fun LocalNotesScreen(navController: NavController) {
             else -> {
             }
         }
-        LocalNotesContent(notesState = notesState, paddingValues = paddingValues, navController)
+        LocalNotesContent( paddingValues = paddingValues, navController)
     }
 }
 

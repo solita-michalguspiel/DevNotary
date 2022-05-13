@@ -1,6 +1,6 @@
 package com.solita.devnotary.DatabaseTest
 
-import com.solita.devnotary.database.Note
+import com.solita.devnotary.database.Local_note
 import com.solita.devnotary.database.NotesQueries
 import com.solita.devnotary.dev_notary_db
 import io.kotest.matchers.shouldBe
@@ -12,7 +12,7 @@ class NotesQueriesTests: RobolectricTests() {
 
     private lateinit var noteQueries : NotesQueries
 
-    private val firstNote = Note(
+    private val firstNote = Local_note(
         "fidhsbagoipngöklsagagew",
         "Fresh note!",
         "Description",
@@ -24,7 +24,7 @@ class NotesQueriesTests: RobolectricTests() {
     private val noteList = listOf(firstNote,secondNote,thirdNote)
 
 
-    private fun addNote(note: Note){
+    private fun addNote(note: Local_note){
         noteQueries.insert(
             note_id = note.note_id,
             title = note.title,

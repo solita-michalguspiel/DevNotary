@@ -4,10 +4,11 @@ import com.benasher44.uuid.Uuid
 import com.solita.devnotary.Constants
 import com.solita.devnotary.Constants.BLANK_NOTE_ERROR
 import com.solita.devnotary.Constants.NO_TITLE_ERROR
-import com.solita.devnotary.database.Note
+import com.solita.devnotary.database.Local_note
 import com.solita.devnotary.di.di
-import com.solita.devnotary.feature_notes.domain.Operation
 import com.solita.devnotary.domain.Response
+import com.solita.devnotary.feature_notes.domain.Operation
+import com.solita.devnotary.feature_notes.domain.model.Note
 import com.solita.devnotary.feature_notes.domain.model.SharedNote
 import com.solita.devnotary.feature_notes.domain.use_case.local_notes_use_cases.LocalNotesUseCases
 import com.solita.devnotary.feature_notes.domain.use_case.remote_notes_use_cases.RemoteNotesUseCases
@@ -40,18 +41,50 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
         MutableStateFlow(Response.Empty)
     val noteSharingState: StateFlow<Response<Boolean>> = _noteSharingState
 
-    val getNotes get() = localUseCases.getNotes.invoke()
+    private val _localNotes: MutableStateFlow<List<Note>> = MutableStateFlow(listOf())
+    val localNotes: StateFlow<List<Note>> = _localNotes
 
-    private var _noteScreenState : MutableStateFlow<NoteScreenState?> = MutableStateFlow(null)
-    val noteScreenState : StateFlow<NoteScreenState?> = _noteScreenState
+    private val _sharedNotes: MutableStateFlow<Response<List<Note>>> =
+        MutableStateFlow(Response.Empty)
+    val sharedNotes: StateFlow<Response<List<Note>>> = _sharedNotes
 
-    fun changeNoteScreenState(screenState: NoteScreenState){
+    private val _notes: MutableStateFlow<List<Note>> =
+        MutableStateFlow(listOf())
+    val notes: StateFlow<List<Note>> = _notes
+
+    private val _selectedSort: MutableStateFlow<Sort> = MutableStateFlow(ByName(Order.ASCENDING))
+
+    private fun getNotes() {
+        getLocalNotes()
+        getSharedNotes()
+    }
+
+    init {
+        getNotes()
+    }
+
+    private fun getLocalNotes() {
+        viewModelScope.launch {
+            localUseCases.getNotes.invoke().collect { response ->
+                val notes = response.map { localNote ->
+                    localNote.changeToNote()
+                }
+                _localNotes.value = notes
+            }
+        }
+    }
+
+
+    private var _noteScreenState: MutableStateFlow<NoteScreenState?> = MutableStateFlow(null)
+    val noteScreenState: StateFlow<NoteScreenState?> = _noteScreenState
+
+    fun changeNoteScreenState(screenState: NoteScreenState) {
         _noteScreenState.value = screenState
     }
 
 
-    var noteId :String = ""
-    var noteDateTime :String = ""
+    var noteId: String = ""
+    var noteDateTime: String = ""
     var titleInput = MutableStateFlow("")
     var contentInput = MutableStateFlow("")
     var noteColor = MutableStateFlow("")
@@ -72,7 +105,7 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
             _noteModificationStatus.value = Response.Error(BLANK_NOTE_ERROR)
             return
         }
-        val note = Note(
+        val note = Local_note(
             id,
             titleInput.value,
             contentInput.value,
@@ -81,7 +114,7 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
         )
         viewModelScope.launch {
             localUseCases.addNote.invoke(note).collect { response ->
-                if(response is Response.Success) {
+                if (response is Response.Success) {
                     noteDateTime = note.date_time
                     noteId = note.note_id
                     changeNoteScreenState(NoteScreenState.LocalNote)
@@ -93,16 +126,17 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
 
 
     fun editNote() {
-       val note = Note(noteId,titleInput.value,contentInput.value, noteDateTime,noteColor.value)
+        val note =
+            Local_note(noteId, titleInput.value, contentInput.value, noteDateTime, noteColor.value)
         viewModelScope.launch {
             localUseCases.editNote.invoke(note = note).collect { response ->
                 _noteModificationStatus.value = response
-                if(response is Response.Success) changeNoteScreenState(NoteScreenState.LocalNote)
+                if (response is Response.Success) changeNoteScreenState(NoteScreenState.LocalNote)
             }
         }
     }
 
-    fun deleteNoteAndCloseDialog(){
+    fun deleteNoteAndCloseDialog() {
         deleteNote()
         isConfirmDeleteDialogOpen.value = false
     }
@@ -115,10 +149,27 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
         }
     }
 
-    fun getSharedNotes() {
+    private fun getSharedNotes() {
         viewModelScope.launch {
+            var noteList: List<Note>
             remoteUseCases.getSharedNotes.invoke().collect { response ->
-                _sharedNotesState.value = response
+                when (response) {
+                    is Response.Success<*> -> {
+                        noteList = (response.data as List<SharedNote>).map {
+                            it.changeToNote()
+                        }
+                        _sharedNotes.value = Response.Success(noteList)
+                    }
+                    is Response.Loading -> {
+                        _sharedNotes.value = response
+                    }
+                    is Response.Error -> {
+                        _sharedNotes.value = response
+                    }
+                    else -> {
+                        _sharedNotes.value = Response.Empty
+                    }
+                }
             }
         }
     }
@@ -159,11 +210,11 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
         return formatIso8601ToString(date)
     }
 
-    fun resetNoteModificationStatus(){
+    fun resetNoteModificationStatus() {
         _noteModificationStatus.value = Response.Empty
     }
 
-    fun resetInputs(){
+    fun resetInputs() {
         titleInput.value = ""
         contentInput.value = ""
         noteColor.value = Constants.WHITE_COLOR
@@ -183,14 +234,49 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
         if (noteColor != null) this.noteColor.value = noteColor
     }
 
-
-
-    fun showFab(){
-        if(!isFabVisible.value)isFabVisible.value = true
+    private fun Local_note.changeToNote(): Note {
+        return Note(
+            noteId = this.note_id,
+            title = this.title,
+            content = this.content,
+            dateTime = this.date_time,
+            color = this.color
+        )
     }
 
-    fun hideFab(){
-        if(isFabVisible.value)isFabVisible.value = false
+    private fun SharedNote.changeToNote(): Note {
+        return Note(
+            noteId = this.noteId,
+            ownerUserId = this.ownerUserId,
+            shareUserId = this.sharedUserId,
+            title = this.title,
+            content = this.content,
+            dateTime = this.sharedDate,
+            color = this.color
+        )
+    }
+
+    fun showFab() {
+        if (!isFabVisible.value) isFabVisible.value = true
+    }
+
+    fun hideFab() {
+        if (isFabVisible.value) isFabVisible.value = false
+    }
+
+    fun joinNoteLists(localNotesList : List<Note>, sharedNotesList : Response<*>) {
+        var joinedNotes = localNotesList
+        when(sharedNotesList){
+            is Response.Success -> {
+                when(sharedNotesList.data) {
+                    is List<*> -> {
+                        joinedNotes = joinedNotes + (sharedNotesList.data as List<Note>)
+                    }
+                }
+            }
+            else -> {}
+        }
+        _notes.value = _selectedSort.value.sort(joinedNotes)
     }
 
 

@@ -1,4 +1,4 @@
-CREATE TABLE note(
+CREATE TABLE local_note(
 note_id TEXT NOT NULL UNIQUE,
 title TEXT NOT NULL,
 content TEXT NOT NULL,
@@ -7,21 +7,21 @@ color TEXT NOT NULL
 );
 
 insert:
-INSERT INTO note(note_id,title,content,date_time,color)
+INSERT INTO local_note(note_id,title,content,date_time,color)
 VALUES(?,?,?,?,?);
 
 selectAll:
 SELECT *
-FROM note;
+FROM local_note;
 
 update:
-UPDATE note
+UPDATE local_note
 SET title = :title, content = :content,color = :color
 WHERE note_id = :note_id;
 
 delete:
-DELETE FROM note WHERE(note_id) IN (?);
+DELETE FROM local_note WHERE(note_id) IN (?);
 
 
 deleteAll_TEST:
-DELETE FROM note;
+DELETE FROM local_note;

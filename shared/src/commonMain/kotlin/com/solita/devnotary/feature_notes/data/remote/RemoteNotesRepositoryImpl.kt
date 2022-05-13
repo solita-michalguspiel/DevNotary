@@ -2,18 +2,19 @@ package com.solita.devnotary.feature_notes.data.remote
 
 import com.solita.devnotary.Constants.ERROR_MESSAGE
 import com.solita.devnotary.Constants.SHARED_NOTES_FIREBASE_REFERENCE
-import com.solita.devnotary.database.Note
 import com.solita.devnotary.di.di
 import com.solita.devnotary.domain.Response
+import com.solita.devnotary.feature_notes.domain.model.Note
 import com.solita.devnotary.feature_notes.domain.model.SharedNote
 import com.solita.devnotary.feature_notes.domain.repository.RemoteNotesRepository
-import com.solita.devnotary.feature_notes.domain.use_case.remote_notes_use_cases.ShareNote
 import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.firestore.CollectionReference
-import dev.gitlive.firebase.firestore.FirebaseFirestore
 import dev.gitlive.firebase.firestore.ServerTimestampBehavior
 import dev.gitlive.firebase.firestore.where
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.datetime.Clock
 import org.kodein.di.instance
 
@@ -43,7 +44,7 @@ class RemoteNotesRepositoryImpl : RemoteNotesRepository {
     try {
         emit(Response.Loading)
         println("User ID: $userId")
-        val sharedNote = SharedNote(note.note_id,userId!!,sharedUserId,note.title,note.content,
+        val sharedNote = SharedNote(note.noteId,userId!!,sharedUserId,note.title,note.content,
             Clock.System.now().toString(),note.color)
         sharedNotesReference.document.set(sharedNote)
         emit(Response.Success(true))
