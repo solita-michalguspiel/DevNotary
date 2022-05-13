@@ -3,7 +3,7 @@ package com.solita.devnotary.feature_notes.data.local
 import com.solita.devnotary.Constants.ERROR_MESSAGE
 import com.solita.devnotary.database.Note
 import com.solita.devnotary.dev_notary_db
-import com.solita.devnotary.domain.Operation
+import com.solita.devnotary.feature_notes.domain.Operation
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.feature_notes.domain.repository.LocalNotesRepository
 import com.squareup.sqldelight.runtime.coroutines.asFlow

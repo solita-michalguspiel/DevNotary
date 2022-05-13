@@ -6,8 +6,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavController
 import com.solita.devnotary.android.androidDi
-import com.solita.devnotary.android.components.ProgressIndicator
-import com.solita.devnotary.android.domain.Screen
+import com.solita.devnotary.android.composables.ProgressIndicator
+import com.solita.devnotary.android.navigation.Screen
 import com.solita.devnotary.android.feature_auth.profileScreen.components.ProfileScreenContent
 import com.solita.devnotary.android.navigation.MyBottomNavigationDrawer
 import com.solita.devnotary.domain.Response

@@ -4,6 +4,8 @@
     <!-- Common -->
     <string name="error">Error!</string>
     <string name="back">Back</string>
+    <string name="cancel">Cancel</string>
+    <string name="yes">Yes</string>
     <string name="fab_desc">Add note</string>
 
     <!-- SignIn screen -->
@@ -17,7 +19,7 @@
     <string name="welcome_prompt">Hello! %1$s</string>
     <string name="sign_out">Sign out</string>
     <string name="call_to_action_prompt">Go ahead and add or read notes!</string>
-    <!-- LocalNotes screen -->
+    <!-- Notes List screen -->
     <string name="view_details">View details</string>
 
     <!--  note screen -->
@@ -30,6 +32,7 @@
     <string name="note_added">Note added!</string>
     <string name="note_title_label">Note title</string>
     <string name="note_content_label">Note content</string>
+    <string name="are_u_sure">Are You sure?</string>
 
 
 </resources>

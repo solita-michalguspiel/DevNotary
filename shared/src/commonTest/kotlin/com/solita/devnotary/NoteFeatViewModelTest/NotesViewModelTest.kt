@@ -3,11 +3,15 @@ package com.solita.devnotary.NoteFeatViewModelTest
 import com.solita.devnotary.Constants.ERROR_MESSAGE
 import com.solita.devnotary.database.Note
 import com.solita.devnotary.domain.Response
+import com.solita.devnotary.feature_notes.domain.Operation
 import com.solita.devnotary.feature_notes.domain.model.SharedNote
 import com.solita.devnotary.feature_notes.domain.use_case.local_notes_use_cases.*
 import com.solita.devnotary.feature_notes.domain.use_case.remote_notes_use_cases.*
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.beInstanceOf
+import io.kotest.matchers.types.shouldBeSameInstanceAs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
@@ -90,7 +94,8 @@ class NotesViewModelTest {
             advanceTimeBy(30)
             viewModel.noteModificationStatus.value shouldBe Response.Loading
             advanceUntilIdle()
-            viewModel.noteModificationStatus.value shouldBe Response.Success(true)
+            viewModel.noteModificationStatus.value should beInstanceOf(Response.Success::class)
+            (viewModel.noteModificationStatus.value as Response.Success).data should beInstanceOf(Operation.Add::class)
         }
 
     @Test
@@ -126,8 +131,8 @@ class NotesViewModelTest {
             viewModel.getNotes.collectLatest {
                 it.first().content shouldBe "ChangedContent"
             }
-            viewModel.noteModificationStatus.value shouldBe Response.Success(true)
-        }
+            viewModel.noteModificationStatus.value should beInstanceOf(Response.Success::class)
+            (viewModel.noteModificationStatus.value as Response.Success).data should beInstanceOf(Operation.Edit::class)        }
 
 
     @Test
@@ -146,7 +151,8 @@ class NotesViewModelTest {
         advanceTimeBy(50)
         viewModel.noteModificationStatus.value shouldBe Response.Loading
         advanceUntilIdle()
-        viewModel.noteModificationStatus.value shouldBe Response.Success(true)
+        viewModel.noteModificationStatus.value should beInstanceOf(Response.Success::class)
+        (viewModel.noteModificationStatus.value as Response.Success).data should beInstanceOf(Operation.Delete::class)
         viewModel.getNotes.collectLatest {
             it.map { it.note_id } shouldBe listOf(thirdNote.note_id)
         }

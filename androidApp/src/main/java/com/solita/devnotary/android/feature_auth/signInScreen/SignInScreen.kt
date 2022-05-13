@@ -5,9 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.util.Log
 import androidx.activity.compose.BackHandler
-import androidx.compose.material.Button
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,9 +16,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.solita.devnotary.android.R
 import com.solita.devnotary.android.androidDi
-import com.solita.devnotary.android.components.Dialog
-import com.solita.devnotary.android.components.ProgressIndicator
-import com.solita.devnotary.android.domain.Screen
+import com.solita.devnotary.android.composables.ProgressIndicator
+import com.solita.devnotary.android.navigation.Screen
 import com.solita.devnotary.android.feature_auth.signInScreen.SignInScreenContent
 import com.solita.devnotary.android.feature_auth.signInScreen.components.ShowDialog
 import com.solita.devnotary.android.signInIntent
@@ -77,7 +74,7 @@ fun SignInScreen(navController: NavController) {
             }
             if (sendEmailLinkState.value == Response.Loading) ProgressIndicator()
             if (userAuthState.value == Response.Success(true)) navController.navigateToProfileScreen()
-            SignInScreenContent(authViewModel)
+            SignInScreenContent()
         }
     }
 }

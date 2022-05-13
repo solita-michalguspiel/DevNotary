@@ -1,4 +1,4 @@
-package com.solita.devnotary.android.feature_notes.localNotesScreen.components
+package com.solita.devnotary.android.feature_notes.notesListScreen.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
@@ -16,12 +16,11 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.solita.devnotary.android.R
 import com.solita.devnotary.android.androidDi
-import com.solita.devnotary.android.domain.Screen
-import com.solita.devnotary.android.ui.LocalElevation
-import com.solita.devnotary.android.ui.LocalSpacing
-import com.solita.devnotary.android.ui.Shape
-import com.solita.devnotary.android.ui.Typography
-import com.solita.devnotary.android.utils.Constants.LOCAL_NOTE
+import com.solita.devnotary.android.navigation.Screen
+import com.solita.devnotary.android.theme.LocalElevation
+import com.solita.devnotary.android.theme.LocalSpacing
+import com.solita.devnotary.android.theme.Shape
+import com.solita.devnotary.android.theme.Typography
 import com.solita.devnotary.android.utils.Constants.NOTE_COLOR
 import com.solita.devnotary.android.utils.Constants.NOTE_CONTENT
 import com.solita.devnotary.android.utils.Constants.NOTE_ID
@@ -29,7 +28,7 @@ import com.solita.devnotary.android.utils.Constants.NOTE_TIME_DATE
 import com.solita.devnotary.android.utils.Constants.NOTE_TITLE
 import com.solita.devnotary.android.utils.NoteColor
 import com.solita.devnotary.database.Note
-import com.solita.devnotary.domain.NoteScreenState
+import com.solita.devnotary.feature_notes.presentation.NoteScreenState
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import org.kodein.di.instance
 

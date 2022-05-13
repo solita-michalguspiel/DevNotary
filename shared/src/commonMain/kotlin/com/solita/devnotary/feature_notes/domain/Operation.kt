@@ -1,10 +1,10 @@
-package com.solita.devnotary.domain
+package com.solita.devnotary.feature_notes.domain
 
-interface Message{
+sealed interface OperationContent{
     val message : String
 }
 
-sealed class Operation : Message {
+sealed class Operation : OperationContent {
 
     class Edit : Operation() {
     override val message = "Note edit saved!"

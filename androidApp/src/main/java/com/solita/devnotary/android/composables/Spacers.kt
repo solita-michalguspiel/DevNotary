@@ -1,11 +1,10 @@
-package com.solita.devnotary.android.components
+package com.solita.devnotary.android.composables
 
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.solita.devnotary.android.ui.LocalSpacing
+import com.solita.devnotary.android.theme.LocalSpacing
 
 @Composable
 fun DefaultSpacer() {

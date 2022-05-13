@@ -1,4 +1,4 @@
-package com.solita.devnotary.android.components
+package com.solita.devnotary.android.composables
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

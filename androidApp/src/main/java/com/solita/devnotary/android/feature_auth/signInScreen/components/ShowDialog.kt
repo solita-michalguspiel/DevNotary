@@ -5,7 +5,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.solita.devnotary.android.R
-import com.solita.devnotary.android.components.Dialog
+import com.solita.devnotary.android.composables.Dialog
 import com.solita.devnotary.feature_auth.presentation.AuthViewModel
 
 @Composable

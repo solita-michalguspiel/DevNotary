@@ -10,8 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.solita.devnotary.android.R
-import com.solita.devnotary.android.ui.LocalSpacing
-import com.solita.devnotary.android.ui.Typography
+import com.solita.devnotary.android.theme.LocalSpacing
+import com.solita.devnotary.android.theme.Typography
 import com.solita.devnotary.domain.User
 import com.solita.devnotary.feature_auth.presentation.AuthViewModel
 

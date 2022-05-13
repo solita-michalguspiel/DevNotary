@@ -14,8 +14,8 @@ import com.solita.devnotary.android.feature_notes._sharedComponents.AddButton
 import com.solita.devnotary.android.feature_notes._sharedComponents.ColorBallsRow
 import com.solita.devnotary.android.feature_notes.noteScreen.components.ContentTextField
 import com.solita.devnotary.android.feature_notes.noteScreen.components.TitleTextField
-import com.solita.devnotary.android.ui.LocalElevation
-import com.solita.devnotary.android.ui.LocalSpacing
+import com.solita.devnotary.android.theme.LocalElevation
+import com.solita.devnotary.android.theme.LocalSpacing
 import com.solita.devnotary.android.utils.NoteColor
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import org.kodein.di.instance

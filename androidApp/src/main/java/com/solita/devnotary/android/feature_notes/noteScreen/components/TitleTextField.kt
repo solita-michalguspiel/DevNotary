@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.solita.devnotary.android.R
 import com.solita.devnotary.android.androidDi
-import com.solita.devnotary.android.ui.Typography
+import com.solita.devnotary.android.theme.Typography
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import org.kodein.di.instance
 

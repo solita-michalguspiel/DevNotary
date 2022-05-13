@@ -1,4 +1,4 @@
-package com.solita.devnotary.domain
+package com.solita.devnotary.feature_notes.presentation
 
 sealed class NoteScreenState {
     object NewNote : NoteScreenState()

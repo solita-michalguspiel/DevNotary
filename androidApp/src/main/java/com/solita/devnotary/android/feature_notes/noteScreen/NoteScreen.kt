@@ -5,17 +5,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import com.solita.devnotary.android.R
 import com.solita.devnotary.android.androidDi
-import com.solita.devnotary.android.domain.Screen
+import com.solita.devnotary.android.composables.Dialog
+import com.solita.devnotary.android.navigation.Screen
 import com.solita.devnotary.android.feature_notes._sharedUtils.showAddNewNoteScaffold
 import com.solita.devnotary.android.feature_notes._sharedUtils.showScaffold
 import com.solita.devnotary.android.feature_notes.noteScreen.contents.LocalNoteContent
 import com.solita.devnotary.android.feature_notes.noteScreen.contents.LocalNoteEditContent
 import com.solita.devnotary.android.feature_notes.noteScreen.contents.NewNoteContent
 import com.solita.devnotary.android.feature_notes.noteScreen.contents.SharedNoteContent
-import com.solita.devnotary.domain.NoteScreenState
-import com.solita.devnotary.domain.Operation
+import com.solita.devnotary.feature_notes.presentation.NoteScreenState
+import com.solita.devnotary.feature_notes.domain.Operation
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import org.kodein.di.instance
@@ -47,39 +50,40 @@ fun NoteScreen(
                         coroutineScope
                     )
                 } else if (noteModification.data is Operation.Delete) {
-                    navController.popBackStack(Screen.LocalNotesScreen.route,false)
+                    navController.popBackStack(Screen.NotesListScreen.route, false)
                 } else if (noteModification.data is Operation.Add) {
                     scaffoldState.showAddNewNoteScaffold(coroutineScope)
                 }
             }
             is Response.Error -> {
-                scaffoldState.showScaffold(noteModification.message,coroutineScope)
+                scaffoldState.showScaffold(noteModification.message, coroutineScope)
                 viewModel.resetNoteModificationStatus()
             }
             else -> {}
         }
 
         if (viewModel.isConfirmDeleteDialogOpen.collectAsState().value) {
-            AlertDialog(
+            Dialog(
                 onDismissRequest = { viewModel.isConfirmDeleteDialogOpen.value = false },
+                title = stringResource(id = R.string.are_u_sure),
+                text = null,
                 confirmButton = {
                     Button(onClick = {
                         viewModel.deleteNoteAndCloseDialog()
                     }) {
-                        Text(text = "Yes")
+                        Text(text = stringResource(id = R.string.yes))
                     }
                 },
-                title = { Text(text = "Are You sure?") },
                 dismissButton = {
                     Button(onClick = { viewModel.isConfirmDeleteDialogOpen.value = false }) {
-                        Text(text = "Cancel")
+                        Text(text = stringResource(id = R.string.cancel))
                     }
                 }
             )
         }
 
 
-        when (val noteScreenState = viewModel.noteScreenState.collectAsState().value) {
+        when (viewModel.noteScreenState.collectAsState().value) {
             NoteScreenState.NewNote -> {
                 NewNoteContent()
             }

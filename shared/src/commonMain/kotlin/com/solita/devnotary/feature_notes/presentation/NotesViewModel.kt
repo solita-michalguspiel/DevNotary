@@ -6,9 +6,7 @@ import com.solita.devnotary.Constants.BLANK_NOTE_ERROR
 import com.solita.devnotary.Constants.NO_TITLE_ERROR
 import com.solita.devnotary.database.Note
 import com.solita.devnotary.di.di
-import com.solita.devnotary.domain.ComposableViewModel
-import com.solita.devnotary.domain.NoteScreenState
-import com.solita.devnotary.domain.Operation
+import com.solita.devnotary.feature_notes.domain.Operation
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.feature_notes.domain.model.SharedNote
 import com.solita.devnotary.feature_notes.domain.use_case.local_notes_use_cases.LocalNotesUseCases
@@ -24,7 +22,7 @@ import org.kodein.di.DI
 import org.kodein.di.instance
 import kotlin.random.Random
 
-class NotesViewModel(dependencyInjection: DI = di) : ComposableViewModel, ViewModel() {
+class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
 
     private val localUseCases: LocalNotesUseCases by dependencyInjection.instance()
     private val remoteUseCases: RemoteNotesUseCases by dependencyInjection.instance()

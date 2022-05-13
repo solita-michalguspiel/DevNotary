@@ -14,29 +14,28 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import com.solita.devnotary.android.R
-import com.solita.devnotary.android.components.DefaultSpacer
-import com.solita.devnotary.android.ui.LocalColors
-import com.solita.devnotary.android.ui.LocalSpacing
-import com.solita.devnotary.android.ui.Typography
-import com.solita.devnotary.domain.ComposableViewModel
-import com.solita.devnotary.domain.ComposeViewModel
+import com.solita.devnotary.android.androidDi
+import com.solita.devnotary.android.composables.DefaultSpacer
+import com.solita.devnotary.android.theme.LocalColors
+import com.solita.devnotary.android.theme.LocalSpacing
+import com.solita.devnotary.android.theme.Typography
 import com.solita.devnotary.feature_auth.presentation.AuthViewModel
+import org.kodein.di.instance
 
 
 @Preview
 @Composable
 fun PreviewSignInScreenContent() {
-    SignInScreenContent(viewModel = ComposeViewModel())
+    SignInScreenContent()
 }
 
-
 @Composable
-fun SignInScreenContent(viewModel: ComposableViewModel) {
+fun SignInScreenContent() {
 
     var emailAddressInput by remember {
         mutableStateOf("")
     }
-    val authViewModel = viewModel as AuthViewModel
+    val authViewModel :AuthViewModel by androidDi.instance()
 
     val emailResendTimer = authViewModel.resendEmailTimer.collectAsState().value
 

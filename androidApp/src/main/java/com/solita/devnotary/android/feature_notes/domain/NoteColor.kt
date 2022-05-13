@@ -2,8 +2,8 @@ package com.solita.devnotary.android.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import com.solita.devnotary.android.ui.Colors
-import com.solita.devnotary.android.ui.LocalColors
+import com.solita.devnotary.android.theme.Colors
+import com.solita.devnotary.android.theme.LocalColors
 
 
 class NoteColor(private val color: String) {

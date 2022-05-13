@@ -9,8 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.solita.devnotary.android.domain.Screen
-import com.solita.devnotary.android.ui.LocalColors
+import com.solita.devnotary.android.theme.LocalColors
 
 @Composable
 fun MyBottomNavigationDrawer(navController: NavController) {

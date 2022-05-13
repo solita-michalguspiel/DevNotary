@@ -1,4 +1,4 @@
-package com.solita.devnotary.android.ui
+package com.solita.devnotary.android.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.graphics.Shape

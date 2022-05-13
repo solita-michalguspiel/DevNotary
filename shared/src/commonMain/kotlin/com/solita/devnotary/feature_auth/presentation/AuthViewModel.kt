@@ -4,7 +4,6 @@ import com.russhwolf.settings.Settings
 import com.solita.devnotary.Constants.CURRENT_EMAIL_KEY
 import com.solita.devnotary.Constants.RESEND_EMAIL_TIME
 import com.solita.devnotary.di.di
-import com.solita.devnotary.domain.ComposableViewModel
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.domain.User
 import com.solita.devnotary.feature_auth.domain.use_case.AuthUseCases
@@ -18,7 +17,7 @@ import kotlinx.coroutines.launch
 import org.kodein.di.DI
 import org.kodein.di.instance
 
-class AuthViewModel(dependencyInjection: DI = di) : ComposableViewModel,
+class AuthViewModel(dependencyInjection: DI = di) :
     ViewModel() {
 
     private val useCases: AuthUseCases by dependencyInjection.instance()
