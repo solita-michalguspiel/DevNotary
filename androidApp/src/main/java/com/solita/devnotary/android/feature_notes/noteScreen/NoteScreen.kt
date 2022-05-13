@@ -44,15 +44,11 @@ fun NoteScreen(
     Scaffold(scaffoldState = scaffoldState) {
         when (val noteModification = viewModel.noteModificationStatus.collectAsState().value) {
             is Response.Success<Operation> -> {
-                if (noteModification.data is Operation.Edit) {
-                    scaffoldState.showScaffold(
-                        noteModification.data.message,
-                        coroutineScope
-                    )
-                } else if (noteModification.data is Operation.Delete) {
-                    navController.popBackStack(Screen.NotesListScreen.route, false)
-                } else if (noteModification.data is Operation.Add) {
-                    scaffoldState.showAddNewNoteScaffold(coroutineScope)
+                when(noteModification.data){
+                    is Operation.Edit -> navController.popBackStack(Screen.NotesListScreen.route,false)
+                    is Operation.Delete -> navController.popBackStack(Screen.NotesListScreen.route, false)
+                    is Operation.Add -> {}
+                    is Operation.Share -> {}
                 }
             }
             is Response.Error -> {

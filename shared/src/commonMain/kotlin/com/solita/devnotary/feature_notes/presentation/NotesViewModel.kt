@@ -186,12 +186,10 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
 
 
     fun showFab(){
-        println("Showing fab!")
         if(!isFabVisible.value)isFabVisible.value = true
     }
 
     fun hideFab(){
-        println("Hiding fab!")
         if(isFabVisible.value)isFabVisible.value = false
     }
 

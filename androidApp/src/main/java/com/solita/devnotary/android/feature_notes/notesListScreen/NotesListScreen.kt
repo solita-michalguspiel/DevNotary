@@ -55,7 +55,7 @@ fun LocalNotesScreen(navController: NavController) {
             notesViewModel.noteModificationStatus.collectAsState().value) {
             is Response.Success<Operation> -> {
                 notesViewModel.resetNoteModificationStatus()
-                scaffoldState.showScaffold(noteModificationStatus.data.message, coroutineScope)
+                if(noteModificationStatus.data is Operation.Delete)scaffoldState.showScaffold(noteModificationStatus.data.message, coroutineScope)
             }
             else -> {
             }

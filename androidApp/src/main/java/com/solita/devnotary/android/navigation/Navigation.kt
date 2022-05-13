@@ -10,7 +10,6 @@ import com.solita.devnotary.android.feature_auth.ProfileScreen
 import com.solita.devnotary.android.feature_auth.SignInScreen
 import com.solita.devnotary.android.feature_notes.LocalNotesScreen
 import com.solita.devnotary.android.feature_notes.NoteScreen
-import com.solita.devnotary.android.feature_notes.SharedNotesScreen
 import com.solita.devnotary.android.utils.Constants.NOTE_COLOR
 import com.solita.devnotary.android.utils.Constants.NOTE_CONTENT
 import com.solita.devnotary.android.utils.Constants.NOTE_ID

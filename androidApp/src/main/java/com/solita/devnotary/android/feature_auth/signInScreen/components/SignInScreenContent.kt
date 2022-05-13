@@ -52,7 +52,8 @@ fun SignInScreenContent() {
         TextField(
             value = emailAddressInput,
             onValueChange = { emailAddressInput = it },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+            maxLines = 1
         )
         DefaultSpacer()
         if (emailResendTimer != 0) {

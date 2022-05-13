@@ -1,6 +1,8 @@
 package com.solita.devnotary.android.feature_notes.noteScreen.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
@@ -8,7 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import com.solita.devnotary.android.R
 import com.solita.devnotary.android.androidDi
 import com.solita.devnotary.android.theme.Shape
@@ -19,6 +24,7 @@ import org.kodein.di.instance
 @Composable
 fun ContentTextField(contentInputState: State<String>, modifier: Modifier, isEditEnabled: Boolean) {
     val viewModel: NotesViewModel by androidDi.instance()
+    val focusManager = LocalFocusManager.current
     TextField(
         value = contentInputState.value,
         onValueChange = { viewModel.contentInput.value = it },
@@ -36,6 +42,8 @@ fun ContentTextField(contentInputState: State<String>, modifier: Modifier, isEdi
         label = {
             if (isEditEnabled) Text(text = stringResource(id = R.string.note_content_label))
         },
-        enabled = isEditEnabled
+        enabled = isEditEnabled,
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+        keyboardActions = KeyboardActions(onDone = {focusManager.clearFocus()})
     )
 }
