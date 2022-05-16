@@ -174,7 +174,7 @@ class NotesViewModelTest {
     }
 
     @Test
-    fun givenThereIsSharedNoteAndGetSharedNotesIsCalled_SharedNoteShouldAppearInSharedNotesState() : TestResult = runTest {
+    fun givenThereIsSharedNoteAndGetSharedNotesIsCalled_SharedNoteShouldAppearInSharedNotes() : TestResult = runTest {
         launch {
             viewModel.shareNote(remoteNotesRepository.appUser1, firstNote)
         }
@@ -184,7 +184,7 @@ class NotesViewModelTest {
         advanceUntilIdle()
         viewModel.sharedNotesState.value shouldBe Response.Success(true)
         viewModel.sharedNotes.value shouldBe listOf(Note(firstNote.noteId,remoteNotesRepository.appUser3,
-              remoteNotesRepository.currentUserId!!,firstNote.title,firstNote.content,"TODAY",firstNote.color))
+              null,firstNote.title,firstNote.content,"TODAY",firstNote.color))
     }
 
 

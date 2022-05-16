@@ -228,7 +228,6 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
         return Note(
             noteId = this.noteId,
             ownerUserId = this.ownerUserId,
-            shareUserId = this.sharedUserId,
             title = this.title,
             content = this.content,
             dateTime = this.sharedDate,

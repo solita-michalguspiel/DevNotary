@@ -12,7 +12,13 @@ object Constants {
 
     const val USER_FIREBASE_REFERENCE = "user_firebase_reference"
 
-    const val SHARED_NOTES_FIREBASE_REFERENCE = "shared_notes_firebase_reference"
+    const val SHARED_NOTES_FIREBASE = "shared_notes_firebase_reference"
+    const val SHARED_NOTES_REF_FIREBASE = "shared_notes_ref_firebase_reference"
+
+    /**NOTES*/
+    const val NOTE_ID = "noteId"
+    const val OWNER_USER_ID = "ownerUserId"
+    const val SHARED_USER_ID = "sharedUserId"
 
     const val WHITE_COLOR = "white"
     const val NO_TITLE_ERROR = "Can't add note without title"

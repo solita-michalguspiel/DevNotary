@@ -4,6 +4,7 @@ import com.solita.devnotary.Constants.ERROR_MESSAGE
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.feature_notes.domain.model.Note
 import com.solita.devnotary.feature_notes.domain.model.SharedNote
+import com.solita.devnotary.feature_notes.domain.model.SharedNoteRef
 import com.solita.devnotary.feature_notes.domain.repository.RemoteNotesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
@@ -19,6 +20,7 @@ class RemoteNotesRepoTestImpl : RemoteNotesRepository {
     var currentUserId : String? = appUser3
 
     private val sharedNotesList = mutableListOf<SharedNote>()
+    private val sharedNotesRefList = mutableListOf<SharedNoteRef>()
 
     private val userId get() = currentUserId
 
@@ -29,7 +31,12 @@ class RemoteNotesRepoTestImpl : RemoteNotesRepository {
         else{
             try {
                 send(Response.Loading)
-                val filteredListForCurrentUser = sharedNotesList.filter { it.sharedUserId == currentUserId }
+                println("Shared notes ref list : $sharedNotesRefList")
+                println("Shared notes  list : $sharedNotesList")
+                val accessibleNotesIds = sharedNotesRefList.filter { it.sharedUserId == currentUserId }.map { it.noteId }
+                println("Accessible notes ids : $accessibleNotesIds")
+                 val filteredListForCurrentUser = sharedNotesList.filter { accessibleNotesIds.contains(it.noteId) }
+                println("Filtered list : $filteredListForCurrentUser")
                 send(Response.Success(filteredListForCurrentUser))
             } catch (e: Exception) {
                 send(Response.Error(e.message ?: ERROR_MESSAGE))
@@ -40,7 +47,8 @@ class RemoteNotesRepoTestImpl : RemoteNotesRepository {
     override suspend fun shareNote(sharedUserId: String, note: Note): Flow<Response<Boolean>> = flow{
         try {
             emit(Response.Loading)
-            val sharedNote = SharedNote(note.noteId,userId!!,sharedUserId,note.title,note.content,"TODAY",note.color)
+            sharedNotesRefList.add(SharedNoteRef(note.noteId,currentUserId!!,sharedUserId))
+            val sharedNote = SharedNote(note.noteId,userId!!,note.title,note.content,"TODAY",note.color)
             sharedNotesList.add(sharedNote)
             emit(Response.Success(true))
         }catch (e:Exception){
