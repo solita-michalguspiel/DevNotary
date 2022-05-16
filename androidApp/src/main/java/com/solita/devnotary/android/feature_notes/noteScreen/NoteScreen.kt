@@ -1,9 +1,6 @@
 package com.solita.devnotary.android.feature_notes
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -19,16 +16,17 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.solita.devnotary.android.R
 import com.solita.devnotary.android.androidDi
+import com.solita.devnotary.android.composables.DefaultSpacer
 import com.solita.devnotary.android.composables.Dialog
+import com.solita.devnotary.android.composables.LargeSpacer
 import com.solita.devnotary.android.composables.ProgressIndicator
 import com.solita.devnotary.android.feature_notes._sharedUtils.showScaffold
-import com.solita.devnotary.android.feature_notes.noteScreen.components.UserWithAccessItem
 import com.solita.devnotary.android.feature_notes.noteScreen.contents.LocalNoteContent
 import com.solita.devnotary.android.feature_notes.noteScreen.contents.LocalNoteEditContent
 import com.solita.devnotary.android.feature_notes.noteScreen.contents.NewNoteContent
 import com.solita.devnotary.android.feature_notes.noteScreen.contents.SharedNoteContent
 import com.solita.devnotary.android.navigation.Screen
-import com.solita.devnotary.android.theme.Colors
+import com.solita.devnotary.android.theme.LocalSpacing
 import com.solita.devnotary.android.theme.Typography
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.feature_notes.domain.Operation
@@ -125,7 +123,10 @@ private fun ShareNoteDialog(viewModel: NotesViewModel) {
     AlertDialog(
         onDismissRequest = { viewModel.closeShareDialog() },
         title = {
-            Text(text = stringResource(id = R.string.share_note))
+            Text(
+                text = stringResource(id = R.string.share_note),
+                modifier = Modifier.padding(bottom = LocalSpacing.current.xLarge), style = Typography.body1
+            )
         },
         text = {
             Column {

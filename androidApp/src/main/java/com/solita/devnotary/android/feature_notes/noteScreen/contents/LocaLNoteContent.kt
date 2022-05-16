@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Alignment.Companion.TopEnd
 import androidx.compose.ui.Modifier
@@ -20,6 +21,7 @@ import com.solita.devnotary.android.feature_notes.noteScreen.components.ContentT
 import com.solita.devnotary.android.feature_notes.noteScreen.components.TitleTextField
 import com.solita.devnotary.android.theme.LocalElevation
 import com.solita.devnotary.android.theme.LocalSpacing
+import com.solita.devnotary.android.theme.Typography
 import com.solita.devnotary.android.utils.NoteColor
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import org.kodein.di.instance
@@ -27,7 +29,7 @@ import org.kodein.di.instance
 
 @Composable
 fun LocalNoteContent(
-    navigateToUsersWithAccessScreen : () -> Unit
+    navigateToUsersWithAccessScreen: () -> Unit
 ) {
     val viewModel: NotesViewModel by androidDi.instance()
     val titleInputState = viewModel.titleInput.collectAsState()
@@ -50,9 +52,12 @@ fun LocalNoteContent(
                         IconButton(
                             onClick = { viewModel.isShareDropdownExpanded.value = true },
                         ) {
-                            Icon(imageVector = Icons.Default.MoreHoriz, contentDescription = stringResource(
-                                id = R.string.menu
-                            ))
+                            Icon(
+                                imageVector = Icons.Default.MoreHoriz,
+                                contentDescription = stringResource(
+                                    id = R.string.menu
+                                )
+                            )
                         }
                         DropdownMenu(
                             expanded = menuOpenState.value,
@@ -68,17 +73,27 @@ fun LocalNoteContent(
                                 viewModel.getUsersWithAccess()
                                 navigateToUsersWithAccessScreen()
                                 viewModel.isShareDropdownExpanded.value = false
-                                 }) {
+                            }) {
                                 Text(text = stringResource(id = R.string.users_with_access))
                             }
                         }
-                        
+
 
                     }
                 }
                 ContentTextField(
                     contentInputState = contentInputState,
                     modifier = Modifier.weight(1.0f), false
+                )
+                Text(
+                    text = stringResource(R.string.note_time_date_stamp,viewModel.formatDateTime(viewModel.noteDateTime)),
+                    modifier = Modifier
+                        .align(End)
+                        .padding(
+                            end = LocalSpacing.current.default,
+                            bottom = LocalSpacing.current.default
+                        ),
+                    style = Typography.body2
                 )
             }
         }

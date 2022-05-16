@@ -1,8 +1,75 @@
 package com.solita.devnotary.android.feature_notes.noteScreen.contents
 
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.solita.devnotary.android.R
+import com.solita.devnotary.android.androidDi
+import com.solita.devnotary.android.feature_notes._sharedComponents.LocalNoteButtons
+import com.solita.devnotary.android.feature_notes._sharedComponents.SaveNoteLocallyButton
+import com.solita.devnotary.android.feature_notes.noteScreen.components.ContentTextField
+import com.solita.devnotary.android.feature_notes.noteScreen.components.TitleTextField
+import com.solita.devnotary.android.theme.LocalElevation
+import com.solita.devnotary.android.theme.LocalSpacing
+import com.solita.devnotary.android.theme.Typography
+import com.solita.devnotary.android.utils.NoteColor
+import com.solita.devnotary.feature_notes.presentation.NotesViewModel
+import org.kodein.di.instance
 
 @Composable
 fun SharedNoteContent() {
-// TODO : NOT YET IMPLEMENTED
+
+
+    val viewModel: NotesViewModel by androidDi.instance()
+    val titleInputState = viewModel.titleInput.collectAsState()
+    val contentInputState = viewModel.contentInput.collectAsState()
+    val noteColorState = viewModel.noteColor.collectAsState()
+    val menuOpenState = viewModel.isShareDropdownExpanded.collectAsState()
+
+    Column(Modifier.fillMaxSize()) {
+        Card(
+            modifier = Modifier
+                .padding(LocalSpacing.current.small)
+                .weight(1.0f),
+            backgroundColor = NoteColor(noteColorState.value).getColor(),
+            elevation = LocalElevation.current.medium
+        ) {
+            Column {
+
+                Text(
+                    text = "Shared by guspielmichal@gmail.com", // PROTOTYPE, TODO : REAL IMPLEMENTATION.
+                    Modifier.fillMaxWidth().padding(LocalSpacing.current.xSmall),
+                    style = Typography.caption
+                )
+
+                TitleTextField(titleInputState = titleInputState, false)
+
+                ContentTextField(
+                    contentInputState = contentInputState,
+                    modifier = Modifier.weight(1.0f), false
+                )
+                Text(
+                    text = stringResource(
+                        R.string.note_time_date_stamp,
+                        viewModel.formatDateTime(viewModel.noteDateTime)
+                    ),
+                    modifier = Modifier
+                        .align(Alignment.End)
+                        .padding(
+                            end = LocalSpacing.current.default,
+                            bottom = LocalSpacing.current.default
+                        ),
+                    style = Typography.body2
+                )
+            }
+        }
+        SaveNoteLocallyButton(modifier = Modifier.align(Alignment.End))
+    }
+
 }

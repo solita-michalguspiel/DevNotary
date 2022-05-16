@@ -42,7 +42,7 @@ fun Navigation() {
                 )
         }
         composable(route = Screen.UsersWithAccessScreen.route){
-            UsersWithAccessScreen(navController = navController)
+            UsersWithAccessScreen()
         }
     }
 }

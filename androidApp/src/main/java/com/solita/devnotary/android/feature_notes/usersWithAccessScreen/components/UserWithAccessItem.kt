@@ -14,15 +14,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.solita.devnotary.android.theme.LocalSpacing
+import com.solita.devnotary.android.theme.Typography
 
 @Composable
 fun UserWithAccessItem(modifier: Modifier, userEmailAddress: String, onDeleteClick: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.fillMaxWidth().padding(LocalSpacing.current.small),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(LocalSpacing.current.small),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(userEmailAddress)
+        Text(userEmailAddress,style = Typography.body1)
         IconButton(onClick = { onDeleteClick() }) {
             Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete")
         }

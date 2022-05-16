@@ -55,6 +55,7 @@ class RemoteNotesRepositoryImpl : RemoteNotesRepository {
                 send(Response.Loading)
                 val sharedUserId =
                     users.where("userEmail", sharedUserEmail).get().documents.first().id
+                if(sharedUserId == userId) throw Exception("You can't share note with yourself")
                 val sharedNotesSnapshot = sharedNotes
                     .where(OWNER_USER_ID, auth.currentUser!!.uid)
                     .where(NOTE_ID, note.noteId).get()

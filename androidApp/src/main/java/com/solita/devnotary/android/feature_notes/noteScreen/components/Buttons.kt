@@ -63,7 +63,7 @@ fun SaveButton(modifier: Modifier) {
 fun SaveNoteLocallyButton(modifier: Modifier) {
     val viewModel: NotesViewModel by androidDi.instance()
     Button(
-        onClick = { viewModel.addNote() }, modifier = modifier
+        onClick = { viewModel.addNote() }, modifier = modifier.padding(LocalSpacing.current.small)
     ) {
         Text(text = stringResource(R.string.save_note_locally))
     }
