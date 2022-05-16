@@ -15,9 +15,8 @@ import com.solita.devnotary.android.feature_notes._sharedUtils.showScaffold
 import com.solita.devnotary.android.feature_notes.notesListScreen.components.LocalNotesContent
 import com.solita.devnotary.android.navigation.MyBottomNavigationDrawer
 import com.solita.devnotary.android.navigation.Screen
-import com.solita.devnotary.feature_notes.domain.Operation
 import com.solita.devnotary.domain.Response
-import com.solita.devnotary.feature_notes.presentation.NoteScreenState
+import com.solita.devnotary.feature_notes.domain.Operation
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import org.kodein.di.instance
 
@@ -39,7 +38,6 @@ fun LocalNotesScreen(navController: NavController) {
             ) {
                 MyFloatingActionButton(
                     onClick = {
-                        notesViewModel.changeNoteScreenState(NoteScreenState.NewNote)
                         navController.navigate(Screen.NoteScreen.route)
                     })
             }

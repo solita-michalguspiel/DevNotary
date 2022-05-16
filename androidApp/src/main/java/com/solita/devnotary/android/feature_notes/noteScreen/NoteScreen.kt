@@ -20,33 +20,35 @@ import com.solita.devnotary.android.feature_notes.noteScreen.contents.SharedNote
 import com.solita.devnotary.feature_notes.presentation.NoteScreenState
 import com.solita.devnotary.feature_notes.domain.Operation
 import com.solita.devnotary.domain.Response
+import com.solita.devnotary.feature_notes.domain.model.Note
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import org.kodein.di.instance
 
 @Composable
 fun NoteScreen(
     navController: NavController,
-    noteId: String? = null,
-    noteTitle: String? = null,
-    noteContent: String? = null,
-    noteDateTime: String? = null,
-    noteColor: String? = null,
+    noteIndex : String?
 ) {
-
     val viewModel: NotesViewModel by androidDi.instance()
     val coroutineScope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
 
     LaunchedEffect(Unit) {
-        viewModel.fillContent(noteId, noteTitle, noteContent, noteDateTime, noteColor)
+        viewModel.prepareNoteScreen(noteIndex)
     }
 
     Scaffold(scaffoldState = scaffoldState) {
         when (val noteModification = viewModel.noteModificationStatus.collectAsState().value) {
             is Response.Success<Operation> -> {
-                when(noteModification.data){
-                    is Operation.Edit -> navController.popBackStack(Screen.NotesListScreen.route,false)
-                    is Operation.Delete -> navController.popBackStack(Screen.NotesListScreen.route, false)
+                when (noteModification.data) {
+                    is Operation.Edit -> navController.popBackStack(
+                        Screen.NotesListScreen.route,
+                        false
+                    )
+                    is Operation.Delete -> navController.popBackStack(
+                        Screen.NotesListScreen.route,
+                        false
+                    )
                     is Operation.Add -> {}
                     is Operation.Share -> {}
                 }

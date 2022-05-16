@@ -12,31 +12,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.solita.devnotary.android.R
 import com.solita.devnotary.android.androidDi
-import com.solita.devnotary.android.navigation.Screen
 import com.solita.devnotary.android.theme.LocalElevation
 import com.solita.devnotary.android.theme.LocalSpacing
 import com.solita.devnotary.android.theme.Shape
 import com.solita.devnotary.android.theme.Typography
-import com.solita.devnotary.android.utils.Constants.NOTE_COLOR
-import com.solita.devnotary.android.utils.Constants.NOTE_CONTENT
-import com.solita.devnotary.android.utils.Constants.NOTE_ID
-import com.solita.devnotary.android.utils.Constants.NOTE_TIME_DATE
-import com.solita.devnotary.android.utils.Constants.NOTE_TITLE
 import com.solita.devnotary.android.utils.NoteColor
 import com.solita.devnotary.feature_notes.domain.model.Note
-import com.solita.devnotary.feature_notes.presentation.NoteScreenState
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import org.kodein.di.instance
 
 
 @Composable
-fun NotePreview(note: Note, navController: NavController) {
+fun NotePreview(note: Note, navigateToNoteScreen : () -> Unit) {
     val viewModel: NotesViewModel by androidDi.instance()
-
 
     Card(
         shape = Shape().bitRoundedCornerShape,
@@ -82,11 +72,7 @@ fun NotePreview(note: Note, navController: NavController) {
                 Text(text = viewModel.formatDateTime(note.dateTime), style = Typography.caption)
                 TextButton(
                     onClick = {
-                        viewModel.changeNoteScreenState(NoteScreenState.LocalNote)
-                        navController
-                            .navigate(
-                                Screen.NoteScreen.route +
-                                        "?$NOTE_ID=${note.noteId}&$NOTE_TITLE=${note.title}&$NOTE_CONTENT=${note.content}&$NOTE_TIME_DATE=${note.dateTime}&$NOTE_COLOR=${note.color}")
+                       navigateToNoteScreen()
                     },
                     modifier = Modifier
                 ) {
@@ -110,6 +96,5 @@ fun PreviewNotePreview() {
         color = "green",
     )
 
-    NotePreview(note = testNote, rememberNavController())
-
+    NotePreview(note = testNote){}
 }

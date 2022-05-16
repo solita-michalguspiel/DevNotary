@@ -12,12 +12,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.solita.devnotary.android.androidDi
-import com.solita.devnotary.domain.Response
-import com.solita.devnotary.feature_notes.domain.model.Note
-import com.solita.devnotary.feature_notes.presentation.ByDate
-import com.solita.devnotary.feature_notes.presentation.ByName
+import com.solita.devnotary.android.navigation.Screen
+import com.solita.devnotary.android.utils.Constants.NOTE_INDEX
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
-import com.solita.devnotary.feature_notes.presentation.Order
 import org.kodein.di.instance
 
 @Composable
@@ -38,7 +35,10 @@ fun LocalNotesContent(paddingValues: PaddingValues, navController: NavController
         LazyColumn(Modifier.fillMaxSize(), state = lazyListState) {
             items(viewModel.notes.value)
                  {
-                NotePreview(note = it,navController)
+                NotePreview(note = it){
+                    navController.navigate(Screen.NoteScreen.route +
+                            "?$NOTE_INDEX=${viewModel.notes.value.indexOf(it)}")
+                }
             }
         }
     }

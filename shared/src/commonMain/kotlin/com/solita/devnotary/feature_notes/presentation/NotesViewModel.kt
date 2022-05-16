@@ -149,6 +149,7 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun getSharedNotes() {
         viewModelScope.launch {
             var noteList: List<Note>
@@ -214,26 +215,6 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
         _noteModificationStatus.value = Response.Empty
     }
 
-    fun resetInputs() {
-        titleInput.value = ""
-        contentInput.value = ""
-        noteColor.value = Constants.WHITE_COLOR
-    }
-
-    fun fillContent(
-        noteId: String?,
-        noteTitle: String?,
-        noteContent: String?,
-        noteDateTime: String?,
-        noteColor: String?
-    ) {
-        if (noteId != null) this.noteId = noteId
-        if (noteTitle != null) this.titleInput.value = noteTitle
-        if (noteContent != null) this.contentInput.value = noteContent
-        if (noteDateTime != null) this.noteDateTime = noteDateTime
-        if (noteColor != null) this.noteColor.value = noteColor
-    }
-
     private fun Local_note.changeToNote(): Note {
         return Note(
             noteId = this.note_id,
@@ -264,11 +245,12 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
         if (isFabVisible.value) isFabVisible.value = false
     }
 
-    fun joinNoteLists(localNotesList : List<Note>, sharedNotesList : Response<*>) {
+    @Suppress("UNCHECKED_CAST")
+    fun joinNoteLists(localNotesList: List<Note>, sharedNotesList: Response<*>) {
         var joinedNotes = localNotesList
-        when(sharedNotesList){
+        when (sharedNotesList) {
             is Response.Success -> {
-                when(sharedNotesList.data) {
+                when (sharedNotesList.data) {
                     is List<*> -> {
                         joinedNotes = joinedNotes + (sharedNotesList.data as List<Note>)
                     }
@@ -277,6 +259,47 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
             else -> {}
         }
         _notes.value = _selectedSort.value.sort(joinedNotes)
+    }
+
+
+    private fun setNoteScreenState(noteIndex: String?) {
+        if(noteIndex == null) changeNoteScreenState(NoteScreenState.NewNote)
+        else {
+            val note = notes.value[noteIndex.toInt()]
+            when (note.ownerUserId) {
+                null -> changeNoteScreenState(NoteScreenState.LocalNote)
+                else -> changeNoteScreenState(NoteScreenState.SharedNote)
+            }
+        }
+    }
+
+    private fun fillContent(
+        noteIndex: Int
+    ) {
+        val note = notes.value[noteIndex]
+        this.noteId = note.noteId
+        this.titleInput.value = note.title
+        this.contentInput.value = note.content
+        this.noteDateTime = note.dateTime
+        this.noteColor.value = note.color
+
+    }
+
+    private fun clearContent() {
+        this.noteId = ""
+        this.titleInput.value = ""
+        this.contentInput.value = ""
+        this.noteDateTime = ""
+        this.noteColor.value = Constants.WHITE_COLOR
+    }
+
+    fun prepareNoteScreen(noteIndex: String?) {
+        if (noteIndex == null) {
+            clearContent()
+        } else {
+            fillContent(noteIndex.toInt())
+        }
+        setNoteScreenState(noteIndex)
     }
 
 
