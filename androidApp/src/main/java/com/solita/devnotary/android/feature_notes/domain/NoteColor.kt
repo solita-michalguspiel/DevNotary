@@ -7,7 +7,6 @@ import com.solita.devnotary.android.theme.LocalColors
 
 
 class NoteColor(private val color: String) {
-
     @Composable
     fun getColor(): Color {
         return when (color) {
@@ -19,9 +18,7 @@ class NoteColor(private val color: String) {
             "white" -> LocalColors.current.White
             else -> LocalColors.current.White
         }
-
     }
-
 }
 
 enum class AvailableColors(val color: Color, val colorName: String) {

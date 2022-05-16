@@ -6,6 +6,7 @@ import com.solita.devnotary.Constants.OWNER_USER_ID
 import com.solita.devnotary.Constants.SHARED_NOTES_FIREBASE
 import com.solita.devnotary.Constants.SHARED_NOTES_REF_FIREBASE
 import com.solita.devnotary.Constants.SHARED_USER_ID
+import com.solita.devnotary.Constants.USERS_FIREBASE
 import com.solita.devnotary.di.di
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.feature_notes.domain.model.Note
@@ -16,9 +17,7 @@ import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.firestore.CollectionReference
 import dev.gitlive.firebase.firestore.ServerTimestampBehavior
 import dev.gitlive.firebase.firestore.where
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
-import kotlinx.datetime.Clock
 import org.kodein.di.instance
 
 class RemoteNotesRepositoryImpl : RemoteNotesRepository {
@@ -26,6 +25,7 @@ class RemoteNotesRepositoryImpl : RemoteNotesRepository {
     private val auth: FirebaseAuth by di.instance()
     private val sharedNotes: CollectionReference by di.instance(tag = SHARED_NOTES_FIREBASE)
     private val sharedNotesRefs: CollectionReference by di.instance(tag = SHARED_NOTES_REF_FIREBASE)
+    private val users: CollectionReference by di.instance(tag = USERS_FIREBASE)
 
     private val userId get() = auth.currentUser?.uid
 
@@ -49,10 +49,12 @@ class RemoteNotesRepositoryImpl : RemoteNotesRepository {
         }
     }
 
-    override suspend fun shareNote(sharedUserId: String, note: Note): Flow<Response<Boolean>> =
+    override suspend fun shareNote(sharedUserEmail: String, note: Note): Flow<Response<Boolean>> =
         channelFlow {
             try {
                 send(Response.Loading)
+                val sharedUserId =
+                    users.where("userEmail", sharedUserEmail).get().documents.first().id
                 val sharedNotesSnapshot = sharedNotes
                     .where(OWNER_USER_ID, auth.currentUser!!.uid)
                     .where(NOTE_ID, note.noteId).get()
@@ -61,14 +63,21 @@ class RemoteNotesRepositoryImpl : RemoteNotesRepository {
                 if (fetchedSharedNotes.isEmpty()) {
                     val sharedNote = SharedNote(
                         note.noteId, userId!!, note.title, note.content,
-                        Clock.System.now().toString(), note.color
+                        note.dateTime, note.color
                     )
                     sharedNotes.document.set(sharedNote)
                 }
-                val sharedNoteRef = SharedNoteRef(note.noteId, userId!!, sharedUserId)
-                sharedNotesRefs.document.set(sharedNoteRef)
+                val sharedNoteRef = sharedNotesRefs
+                    .where(NOTE_ID, note.noteId)
+                    .where(OWNER_USER_ID, auth.currentUser!!.uid)
+                    .where(SHARED_USER_ID, sharedUserId).get().documents
+                if (sharedNoteRef.isNotEmpty()) throw Exception("Note is already shared with this user!")
+                val newSharedNoteRef = SharedNoteRef(note.noteId, userId!!, sharedUserId)
+                sharedNotesRefs.document.set(newSharedNoteRef)
                 send(Response.Success(true))
 
+            } catch (e: NoSuchElementException) {
+                send(Response.Error("Did not find user with given email address."))
             } catch (e: Exception) {
                 send(Response.Error(e.message ?: ERROR_MESSAGE))
             }
@@ -111,7 +120,12 @@ class RemoteNotesRepositoryImpl : RemoteNotesRepository {
         }
     }
 
-    override suspend fun editSharedNote(noteId: String, newNote: Note): Flow<Response<Boolean>> =
+    override suspend fun editSharedNote(
+        noteId: String,
+        newNoteTitle: String,
+        newNoteContent: String,
+        newNoteColor: String
+    ): Flow<Response<Boolean>> =
         channelFlow {
             try {
                 send(Response.Loading)
@@ -125,10 +139,10 @@ class RemoteNotesRepositoryImpl : RemoteNotesRepository {
                     val newDoc = SharedNote(
                         noteId,
                         oldDoc.ownerUserId,
-                        newNote.title,
-                        newNote.content,
-                        oldDoc.sharedDate,
-                        newNote.color
+                        newNoteTitle,
+                        newNoteContent,
+                        oldDoc.dateTime,
+                        newNoteColor
                     )
                     sharedNotes.document(document.id).set(newDoc)
                 }

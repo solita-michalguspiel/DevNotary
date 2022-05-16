@@ -16,6 +16,7 @@ sealed class Screen(
     object SignInScreen : Screen("sign_in_screen")
     object NotesListScreen : Screen("local_notes_screen",icon = Icons.Default.Home, title = "Home","Home button")
     object NoteScreen : Screen("note_screen")
+    object UsersWithAccessScreen : Screen("users_with_access_screen")
     object ProfileScreen : Screen("profile_screen", icon = Icons.Default.Person,title = "Profile","Profile button")
 
 

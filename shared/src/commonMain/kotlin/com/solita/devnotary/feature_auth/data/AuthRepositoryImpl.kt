@@ -3,7 +3,7 @@ package com.solita.devnotary.feature_auth.data
 import com.solita.devnotary.Constants.ANDROID_PACKAGE_NAME
 import com.solita.devnotary.Constants.APP_URL
 import com.solita.devnotary.Constants.ERROR_MESSAGE
-import com.solita.devnotary.Constants.USER_FIREBASE_REFERENCE
+import com.solita.devnotary.Constants.USERS_FIREBASE
 import com.solita.devnotary.di.di
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.domain.User
@@ -13,10 +13,6 @@ import dev.gitlive.firebase.auth.AndroidPackageName
 import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.firestore.CollectionReference
 import dev.gitlive.firebase.firestore.ServerTimestampBehavior
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -26,7 +22,7 @@ import org.kodein.di.instance
 class AuthRepositoryImpl : AuthRepository {
 
     private val auth: FirebaseAuth by di.instance()
-    private val usersReference: CollectionReference by di.instance(tag = USER_FIREBASE_REFERENCE)
+    private val usersReference: CollectionReference by di.instance(tag = USERS_FIREBASE)
 
     override fun isUserAuthenticated(): Boolean {
         return auth.currentUser != null

@@ -8,4 +8,6 @@ interface UsersRepository {
 
     suspend fun getUsers(): Flow<Response<List<User>>>
 
+    suspend fun getUsersWithAccess( noteId: String) : Flow<Response<List<User>>>
+
 }

@@ -17,7 +17,7 @@ class RemoteNotesRepoTestImpl : RemoteNotesRepository {
     val appUser2 = "x12jfghj262nsd"
     val appUser3 = "pifa+421knn1ofa2325ad5sa1s12"
 
-    var currentUserId : String? = appUser3
+    var currentUserId: String? = appUser3
 
     private val sharedNotesList = mutableListOf<SharedNote>()
     private val sharedNotesRefList = mutableListOf<SharedNoteRef>()
@@ -25,18 +25,15 @@ class RemoteNotesRepoTestImpl : RemoteNotesRepository {
     private val userId get() = currentUserId
 
     override suspend fun getSharedNotes() = channelFlow {
-        if (userId == null){
+        if (userId == null) {
             send(Response.Error("User is not logged in"))
-        }
-        else{
+        } else {
             try {
                 send(Response.Loading)
-                println("Shared notes ref list : $sharedNotesRefList")
-                println("Shared notes  list : $sharedNotesList")
-                val accessibleNotesIds = sharedNotesRefList.filter { it.sharedUserId == currentUserId }.map { it.noteId }
-                println("Accessible notes ids : $accessibleNotesIds")
-                 val filteredListForCurrentUser = sharedNotesList.filter { accessibleNotesIds.contains(it.noteId) }
-                println("Filtered list : $filteredListForCurrentUser")
+                val accessibleNotesIds =
+                    sharedNotesRefList.filter { it.sharedUserId == currentUserId }.map { it.noteId }
+                val filteredListForCurrentUser =
+                    sharedNotesList.filter { accessibleNotesIds.contains(it.noteId) }
                 send(Response.Success(filteredListForCurrentUser))
             } catch (e: Exception) {
                 send(Response.Error(e.message ?: ERROR_MESSAGE))
@@ -44,42 +41,53 @@ class RemoteNotesRepoTestImpl : RemoteNotesRepository {
         }
     }
 
-    override suspend fun shareNote(sharedUserId: String, note: Note): Flow<Response<Boolean>> = flow{
-        try {
-            emit(Response.Loading)
-            sharedNotesRefList.add(SharedNoteRef(note.noteId,currentUserId!!,sharedUserId))
-            val sharedNote = SharedNote(note.noteId,userId!!,note.title,note.content,"TODAY",note.color)
-            sharedNotesList.add(sharedNote)
-            emit(Response.Success(true))
-        }catch (e:Exception){
-            emit(Response.Error(e.message ?: ERROR_MESSAGE))
+    override suspend fun shareNote(sharedUserEmail: String, note: Note): Flow<Response<Boolean>> =
+        flow {
+            try {
+                emit(Response.Loading)
+                sharedNotesRefList.add(SharedNoteRef(note.noteId, currentUserId!!, sharedUserEmail))
+                val sharedNote =
+                    SharedNote(note.noteId, userId!!, note.title, note.content, "TODAY", note.color)
+                sharedNotesList.add(sharedNote)
+                emit(Response.Success(true))
+            } catch (e: Exception) {
+                emit(Response.Error(e.message ?: ERROR_MESSAGE))
+            }
         }
-    }
 
-    override suspend fun deleteSharedNote(noteId: String): Flow<Response<Boolean>> = channelFlow{
-        try  {
+    override suspend fun deleteSharedNote(noteId: String): Flow<Response<Boolean>> = channelFlow {
+        try {
             send(Response.Loading)
 
-        }catch (e:Exception){
+        } catch (e: Exception) {
             send(Response.Error(e.message ?: ERROR_MESSAGE))
         }
     }
 
-    override suspend fun unshareNote(sharedUserId: String,noteId: String): Flow<Response<Boolean>> = channelFlow {
+    override suspend fun unshareNote(
+        sharedUserId: String,
+        noteId: String
+    ): Flow<Response<Boolean>> = channelFlow {
         try {
             send(Response.Loading)
 
-        }catch (e:Exception){
+        } catch (e: Exception) {
             send(Response.Error(e.message ?: ERROR_MESSAGE))
         }
     }
 
-    override suspend fun editSharedNote(noteId: String, newNote: Note): Flow<Response<Boolean>> = channelFlow {
-        try {
-            send(Response.Loading)
-        }catch (e:Exception){
-            send(Response.Error(e.message ?: ERROR_MESSAGE))
+    override suspend fun editSharedNote(
+        noteId: String,
+        newNoteTitle: String,
+        newNoteContent: String,
+        newNoteColor: String
+    ): Flow<Response<Boolean>> =
+        channelFlow {
+            try {
+                send(Response.Loading)
+            } catch (e: Exception) {
+                send(Response.Error(e.message ?: ERROR_MESSAGE))
+            }
         }
-    }
 
 }

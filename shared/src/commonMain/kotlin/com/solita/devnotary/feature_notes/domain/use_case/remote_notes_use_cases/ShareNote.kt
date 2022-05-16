@@ -4,5 +4,5 @@ import com.solita.devnotary.feature_notes.domain.model.Note
 import com.solita.devnotary.feature_notes.domain.repository.RemoteNotesRepository
 
 class ShareNote(private val repository: RemoteNotesRepository) {
-    suspend operator fun invoke(sharedUserId : String,note: Note) = repository.shareNote(sharedUserId,note)
+    suspend operator fun invoke(sharedUserEmail : String, note: Note) = repository.shareNote(sharedUserEmail,note)
 }

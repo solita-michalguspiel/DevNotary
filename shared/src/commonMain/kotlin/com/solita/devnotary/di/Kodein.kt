@@ -3,7 +3,7 @@ package com.solita.devnotary.di
 import com.russhwolf.settings.Settings
 import com.solita.devnotary.Constants.SHARED_NOTES_FIREBASE
 import com.solita.devnotary.Constants.SHARED_NOTES_REF_FIREBASE
-import com.solita.devnotary.Constants.USER_FIREBASE_REFERENCE
+import com.solita.devnotary.Constants.USERS_FIREBASE
 import com.solita.devnotary.dev_notary_db
 import com.solita.devnotary.feature_auth.data.AuthRepositoryImpl
 import com.solita.devnotary.feature_auth.domain.use_case.*
@@ -15,6 +15,7 @@ import com.solita.devnotary.feature_notes.data.remote.UsersRepositoryImpl
 import com.solita.devnotary.feature_notes.domain.use_case.local_notes_use_cases.*
 import com.solita.devnotary.feature_notes.domain.use_case.remote_notes_use_cases.*
 import com.solita.devnotary.feature_notes.domain.use_case.users_use_cases.GetUsers
+import com.solita.devnotary.feature_notes.domain.use_case.users_use_cases.GetUsersWithAccess
 import com.solita.devnotary.feature_notes.domain.use_case.users_use_cases.UsersUseCases
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
@@ -30,7 +31,7 @@ val di = DI {
     /**Firebase*/
     val firebaseFirestore = Firebase.firestore
 
-    bindConstant(USER_FIREBASE_REFERENCE) { firebaseFirestore.collection("users") }
+    bindConstant(USERS_FIREBASE) { firebaseFirestore.collection("users") }
 
     bindConstant(SHARED_NOTES_FIREBASE){firebaseFirestore.collection("shared_notes")}
     bindConstant(SHARED_NOTES_REF_FIREBASE){firebaseFirestore.collection("shared_notes_ref")}
@@ -84,7 +85,8 @@ val di = DI {
 
     bindSingleton {
         UsersUseCases(
-            getUsers = GetUsers(instance())
+            getUsers = GetUsers(instance()),
+            getUsersWithAccess = GetUsersWithAccess(instance())
         )
     }
 

@@ -9,6 +9,7 @@ import com.solita.devnotary.android.feature_auth.ProfileScreen
 import com.solita.devnotary.android.feature_auth.SignInScreen
 import com.solita.devnotary.android.feature_notes.LocalNotesScreen
 import com.solita.devnotary.android.feature_notes.NoteScreen
+import com.solita.devnotary.android.feature_notes.usersWithAccessScreen.UsersWithAccessScreen
 import com.solita.devnotary.android.utils.Constants.NOTE_INDEX
 
 @Composable
@@ -39,6 +40,9 @@ fun Navigation() {
                 navController,
                 index
                 )
+        }
+        composable(route = Screen.UsersWithAccessScreen.route){
+            UsersWithAccessScreen(navController = navController)
         }
     }
 }

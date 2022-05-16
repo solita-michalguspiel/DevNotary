@@ -30,10 +30,16 @@
     <string name="save_note">Save note</string>
     <string name="save_note_locally">Save note Locally</string>
     <string name="share_note">Share note</string>
+    <string name="users_with_access">Users with access</string>
+    <string name="share">Share</string>
     <string name="note_added">Note added!</string>
     <string name="note_title_label">Note title</string>
     <string name="note_content_label">Note content</string>
     <string name="are_u_sure">Are You sure?</string>
+    <string name="menu">Menu</string>
+    <string name="user_email_address">User e-mail address</string>
+    <string name="note_shared_success">Note shared successfully!</string>
+    <string name="note_share_failure">Can\'t share note, check email or internet connection.</string>
 
 
 </resources>

@@ -16,15 +16,3 @@ fun ScaffoldState.showScaffold(message : String, coroutineScope: CoroutineScope)
     }
     viewModel.resetNoteModificationStatus()
 }
-
-
-fun ScaffoldState.showAddNewNoteScaffold(coroutineScope: CoroutineScope){
-    val viewModel : NotesViewModel by androidDi.instance()
-    coroutineScope.launch {
-        val result = this@showAddNewNoteScaffold.snackbarHostState.showSnackbar("Note added!","Add new note")
-        if (result == SnackbarResult.ActionPerformed) //viewModel.changeNoteScreenState(
-           // NoteScreenState.NewNote)
-        viewModel.resetNoteModificationStatus()
-    }
-
-}

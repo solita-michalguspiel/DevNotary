@@ -8,6 +8,6 @@ data class SharedNote(
     val ownerUserId : String,
     val title: String,
     val content: String,
-    val sharedDate: String,
+    val dateTime: String,
     val color: String
 )

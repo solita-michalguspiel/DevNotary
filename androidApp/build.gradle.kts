@@ -49,6 +49,8 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling:$composeVersion")
     implementation ("androidx.constraintlayout:constraintlayout-compose:1.0.0")
 
+    implementation ("androidx.compose.material:material-icons-extended:$composeVersion")
+
     //NAVIGATION
     val nav_version = "2.4.2"
     implementation("androidx.navigation:navigation-compose:$nav_version")
