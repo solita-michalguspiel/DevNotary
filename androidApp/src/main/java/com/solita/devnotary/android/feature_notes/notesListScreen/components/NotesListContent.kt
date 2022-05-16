@@ -22,9 +22,9 @@ fun LocalNotesContent(paddingValues: PaddingValues, navController: NavController
     val viewModel : NotesViewModel by androidDi.instance()
 
     val localNotesState = viewModel.localNotes.collectAsState()
-    val remoteNotesState = viewModel.sharedNotes.collectAsState()
+    val sharedNotesState = viewModel.sharedNotes.collectAsState()
     viewModel.joinNoteLists(localNotesState.value,
-        remoteNotesState.value)
+        sharedNotesState.value)
     val lazyListState  = rememberLazyListState()
     if(lazyListState.isScrollingUp()) viewModel.showFab() else viewModel.hideFab()
     Box(

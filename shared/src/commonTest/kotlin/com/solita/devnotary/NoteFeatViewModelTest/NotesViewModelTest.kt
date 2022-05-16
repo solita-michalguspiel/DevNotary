@@ -165,6 +165,28 @@ class NotesViewModelTest {
         viewModel.noteModificationStatus.value shouldBe Response.Error(ERROR_MESSAGE)
     }
 
+    @Test
+    fun givenUserIdIsNull_AndGetSharedNotesIsCalled_SharedNotesStateShouldBeError() : TestResult = runTest{
+        remoteNotesRepository.currentUserId = null
+        launch {   viewModel.getSharedNotes() }
+        advanceUntilIdle()
+        viewModel.sharedNotesState.value shouldBe Response.Error("User is not logged in")
+    }
+
+    @Test
+    fun givenThereIsSharedNoteAndGetSharedNotesIsCalled_SharedNoteShouldAppearInSharedNotesState() : TestResult = runTest {
+        launch {
+            viewModel.shareNote(remoteNotesRepository.appUser1, firstNote)
+        }
+        advanceUntilIdle()
+        remoteNotesRepository.currentUserId = remoteNotesRepository.appUser1 // SIMULATING THAT USER 1 IS USING APP
+        launch { viewModel.getSharedNotes() }
+        advanceUntilIdle()
+        viewModel.sharedNotesState.value shouldBe Response.Success(true)
+        viewModel.sharedNotes.value shouldBe listOf(Note(firstNote.noteId,remoteNotesRepository.appUser3,
+              remoteNotesRepository.currentUserId!!,firstNote.title,firstNote.content,"TODAY",firstNote.color))
+    }
+
 
     private fun setNote(note: Note){
         viewModel.titleInput.value = note.title

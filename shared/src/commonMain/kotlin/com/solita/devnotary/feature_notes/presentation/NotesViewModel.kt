@@ -33,9 +33,9 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
         MutableStateFlow(Response.Empty)
     val noteModificationStatus: StateFlow<Response<Operation>> = _noteModificationStatus
 
-    private val _sharedNotesState: MutableStateFlow<Response<List<SharedNote>>> =
+    private val _sharedNotesState: MutableStateFlow<Response<Boolean>> =
         MutableStateFlow(Response.Empty)
-    val sharedNotesState: StateFlow<Response<List<SharedNote>>> = _sharedNotesState
+    val sharedNotesState: StateFlow<Response<Boolean>> = _sharedNotesState
 
     private val _noteSharingState: MutableStateFlow<Response<Boolean>> =
         MutableStateFlow(Response.Empty)
@@ -44,9 +44,9 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
     private val _localNotes: MutableStateFlow<List<Note>> = MutableStateFlow(listOf())
     val localNotes: StateFlow<List<Note>> = _localNotes
 
-    private val _sharedNotes: MutableStateFlow<Response<List<Note>>> =
-        MutableStateFlow(Response.Empty)
-    val sharedNotes: StateFlow<Response<List<Note>>> = _sharedNotes
+    private val _sharedNotes: MutableStateFlow<List<Note>> =
+        MutableStateFlow(listOf())
+    val sharedNotes: StateFlow<List<Note>> = _sharedNotes
 
     private val _notes: MutableStateFlow<List<Note>> =
         MutableStateFlow(listOf())
@@ -149,26 +149,25 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
-    private fun getSharedNotes() {
+    fun getSharedNotes() {
         viewModelScope.launch {
-            var noteList: List<Note>
             remoteUseCases.getSharedNotes.invoke().collect { response ->
                 when (response) {
-                    is Response.Success<*> -> {
-                        noteList = (response.data as List<SharedNote>).map {
+                    is Response.Success -> {
+                        _sharedNotesState.value = Response.Success(true)
+                        val noteList = (response.data).map {
                             it.changeToNote()
                         }
-                        _sharedNotes.value = Response.Success(noteList)
+                        _sharedNotes.value = noteList
                     }
                     is Response.Loading -> {
-                        _sharedNotes.value = response
+                        _sharedNotesState.value = response
                     }
                     is Response.Error -> {
-                        _sharedNotes.value = response
+                        _sharedNotesState.value = response
                     }
                     else -> {
-                        _sharedNotes.value = Response.Empty
+                        _sharedNotesState.value = Response.Empty
                     }
                 }
             }
@@ -246,18 +245,8 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun joinNoteLists(localNotesList: List<Note>, sharedNotesList: Response<*>) {
-        var joinedNotes = localNotesList
-        when (sharedNotesList) {
-            is Response.Success -> {
-                when (sharedNotesList.data) {
-                    is List<*> -> {
-                        joinedNotes = joinedNotes + (sharedNotesList.data as List<Note>)
-                    }
-                }
-            }
-            else -> {}
-        }
+    fun joinNoteLists(localNotesList: List<Note>, sharedNotesList: List<Note>) {
+        val joinedNotes =  localNotesList + sharedNotesList
         _notes.value = _selectedSort.value.sort(joinedNotes)
     }
 
