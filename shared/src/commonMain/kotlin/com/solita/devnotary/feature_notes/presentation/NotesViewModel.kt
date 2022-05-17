@@ -191,7 +191,6 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
                     }
                     is Response.Loading -> {
                         _sharedNotesState.value = response
-                        isRefreshing.value = true
                     }
                     is Response.Error -> {
                         _sharedNotesState.value = response

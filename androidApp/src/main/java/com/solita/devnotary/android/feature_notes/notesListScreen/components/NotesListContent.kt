@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.solita.devnotary.android.R
 import com.solita.devnotary.android.androidDi
@@ -104,7 +105,19 @@ fun NotesListContent(paddingValues: PaddingValues, navController: NavController)
         ) {
 
             SwipeRefresh(state = rememberSwipeRefreshState(isRefreshing = isRefreshing.value),
-                onRefresh = { viewModel.getSharedNotes() }) {
+                onRefresh = {
+                    viewModel.getSharedNotes()
+                    viewModel.isRefreshing.value = true
+                            },
+                indicator = { state, trigger ->
+                    SwipeRefreshIndicator(
+                        state = state,
+                        refreshTriggerDistance = trigger,
+                        contentColor = com.solita.devnotary.android.theme.LocalColors.current.Black,
+                        backgroundColor = com.solita.devnotary.android.theme.LocalColors.current.LightBlue
+                    )
+                })
+            {
                 LazyColumn(Modifier.fillMaxSize(), state = lazyListState) {
                     items(viewModel.notes.value)
                     {
@@ -131,15 +144,16 @@ private fun SortingRadioButtons(
     selectSort: (Sort) -> Unit,
     closeDropdown: () -> Unit
 ) {
-    fun Sort.click(){
+    fun Sort.click() {
         selectSort(this)
         closeDropdown()
     }
+
     val radioOptions = SortOptions.values()
     Column(modifier = modifier) {
         radioOptions.forEach { sortOption ->
             TextButton(onClick = {
-               sortOption.sort.click()
+                sortOption.sort.click()
             }, modifier = Modifier.height(50.dp)) {
                 Row(verticalAlignment = CenterVertically) {
                     RadioButton(
