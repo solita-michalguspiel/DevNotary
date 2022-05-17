@@ -44,4 +44,8 @@
     <string name="note_not_shared_with_anybody">This note isn\'t shared with anybody.</string>
     <string name="note_time_date_stamp">Note created %1$s.</string>
 
+    <!-- notes list screen -->
+    <string name="search">Search</string>
+    <string name="sort">Sort</string>
+
 </resources>

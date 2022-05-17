@@ -86,6 +86,7 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
         _noteScreenState.value = screenState
     }
 
+    var noteSearchPhrase = MutableStateFlow("")
     var noteId: String = ""
     var noteDateTime: String = ""
     var titleInput = MutableStateFlow("")
@@ -96,7 +97,7 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
     var isConfirmDeleteDialogOpen = MutableStateFlow(false)
     var isShareDialogOpen = MutableStateFlow(false)
     var anotherUserEmailAddress = MutableStateFlow("")
-    var isUsersWithAccessDialogOpen = MutableStateFlow(false)
+
 
     fun addNote(providedId: String? = null) {
         val id = providedId ?: Uuid(
@@ -270,9 +271,11 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun joinNoteLists(localNotesList: List<Note>, sharedNotesList: List<Note>) {
+    fun prepareLists(localNotesList: List<Note>, sharedNotesList: List<Note>) {
         val joinedNotes = localNotesList + sharedNotesList
-        _notes.value = _selectedSort.value.sort(joinedNotes)
+        val sorted = _selectedSort.value.sort(joinedNotes)
+        val sortedAndSearched = sorted.filter { it.title.lowercase().contains(noteSearchPhrase.value.lowercase()) }
+        _notes.value = sortedAndSearched
     }
 
 

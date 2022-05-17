@@ -10,6 +10,7 @@ data class Colors(
     val LightBlack: Color = Color(0xFF1B1B1B),
     val White: Color = Color(0xFFFFFFFF),
     val Gray: Color = Color(0xFF777777),
+    val LightGray: Color = Color(0xFFD1D1D1),
     val Red: Color = Color(0xFFFF5757),
     val Blue: Color = Color(0xFF0E22E2),
     val LightBlue: Color = Color(0xFF4FA9F8),

@@ -12,7 +12,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavController
 import com.solita.devnotary.android.androidDi
 import com.solita.devnotary.android.composables.MyFloatingActionButton
-import com.solita.devnotary.android.feature_notes.notesListScreen.components.LocalNotesContent
+import com.solita.devnotary.android.feature_notes.notesListScreen.components.NotesListContent
 import com.solita.devnotary.android.navigation.MyBottomNavigationDrawer
 import com.solita.devnotary.android.navigation.Screen
 import com.solita.devnotary.domain.Response
@@ -60,7 +60,7 @@ fun LocalNotesScreen(navController: NavController) {
         scaffoldState = scaffoldState
     )
     { paddingValues ->
-        LocalNotesContent( paddingValues = paddingValues, navController)
+        NotesListContent( paddingValues = paddingValues, navController)
     }
 }
 

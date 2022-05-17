@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColors(
     primary = Colors().Black,
+    surface = Colors().LightGray,
     primaryVariant = Colors().LightBlack,
     secondary = Colors().Gray,
     background = Color.White,
@@ -18,6 +19,7 @@ private val DarkColorPalette = darkColors(
 
 private val LightColorPalette = lightColors(
     primary = Colors().Black,
+    surface = Colors().LightGray,
     primaryVariant = Colors().LightBlack,
     secondary = Colors().Gray,
     background = Color.White,
@@ -35,7 +37,8 @@ fun DevNotaryTheme(
     }
     CompositionLocalProvider(LocalSpacing provides Spacing(),
         LocalElevation provides Elevation(),
-        LocalColors provides Colors()) {
+        LocalColors provides Colors(),
+    LocalShapes provides Shapes()) {
     }
     MaterialTheme(
         colors = colors,

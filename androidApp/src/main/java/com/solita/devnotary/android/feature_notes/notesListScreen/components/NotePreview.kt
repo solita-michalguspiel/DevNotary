@@ -2,6 +2,7 @@ package com.solita.devnotary.android.feature_notes.notesListScreen.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
@@ -15,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import com.solita.devnotary.android.R
 import com.solita.devnotary.android.theme.LocalElevation
 import com.solita.devnotary.android.theme.LocalSpacing
-import com.solita.devnotary.android.theme.Shape
 import com.solita.devnotary.android.theme.Typography
 import com.solita.devnotary.android.utils.NoteColor
 import com.solita.devnotary.feature_notes.domain.model.Note
@@ -24,7 +24,7 @@ import com.solita.devnotary.feature_notes.domain.model.Note
 @Composable
 fun NotePreview(note: Note, formattedDateTime: String, navigateToNoteScreen: () -> Unit) {
     Card(
-        shape = Shape().bitRoundedCornerShape,
+        shape = MaterialTheme.shapes.small,
         backgroundColor = NoteColor(note.color).getColor().copy(alpha = 0.9f),
         elevation = LocalElevation.current.medium,
         modifier = Modifier.padding(
