@@ -67,6 +67,9 @@ dependencies {
     //DateTime
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
 
+    //Accompanist swipe to refresh
+    implementation ("com.google.accompanist:accompanist-swiperefresh:0.24.8-beta")
+
 
 
 }

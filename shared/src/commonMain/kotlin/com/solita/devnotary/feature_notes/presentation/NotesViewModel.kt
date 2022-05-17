@@ -18,6 +18,7 @@ import com.solita.devnotary.utils.formatIso8601ToString
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
@@ -54,10 +55,19 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
         MutableStateFlow(listOf())
     val notes: StateFlow<List<Note>> = _notes
 
-    private val _usersWithAccess : MutableStateFlow<Response<List<User>>> = MutableStateFlow(Response.Empty)
-    val usersWithAccess : StateFlow<Response<List<User>>> = _usersWithAccess
+    private val _usersWithAccess: MutableStateFlow<Response<List<User>>> =
+        MutableStateFlow(Response.Empty)
+    val usersWithAccess: StateFlow<Response<List<User>>> = _usersWithAccess
 
-    private val _selectedSort: MutableStateFlow<Sort> = MutableStateFlow(ByName(Order.ASCENDING))
+    private val _selectedSort: MutableStateFlow<Sort> = MutableStateFlow(SortOptions.BY_NAME_ASC.sort)
+
+    fun changeSortSelection(sort: Sort) {
+        _selectedSort.value = sort
+    }
+
+    fun getSelectedSort(): StateFlow<Sort> {
+        return _selectedSort.asStateFlow()
+    }
 
     private fun getNotes() {
         getLocalNotes()
@@ -86,6 +96,8 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
         _noteScreenState.value = screenState
     }
 
+    var isRefreshing = MutableStateFlow(false)
+
     var noteSearchPhrase = MutableStateFlow("")
     var noteId: String = ""
     var noteDateTime: String = ""
@@ -96,6 +108,7 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
     var isFabVisible = MutableStateFlow(true)
     var isConfirmDeleteDialogOpen = MutableStateFlow(false)
     var isShareDialogOpen = MutableStateFlow(false)
+    var isSortOptionDropdownOpen = MutableStateFlow(false)
     var anotherUserEmailAddress = MutableStateFlow("")
 
 
@@ -137,8 +150,13 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
         viewModelScope.launch {
             localUseCases.editNote.invoke(note = note).collect { response ->
                 _noteModificationStatus.value = response
-                if (response is Response.Success){
-                    editSharedNote(note.note_id,titleInput.value,contentInput.value,noteColor.value)
+                if (response is Response.Success) {
+                    editSharedNote(
+                        note.note_id,
+                        titleInput.value,
+                        contentInput.value,
+                        noteColor.value
+                    )
                     changeNoteScreenState(NoteScreenState.LocalNote)
                 }
             }
@@ -154,7 +172,7 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
         viewModelScope.launch {
             localUseCases.deleteNote.invoke(noteId).collect { response ->
                 _noteModificationStatus.value = response
-                if(response is Response.Success) deleteSharedNote(noteId)
+                if (response is Response.Success) deleteSharedNote(noteId)
             }
         }
     }
@@ -169,12 +187,15 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
                             it.changeToNote()
                         }
                         _sharedNotes.value = noteList
+                        isRefreshing.value = false
                     }
                     is Response.Loading -> {
                         _sharedNotesState.value = response
+                        isRefreshing.value = true
                     }
                     is Response.Error -> {
                         _sharedNotesState.value = response
+                        isRefreshing.value = false
                     }
                     else -> {
                         _sharedNotesState.value = Response.Empty
@@ -196,7 +217,7 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
             remoteUseCases.shareNote.invoke(anotherUserEmailAddress.value, note)
                 .collect { response ->
                     _noteSharingState.value = response
-                    if(response is Response.Success) anotherUserEmailAddress.value = ""
+                    if (response is Response.Success) anotherUserEmailAddress.value = ""
                 }
         }
     }
@@ -209,9 +230,15 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
         }
     }
 
-    private fun editSharedNote(noteId: String, noteTitle : String, noteContent: String, noteColor: String) {
+    private fun editSharedNote(
+        noteId: String,
+        noteTitle: String,
+        noteContent: String,
+        noteColor: String
+    ) {
         viewModelScope.launch {
-            remoteUseCases.editSharedNote.invoke(noteId, noteTitle,noteContent,noteColor).collect()
+            remoteUseCases.editSharedNote.invoke(noteId, noteTitle, noteContent, noteColor)
+                .collect()
         }
     }
 
@@ -219,14 +246,14 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
         viewModelScope.launch {
             remoteUseCases.unshareNote.invoke(sharedUserId, noteId).collect { response ->
                 _noteSharingState.value = response
-                if(response is Response.Success)getUsersWithAccess()
+                if (response is Response.Success) getUsersWithAccess()
             }
         }
     }
 
-    fun getUsersWithAccess(){
+    fun getUsersWithAccess() {
         viewModelScope.launch {
-            usersUseCases.getUsersWithAccess.invoke(noteId).collect{ response ->
+            usersUseCases.getUsersWithAccess.invoke(noteId).collect { response ->
                 _usersWithAccess.value = response
             }
         }
@@ -270,11 +297,11 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
         if (isFabVisible.value) isFabVisible.value = false
     }
 
-    @Suppress("UNCHECKED_CAST")
     fun prepareLists(localNotesList: List<Note>, sharedNotesList: List<Note>) {
         val joinedNotes = localNotesList + sharedNotesList
         val sorted = _selectedSort.value.sort(joinedNotes)
-        val sortedAndSearched = sorted.filter { it.title.lowercase().contains(noteSearchPhrase.value.lowercase()) }
+        val sortedAndSearched =
+            sorted.filter { it.title.lowercase().contains(noteSearchPhrase.value.lowercase()) }
         _notes.value = sortedAndSearched
     }
 

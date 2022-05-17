@@ -5,18 +5,19 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.solita.devnotary.android.R
 import com.solita.devnotary.android.androidDi
 import com.solita.devnotary.android.navigation.Screen
@@ -24,6 +25,8 @@ import com.solita.devnotary.android.theme.Colors
 import com.solita.devnotary.android.theme.LocalSpacing
 import com.solita.devnotary.android.utils.Constants.NOTE_INDEX
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
+import com.solita.devnotary.feature_notes.presentation.Sort
+import com.solita.devnotary.feature_notes.presentation.SortOptions
 import org.kodein.di.instance
 
 @Composable
@@ -33,19 +36,23 @@ fun NotesListContent(paddingValues: PaddingValues, navController: NavController)
     val localNotesState = viewModel.localNotes.collectAsState()
     val sharedNotesState = viewModel.sharedNotes.collectAsState()
     val notesSearchPhrase = viewModel.noteSearchPhrase.collectAsState()
+
+    val isRefreshing = viewModel.isRefreshing.collectAsState()
+
     viewModel.prepareLists(
         localNotesState.value,
         sharedNotesState.value
     )
     val lazyListState = rememberLazyListState()
     if (lazyListState.isScrollingUp()) viewModel.showFab() else viewModel.hideFab()
+
     Column {
         Row(
             Modifier
                 .fillMaxWidth()
                 .padding(top = LocalSpacing.current.xSmall),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = CenterVertically
         ) {
             CustomTextField(
                 value = notesSearchPhrase.value,
@@ -63,15 +70,30 @@ fun NotesListContent(paddingValues: PaddingValues, navController: NavController)
                 fontSize = 14.sp,
                 placeholderText = stringResource(id = R.string.search)
             )
-            IconButton(
-                onClick = { /*TODO*/ }, modifier = Modifier
-                    .weight(0.1f)
-                    .size(40.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Sort,
-                    contentDescription = stringResource(id = R.string.sort)
-                )
+            Box(modifier = Modifier.weight(0.1f)) {
+                IconButton(
+                    onClick = { viewModel.isSortOptionDropdownOpen.value = true },
+                    modifier = Modifier
+                        .size(40.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Sort,
+                        contentDescription = stringResource(id = R.string.sort)
+                    )
+                }
+                DropdownMenu(
+                    expanded = viewModel.isSortOptionDropdownOpen.collectAsState().value,
+                    modifier = Modifier.padding(0.dp),
+                    onDismissRequest = { viewModel.isSortOptionDropdownOpen.value = false }) {
+                    DropdownMenuItem(onClick = {}) {
+                        SortingRadioButtons(
+                            currentlySelectedSort = viewModel.getSelectedSort()
+                                .collectAsState().value,
+                            selectSort = { viewModel.changeSortSelection(it) },
+                            closeDropdown = { viewModel.isSortOptionDropdownOpen.value = false }
+                        )
+                    }
+                }
             }
         }
 
@@ -80,17 +102,21 @@ fun NotesListContent(paddingValues: PaddingValues, navController: NavController)
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            LazyColumn(Modifier.fillMaxSize(), state = lazyListState) {
-                items(viewModel.notes.value)
-                {
-                    NotePreview(
-                        note = it,
-                        formattedDateTime = viewModel.formatDateTime(it.dateTime)
-                    ) {
-                        navController.navigate(
-                            Screen.NoteScreen.route +
-                                    "?$NOTE_INDEX=${viewModel.notes.value.indexOf(it)}"
-                        )
+
+            SwipeRefresh(state = rememberSwipeRefreshState(isRefreshing = isRefreshing.value),
+                onRefresh = { viewModel.getSharedNotes() }) {
+                LazyColumn(Modifier.fillMaxSize(), state = lazyListState) {
+                    items(viewModel.notes.value)
+                    {
+                        NotePreview(
+                            note = it,
+                            formattedDateTime = viewModel.formatDateTime(it.dateTime)
+                        ) {
+                            navController.navigate(
+                                Screen.NoteScreen.route +
+                                        "?$NOTE_INDEX=${viewModel.notes.value.indexOf(it)}"
+                            )
+                        }
                     }
                 }
             }
@@ -98,6 +124,41 @@ fun NotesListContent(paddingValues: PaddingValues, navController: NavController)
     }
 }
 
+@Composable
+private fun SortingRadioButtons(
+    modifier: Modifier = Modifier,
+    currentlySelectedSort: Sort,
+    selectSort: (Sort) -> Unit,
+    closeDropdown: () -> Unit
+) {
+    fun Sort.click(){
+        selectSort(this)
+        closeDropdown()
+    }
+    val radioOptions = SortOptions.values()
+    Column(modifier = modifier) {
+        radioOptions.forEach { sortOption ->
+            TextButton(onClick = {
+               sortOption.sort.click()
+            }, modifier = Modifier.height(50.dp)) {
+                Row(verticalAlignment = CenterVertically) {
+                    RadioButton(
+                        selected = (currentlySelectedSort::class == (sortOption.sort::class)),
+                        onClick = {
+                            sortOption.sort.click()
+                        },
+                        colors = RadioButtonDefaults.colors(
+                            disabledColor = com.solita.devnotary.android.theme.LocalColors.current.LightGray,
+                            selectedColor = com.solita.devnotary.android.theme.LocalColors.current.Blue,
+                            unselectedColor = com.solita.devnotary.android.theme.LocalColors.current.Gray
+                        )
+                    )
+                    Text(text = sortOption.sortName)
+                }
+            }
+        }
+    }
+}
 
 @Composable
 private fun LazyListState.isScrollingUp(): Boolean {
