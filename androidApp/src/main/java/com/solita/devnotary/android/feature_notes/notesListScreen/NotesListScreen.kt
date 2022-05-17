@@ -1,8 +1,8 @@
 package com.solita.devnotary.android.feature_notes
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.*
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
@@ -28,28 +28,33 @@ fun LocalNotesScreen(navController: NavController) {
     val coroutineScope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
 
-    val isFabVisible = notesViewModel.isFabVisible.collectAsState()
+    val isScrollingUp = notesViewModel.isScrollingUp.collectAsState()
     val noteModificationStatus =
         notesViewModel.noteModificationStatus.collectAsState().value
 
-    LaunchedEffect(noteModificationStatus){
-       if(noteModificationStatus is Response.Success<Operation>){
-           notesViewModel.resetNoteModificationStatus()
-           if(noteModificationStatus.data is Operation.Delete){
-              coroutineScope.launch {
-                  scaffoldState.snackbarHostState.showSnackbar(noteModificationStatus.data.message)
-                  notesViewModel.resetNoteModificationStatus()
-              }
-          }
-       }
+    LaunchedEffect(Unit) {
+        notesViewModel.getSharedNotes()
+    }
+
+    LaunchedEffect(noteModificationStatus) {
+        if (noteModificationStatus is Response.Success<Operation>) {
+            notesViewModel.resetNoteModificationStatus()
+            if (noteModificationStatus.data is Operation.Delete) {
+                coroutineScope.launch {
+                    scaffoldState.snackbarHostState.showSnackbar(noteModificationStatus.data.message)
+                    notesViewModel.resetNoteModificationStatus()
+                }
+            }
+        }
     }
 
     Scaffold(
         bottomBar = { MyBottomNavigationDrawer(navController = navController) },
         floatingActionButton = {
             AnimatedVisibility(
-                visible = isFabVisible.value,
-                enter = fadeIn(), exit = fadeOut()
+                visible = isScrollingUp.value,
+                enter = fadeIn(spring(stiffness = Spring.StiffnessLow)),
+                exit = fadeOut(spring(stiffness = Spring.StiffnessLow))
             ) {
                 MyFloatingActionButton(
                     onClick = {
@@ -60,7 +65,7 @@ fun LocalNotesScreen(navController: NavController) {
         scaffoldState = scaffoldState
     )
     { paddingValues ->
-        NotesListContent( paddingValues = paddingValues, navController)
+        NotesListContent(paddingValues = paddingValues, navController)
     }
 }
 

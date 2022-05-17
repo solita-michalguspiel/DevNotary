@@ -105,7 +105,7 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
     var contentInput = MutableStateFlow("")
     var noteColor = MutableStateFlow("")
     var isShareDropdownExpanded = MutableStateFlow(false)
-    var isFabVisible = MutableStateFlow(true)
+    var isScrollingUp = MutableStateFlow(true)
     var isConfirmDeleteDialogOpen = MutableStateFlow(false)
     var isShareDialogOpen = MutableStateFlow(false)
     var isSortOptionDropdownOpen = MutableStateFlow(false)
@@ -288,19 +288,19 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
         )
     }
 
-    fun showFab() {
-        if (!isFabVisible.value) isFabVisible.value = true
+    fun scrollingUp() {
+        if (!isScrollingUp.value) isScrollingUp.value = true
     }
 
-    fun hideFab() {
-        if (isFabVisible.value) isFabVisible.value = false
+    fun scrollingDown() {
+        if (isScrollingUp.value) isScrollingUp.value = false
     }
 
-    fun prepareLists(localNotesList: List<Note>, sharedNotesList: List<Note>) {
+    fun prepareLists(localNotesList: List<Note>, sharedNotesList: List<Note>,searchedPhrase : String,chosenSort: Sort) {
         val joinedNotes = localNotesList + sharedNotesList
-        val sorted = _selectedSort.value.sort(joinedNotes)
+        val sorted = chosenSort.sort(joinedNotes)
         val sortedAndSearched =
-            sorted.filter { it.title.lowercase().contains(noteSearchPhrase.value.lowercase()) }
+            sorted.filter { it.title.lowercase().contains(searchedPhrase) }
         _notes.value = sortedAndSearched
     }
 

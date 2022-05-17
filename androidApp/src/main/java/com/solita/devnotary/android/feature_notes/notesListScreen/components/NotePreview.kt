@@ -22,14 +22,19 @@ import com.solita.devnotary.feature_notes.domain.model.Note
 
 
 @Composable
-fun NotePreview(note: Note, formattedDateTime: String, navigateToNoteScreen: () -> Unit) {
+fun NotePreview(
+    note: Note,
+    formattedDateTime: String,
+    isFirst: Boolean = false,
+    navigateToNoteScreen: () -> Unit
+) {
     Card(
         shape = MaterialTheme.shapes.small,
         backgroundColor = NoteColor(note.color).getColor().copy(alpha = 0.9f),
         elevation = LocalElevation.current.medium,
         modifier = Modifier.padding(
             horizontal = LocalSpacing.current.xxSmall,
-            vertical = LocalSpacing.current.default
+            vertical = if (!isFirst) LocalSpacing.current.default else 0.dp
         )
     ) {
         Column {
@@ -91,5 +96,5 @@ fun PreviewNotePreview() {
         color = "green",
     )
 
-    NotePreview(note = testNote,"2015.12.31 16:55") {}
+    NotePreview(note = testNote, "2015.12.31 16:55") {}
 }
