@@ -31,13 +31,12 @@ fun ProfileScreen(navController: NavController) {
                 navController.popBackStack()
                 navController.navigate(Screen.SignInScreen.route)
             }
-
             when (val user = userState.value) {
                 is Response.Loading -> {
                     ProgressIndicator()
                 }
                 is Response.Success -> {
-                  ProfileScreenContent(user.data,authViewModel,innerPadding)
+                  ProfileScreenContent(user.data, { authViewModel.signOut() },innerPadding)
                 }
                 else -> {}
             }

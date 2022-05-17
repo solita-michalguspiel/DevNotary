@@ -29,7 +29,6 @@ fun UsersWithAccessScreen(
     val viewModel: NotesViewModel by androidDi.instance()
 
     Column(Modifier.fillMaxWidth()) {
-
         Text(
             text = stringResource(id = R.string.users_with_access),
             style = Typography.h5,

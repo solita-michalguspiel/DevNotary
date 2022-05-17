@@ -1,6 +1,8 @@
 package com.solita.devnotary.android.feature_notes
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -12,15 +14,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.solita.devnotary.android.R
 import com.solita.devnotary.android.androidDi
-import com.solita.devnotary.android.composables.DefaultSpacer
 import com.solita.devnotary.android.composables.Dialog
-import com.solita.devnotary.android.composables.LargeSpacer
 import com.solita.devnotary.android.composables.ProgressIndicator
-import com.solita.devnotary.android.feature_notes._sharedUtils.showScaffold
+import com.solita.devnotary.android.composables.TextIndicatingError
 import com.solita.devnotary.android.feature_notes.noteScreen.contents.LocalNoteContent
 import com.solita.devnotary.android.feature_notes.noteScreen.contents.LocalNoteEditContent
 import com.solita.devnotary.android.feature_notes.noteScreen.contents.NewNoteContent
@@ -32,6 +31,7 @@ import com.solita.devnotary.domain.Response
 import com.solita.devnotary.feature_notes.domain.Operation
 import com.solita.devnotary.feature_notes.presentation.NoteScreenState
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
+import kotlinx.coroutines.launch
 import org.kodein.di.instance
 
 @Composable
@@ -42,13 +42,23 @@ fun NoteScreen(
     val viewModel: NotesViewModel by androidDi.instance()
     val coroutineScope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
+    val noteModification = viewModel.noteModificationStatus.collectAsState().value
 
     LaunchedEffect(Unit) {
         viewModel.prepareNoteScreen(noteIndex)
     }
 
+    LaunchedEffect(noteModification){
+        if(noteModification is Response.Error){
+            coroutineScope.launch {
+                scaffoldState.snackbarHostState.showSnackbar(noteModification.message)
+                viewModel.resetNoteModificationStatus()
+            }
+        }
+    }
+
     Scaffold(scaffoldState = scaffoldState) {
-        when (val noteModification = viewModel.noteModificationStatus.collectAsState().value) {
+        when (noteModification) {
             is Response.Success<Operation> -> {
                 when (noteModification.data) {
                     is Operation.Edit -> navController.popBackStack(
@@ -62,10 +72,6 @@ fun NoteScreen(
                     is Operation.Add -> {}
                     is Operation.Share -> {}
                 }
-            }
-            is Response.Error -> {
-                scaffoldState.showScaffold(noteModification.message, coroutineScope)
-                viewModel.resetNoteModificationStatus()
             }
             else -> {}
         }
@@ -147,13 +153,7 @@ private fun ShareNoteDialog(viewModel: NotesViewModel) {
 
                 when (val response = viewModel.noteSharingState.collectAsState().value) {
                     is Response.Loading -> ProgressIndicator()
-                    is Response.Error -> Text(
-                        text = response.message,
-                        color = Color.Red,
-                        style = Typography.body2,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
+                    is Response.Error -> TextIndicatingError(errorMessage = response.message, modifier = Modifier.fillMaxWidth(),textAlign = TextAlign.Center)
                     is Response.Success -> {
                         Text(
                             text = stringResource(id = R.string.note_shared_success),

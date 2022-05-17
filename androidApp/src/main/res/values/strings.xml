@@ -24,10 +24,10 @@
 
     <!--  note screen -->
     <string name="add_note">Add note</string>
-    <string name="new_note">New note</string>
-    <string name="edit_note">Edit note</string>
-    <string name="delete_note">Delete note</string>
-    <string name="save_note">Save note</string>
+    <string name="new_note">New</string>
+    <string name="edit_note">Edit</string>
+    <string name="delete_note">Delete</string>
+    <string name="save_note">Save</string>
     <string name="save_note_locally">Save note Locally</string>
     <string name="share_note">Share note</string>
     <string name="share">Share</string>

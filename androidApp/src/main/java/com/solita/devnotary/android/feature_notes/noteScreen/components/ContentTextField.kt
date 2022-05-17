@@ -22,12 +22,16 @@ import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import org.kodein.di.instance
 
 @Composable
-fun ContentTextField(contentInputState: State<String>, modifier: Modifier, isEditEnabled: Boolean) {
-    val viewModel: NotesViewModel by androidDi.instance()
+fun ContentTextField(
+    contentInput: String,
+    modifier: Modifier,
+    isEditEnabled: Boolean,
+    onValueChange: (String) -> Unit = {}
+) {
     val focusManager = LocalFocusManager.current
     TextField(
-        value = contentInputState.value,
-        onValueChange = { viewModel.contentInput.value = it },
+        value = contentInput,
+        onValueChange = { onValueChange(it) },
         shape = Shape().bitRoundedCornerShape,
         textStyle = Typography.body1,
         modifier = modifier
@@ -44,6 +48,6 @@ fun ContentTextField(contentInputState: State<String>, modifier: Modifier, isEdi
         },
         enabled = isEditEnabled,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-        keyboardActions = KeyboardActions(onDone = {focusManager.clearFocus()})
+        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() })
     )
 }

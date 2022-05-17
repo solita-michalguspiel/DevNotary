@@ -7,7 +7,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -16,9 +17,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.solita.devnotary.android.R
 import com.solita.devnotary.android.androidDi
 import com.solita.devnotary.android.composables.DefaultSpacer
+import com.solita.devnotary.android.composables.TextIndicatingError
 import com.solita.devnotary.android.theme.LocalColors
 import com.solita.devnotary.android.theme.LocalSpacing
 import com.solita.devnotary.android.theme.Typography
+import com.solita.devnotary.domain.Response
 import com.solita.devnotary.feature_auth.presentation.AuthViewModel
 import org.kodein.di.instance
 
@@ -31,13 +34,10 @@ fun PreviewSignInScreenContent() {
 
 @Composable
 fun SignInScreenContent() {
-
-    var emailAddressInput by remember {
-        mutableStateOf("")
-    }
     val authViewModel :AuthViewModel by androidDi.instance()
-
     val emailResendTimer = authViewModel.resendEmailTimer.collectAsState().value
+    val sendLinkState = authViewModel.sendLinkState.collectAsState().value
+    val emailAddressInput = authViewModel.emailAddressInput.collectAsState()
 
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
         DefaultSpacer()
@@ -50,12 +50,15 @@ fun SignInScreenContent() {
         Text(text = stringResource(id = R.string.sign_in_with_email_prompt), style = Typography.h6)
         DefaultSpacer()
         TextField(
-            value = emailAddressInput,
-            onValueChange = { emailAddressInput = it },
+            value = emailAddressInput.value,
+            onValueChange = { authViewModel.emailAddressInput.value = it },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            maxLines = 1
+            maxLines = 1,
+            singleLine = true
         )
-        DefaultSpacer()
+        if(sendLinkState is Response.Error){
+            TextIndicatingError(errorMessage = sendLinkState.message)
+        }
         if (emailResendTimer != 0) {
             Text(
                 text = stringResource(id = R.string.resend_email_prompt, emailResendTimer),
@@ -63,7 +66,8 @@ fun SignInScreenContent() {
                 color = LocalColors.current.LightBlack
             )
         }
-        Button(onClick = { authViewModel.sendEmailLink(emailAddressInput) }, enabled = emailResendTimer == 0) {
+        DefaultSpacer()
+        Button(onClick = { authViewModel.sendEmailLink() }, enabled = emailResendTimer == 0) {
             Text(text = stringResource(id = R.string.get_email))
         }
     }

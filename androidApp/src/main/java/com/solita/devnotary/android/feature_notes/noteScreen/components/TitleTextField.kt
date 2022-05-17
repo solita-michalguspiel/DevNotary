@@ -19,11 +19,12 @@ import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import org.kodein.di.instance
 
 @Composable
-fun TitleTextField(titleInputState: State<String>, isEditEnabled: Boolean) {
-    val viewModel: NotesViewModel by androidDi.instance()
+fun TitleTextField(titleInput : String,
+                   isEditEnabled: Boolean,
+                   onValueChange : (String) -> Unit = {}) {
     TextField(
-        value = titleInputState.value,
-        onValueChange = { if (it.length <= 30) viewModel.titleInput.value = it },
+        value = titleInput,
+        onValueChange = { onValueChange(it) },
         textStyle = Typography.h4,
         modifier = Modifier
             .fillMaxWidth(),

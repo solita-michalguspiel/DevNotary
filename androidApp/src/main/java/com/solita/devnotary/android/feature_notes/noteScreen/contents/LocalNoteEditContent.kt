@@ -36,12 +36,18 @@ fun LocalNoteEditContent(
             elevation = LocalElevation.current.medium
         ) {
             Column {
-                TitleTextField(titleInputState = titleInputState, true)
+                TitleTextField(titleInput = titleInputState.value,
+                    isEditEnabled = true,
+                    onValueChange = {if (it.length <= 30) viewModel.titleInput.value = it})
                 ContentTextField(
-                    contentInputState = contentInputState,
-                    modifier = Modifier.weight(1.0f), true
+                    contentInput = contentInputState.value,
+                    modifier = Modifier.weight(1.0f),
+                    isEditEnabled = true,
+                    onValueChange = { viewModel.contentInput.value = it }
                 )
-                ColorBallsRow()
+                ColorBallsRow(chosenNoteColor = noteColorState.value) {
+                    viewModel.noteColor.value = it
+                }
             }
         }
         LocalNoteButtons(modifier = Modifier.align(Alignment.End), true)

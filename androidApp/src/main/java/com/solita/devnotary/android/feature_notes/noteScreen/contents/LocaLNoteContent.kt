@@ -47,7 +47,7 @@ fun LocalNoteContent(
         ) {
             Column {
                 Box {
-                    TitleTextField(titleInputState = titleInputState, false)
+                    TitleTextField(titleInput = titleInputState.value, false)
                     Box(Modifier.align(TopEnd)) {
                         IconButton(
                             onClick = { viewModel.isShareDropdownExpanded.value = true },
@@ -82,8 +82,8 @@ fun LocalNoteContent(
                     }
                 }
                 ContentTextField(
-                    contentInputState = contentInputState,
-                    modifier = Modifier.weight(1.0f), false
+                    contentInput = contentInputState.value,
+                    modifier = Modifier.weight(1.0f), isEditEnabled = false
                 )
                 Text(
                     text = stringResource(R.string.note_time_date_stamp,viewModel.formatDateTime(viewModel.noteDateTime)),

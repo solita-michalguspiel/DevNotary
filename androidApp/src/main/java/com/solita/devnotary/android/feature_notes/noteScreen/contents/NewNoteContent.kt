@@ -9,6 +9,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.toLowerCase
 import com.solita.devnotary.android.androidDi
 import com.solita.devnotary.android.feature_notes._sharedComponents.AddButton
 import com.solita.devnotary.android.feature_notes._sharedComponents.ColorBallsRow
@@ -27,6 +28,10 @@ fun NewNoteContent() {
     val contentInputState = viewModel.contentInput.collectAsState()
     val noteColorState = viewModel.noteColor.collectAsState()
 
+    LaunchedEffect(Unit){
+        viewModel.clearContent()
+    }
+
     Column(Modifier.fillMaxSize()) {
         Card(
             modifier = Modifier
@@ -36,12 +41,17 @@ fun NewNoteContent() {
             elevation = LocalElevation.current.medium
         ) {
             Column {
-                TitleTextField(titleInputState = titleInputState, true)
+                TitleTextField(titleInput = titleInputState.value,
+                    isEditEnabled = true,
+                    onValueChange = { if (it.length <= 30) viewModel.titleInput.value = it })
                 ContentTextField(
-                    contentInputState = contentInputState,
-                    modifier = Modifier.weight(1.0f), true
+                    contentInput = contentInputState.value,
+                    modifier = Modifier.weight(1.0f), true,
+                    onValueChange = {viewModel.contentInput.value = it}
                 )
-                ColorBallsRow()
+                ColorBallsRow(chosenNoteColor = noteColorState.value){
+                    viewModel.noteColor.value = it
+                }
             }
         }
         AddButton(modifier = Modifier.align(Alignment.End))

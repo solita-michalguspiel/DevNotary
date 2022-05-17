@@ -11,18 +11,14 @@ fun Dialog(
     onDismissRequest: () -> Unit,
     title: String,
     dismissButton: @Composable (() -> Unit)? = null,
-    confirmButton: @Composable (() -> Unit)? = null,
+    confirmButton: @Composable (() -> Unit),
     text: String?,
 ) {
-
-    if (confirmButton != null) {
-        AlertDialog(
+     AlertDialog(
             modifier = modifier, onDismissRequest = onDismissRequest,
             title = { Text(title) },
             text = {if(text != null)Text(text = text)},
             confirmButton = confirmButton,
             dismissButton = dismissButton
         )
-    }
-
 }

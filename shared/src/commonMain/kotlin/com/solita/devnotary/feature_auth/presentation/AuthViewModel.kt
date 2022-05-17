@@ -42,6 +42,8 @@ class AuthViewModel(dependencyInjection: DI = di) :
 
     val resendEmailTimer = MutableStateFlow(0)
 
+    val emailAddressInput = MutableStateFlow("")
+
     private var job: Job? = null
 
     fun getCurrentUserDocument() {
@@ -53,14 +55,13 @@ class AuthViewModel(dependencyInjection: DI = di) :
         }
     }
 
-    fun sendEmailLink(emailAddress: String) {
+    fun sendEmailLink() {
         _userAuthState.value = Response.Empty
-        settings.putString(CURRENT_EMAIL_KEY, emailAddress)
+        settings.putString(CURRENT_EMAIL_KEY, emailAddressInput.value)
         viewModelScope.launch {
-            useCases.sendEmailLink.invoke(emailAddress).collect { response ->
+            useCases.sendEmailLink.invoke(emailAddressInput.value).collect { response ->
                 if (response == Response.Success(true)) startTimer(RESEND_EMAIL_TIME)
                 _sendLinkState.value = response
-                if (response is Response.Error) reactToError(response.message)
             }
         }
     }
@@ -70,7 +71,6 @@ class AuthViewModel(dependencyInjection: DI = di) :
         viewModelScope.launch {
             useCases.signInWithEmailLink(email = email, intent = intent).collect { response ->
                 _userAuthState.value = response
-                if (response is Response.Error) reactToError(response.message)
                 when (response) {
                     is Response.Error -> reactToError(response.message)
                     is Response.Success -> stopTimer()
@@ -95,7 +95,6 @@ class AuthViewModel(dependencyInjection: DI = di) :
     private fun reactToError(error: String) {
         errorMessageState.value = error
         openDialogState.value = true
-
     }
 
     fun resetError() {

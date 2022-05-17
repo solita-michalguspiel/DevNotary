@@ -35,7 +35,7 @@ fun LocalNotesContent(paddingValues: PaddingValues, navController: NavController
         LazyColumn(Modifier.fillMaxSize(), state = lazyListState) {
             items(viewModel.notes.value)
                  {
-                NotePreview(note = it){
+                NotePreview(note = it, formattedDateTime = viewModel.formatDateTime(it.dateTime)){
                     navController.navigate(Screen.NoteScreen.route +
                             "?$NOTE_INDEX=${viewModel.notes.value.indexOf(it)}")
                 }

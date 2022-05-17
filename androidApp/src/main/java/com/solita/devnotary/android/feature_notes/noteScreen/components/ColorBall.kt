@@ -11,22 +11,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ColorBall(color: Color, isChosen : Boolean = false) {
-Canvas(modifier = Modifier.size(40.dp), onDraw = {
-    if(isChosen)drawCircle(Color.Black,style = Stroke(width = 2.5f))
-    else drawCircle(Color.Black,style = Stroke(width = 0.5f))
-    drawCircle(color,style = Fill)
-} )
+fun ColorBall(modifier: Modifier = Modifier, color: Color, isChosen: Boolean = false) {
+    Canvas(modifier = modifier.size(40.dp), onDraw = {
+        if (isChosen) drawCircle(Color.Black, style = Stroke(width = 2.5f))
+        else drawCircle(Color.Black, style = Stroke(width = 0.5f))
+        drawCircle(color, style = Fill)
+    })
 }
 
 @Preview
 @Composable
-fun previewColorBall(){
-    ColorBall(color = Color.Blue,false)
+fun PreviewColorBall() {
+    ColorBall(color = Color.Blue, isChosen = false)
 }
+
 @Preview
 @Composable
-fun previewSelectedColorBall(){
-    ColorBall(color = Color.Blue,true)
+fun PreviewSelectedColorBall() {
+    ColorBall(color = Color.Blue, isChosen = true)
 }
 

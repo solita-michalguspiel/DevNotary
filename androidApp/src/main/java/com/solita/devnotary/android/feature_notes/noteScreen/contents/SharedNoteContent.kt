@@ -44,15 +44,18 @@ fun SharedNoteContent() {
 
                 Text(
                     text = "Shared by guspielmichal@gmail.com", // PROTOTYPE, TODO : REAL IMPLEMENTATION.
-                    Modifier.fillMaxWidth().padding(LocalSpacing.current.xSmall),
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(LocalSpacing.current.xSmall),
                     style = Typography.caption
                 )
 
-                TitleTextField(titleInputState = titleInputState, false)
+                TitleTextField(titleInput = titleInputState.value, false)
 
                 ContentTextField(
-                    contentInputState = contentInputState,
-                    modifier = Modifier.weight(1.0f), false
+                    contentInput = contentInputState.value,
+                    modifier = Modifier.weight(1.0f),
+                    isEditEnabled = false
                 )
                 Text(
                     text = stringResource(

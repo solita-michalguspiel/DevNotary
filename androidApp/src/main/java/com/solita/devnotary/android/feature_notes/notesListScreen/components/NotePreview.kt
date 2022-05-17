@@ -13,21 +13,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.solita.devnotary.android.R
-import com.solita.devnotary.android.androidDi
 import com.solita.devnotary.android.theme.LocalElevation
 import com.solita.devnotary.android.theme.LocalSpacing
 import com.solita.devnotary.android.theme.Shape
 import com.solita.devnotary.android.theme.Typography
 import com.solita.devnotary.android.utils.NoteColor
 import com.solita.devnotary.feature_notes.domain.model.Note
-import com.solita.devnotary.feature_notes.presentation.NotesViewModel
-import org.kodein.di.instance
 
 
 @Composable
-fun NotePreview(note: Note, navigateToNoteScreen : () -> Unit) {
-    val viewModel: NotesViewModel by androidDi.instance()
-
+fun NotePreview(note: Note, formattedDateTime: String, navigateToNoteScreen: () -> Unit) {
     Card(
         shape = Shape().bitRoundedCornerShape,
         backgroundColor = NoteColor(note.color).getColor().copy(alpha = 0.9f),
@@ -69,10 +64,10 @@ fun NotePreview(note: Note, navigateToNoteScreen : () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = viewModel.formatDateTime(note.dateTime), style = Typography.caption)
+                Text(text = formattedDateTime, style = Typography.caption)
                 TextButton(
                     onClick = {
-                       navigateToNoteScreen()
+                        navigateToNoteScreen()
                     },
                     modifier = Modifier
                 ) {
@@ -92,9 +87,9 @@ fun PreviewNotePreview() {
         title = "Database plan",
         content = "Internal Database - For the private notes -  SQL,   Note(  ID,  Title,  Desc,  TimeDate,  Color,)" +
                 "External Database - For shared notes -  Firebase  SharedNote(  ownerUserID,  sharedUserID,  Title,  Desc,  SharedDate,  Color)",
-        dateTime ="2015-12-31T12:30:00Z",
+        dateTime = "2015-12-31T12:30:00Z",
         color = "green",
     )
 
-    NotePreview(note = testNote){}
+    NotePreview(note = testNote,"2015.12.31 16:55") {}
 }

@@ -1,6 +1,7 @@
 package com.solita.devnotary.android.feature_notes._sharedComponents
 
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -16,7 +17,6 @@ import com.solita.devnotary.feature_notes.presentation.NoteScreenState
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import org.kodein.di.instance
 
-
 @Preview
 @Composable
 fun PreviewLocalNoteButtons() {
@@ -27,12 +27,12 @@ fun PreviewLocalNoteButtons() {
 fun LocalNoteButtons(modifier: Modifier, isEditEnabled: Boolean) {
     val buttonModifier = Modifier.padding(LocalSpacing.current.xSmall)
     Row(
-        modifier = modifier.padding(LocalSpacing.current.small),
+        modifier = modifier.padding(LocalSpacing.current.small).fillMaxWidth(0.9f),
         verticalAlignment = Alignment.Bottom
     ) {
-        AddNewNoteButton(buttonModifier)
-        DeleteButton(buttonModifier)
-        if (isEditEnabled) SaveButton(buttonModifier) else EditButton(buttonModifier)
+        AddNewNoteButton(buttonModifier.weight(1f))
+        DeleteButton(buttonModifier.weight(1f))
+        if (isEditEnabled) SaveButton(buttonModifier.weight(1f)) else EditButton(buttonModifier.weight(1f))
     }
 }
 

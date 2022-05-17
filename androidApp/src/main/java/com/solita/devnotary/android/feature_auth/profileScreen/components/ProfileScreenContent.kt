@@ -17,7 +17,7 @@ import com.solita.devnotary.feature_auth.presentation.AuthViewModel
 
 
 @Composable
-fun ProfileScreenContent(user: User, authViewModel: AuthViewModel, innerPaddingValues: PaddingValues){
+fun ProfileScreenContent(user: User, signOut : () -> Unit, innerPaddingValues: PaddingValues){
     val spacing = LocalSpacing.current.default
     val largeSpacing = LocalSpacing.current.large
     ConstraintLayout(modifier = Modifier.fillMaxSize().padding(innerPaddingValues)) {
@@ -39,7 +39,7 @@ fun ProfileScreenContent(user: User, authViewModel: AuthViewModel, innerPaddingV
             }
         )
         Button(
-            onClick = { authViewModel.signOut() },
+            onClick = { signOut() },
             modifier = Modifier.constrainAs(logoutButton){
                 bottom.linkTo(parent.bottom, margin = largeSpacing)
                 start.linkTo(parent.start, margin = spacing)

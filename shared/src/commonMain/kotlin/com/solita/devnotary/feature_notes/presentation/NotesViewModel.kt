@@ -200,7 +200,7 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
         }
     }
 
-    fun deleteSharedNote(noteId: String) {
+    private fun deleteSharedNote(noteId: String) {
         viewModelScope.launch {
             remoteUseCases.deleteSharedNote.invoke(noteId = noteId).collect { response ->
                 _noteSharingState.value = response
@@ -210,9 +210,7 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
 
     private fun editSharedNote(noteId: String, noteTitle : String, noteContent: String, noteColor: String) {
         viewModelScope.launch {
-            remoteUseCases.editSharedNote.invoke(noteId, noteTitle,noteContent,noteColor).collect { response ->
-                _noteSharingState.value = response
-            }
+            remoteUseCases.editSharedNote.invoke(noteId, noteTitle,noteContent,noteColor).collect()
         }
     }
 
@@ -301,7 +299,7 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
 
     }
 
-    private fun clearContent() {
+    fun clearContent() {
         this.noteId = ""
         this.titleInput.value = ""
         this.contentInput.value = ""
