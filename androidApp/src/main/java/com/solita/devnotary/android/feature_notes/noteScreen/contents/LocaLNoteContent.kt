@@ -77,8 +77,6 @@ fun LocalNoteContent(
                                 Text(text = stringResource(id = R.string.users_with_access))
                             }
                         }
-
-
                     }
                 }
                 ContentTextField(

@@ -28,7 +28,8 @@
     <string name="edit_note">Edit</string>
     <string name="delete_note">Delete</string>
     <string name="save_note">Save</string>
-    <string name="save_note_locally">Save note Locally</string>
+    <string name="save_note_locally">Save note locally</string>
+    <string name="cancel_access">Cancel access</string>
     <string name="share_note">Share note</string>
     <string name="share">Share</string>
     <string name="note_added">Note added!</string>
@@ -43,6 +44,7 @@
     <string name="undefined_error">Something went wrong, sorry!</string>
     <string name="note_not_shared_with_anybody">This note isn\'t shared with anybody.</string>
     <string name="note_time_date_stamp">Note created %1$s.</string>
+    <string name="shared_by">Shared by %1$s</string>
 
     <!-- notes list screen -->
     <string name="search">Search</string>

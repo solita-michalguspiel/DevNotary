@@ -10,4 +10,6 @@ interface UsersRepository {
 
     suspend fun getUsersWithAccess( noteId: String) : Flow<Response<List<User>>>
 
+    suspend fun getUser(userId: String) : Flow<Response<User>>
+
 }

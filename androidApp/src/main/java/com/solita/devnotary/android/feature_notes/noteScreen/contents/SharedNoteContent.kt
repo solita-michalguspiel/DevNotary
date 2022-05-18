@@ -1,36 +1,45 @@
 package com.solita.devnotary.android.feature_notes.noteScreen.contents
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreHoriz
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Card
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavController
 import com.solita.devnotary.android.R
 import com.solita.devnotary.android.androidDi
-import com.solita.devnotary.android.feature_notes._sharedComponents.LocalNoteButtons
-import com.solita.devnotary.android.feature_notes._sharedComponents.SaveNoteLocallyButton
+import com.solita.devnotary.android.feature_notes._sharedComponents.SharedNoteButtons
 import com.solita.devnotary.android.feature_notes.noteScreen.components.ContentTextField
 import com.solita.devnotary.android.feature_notes.noteScreen.components.TitleTextField
 import com.solita.devnotary.android.theme.LocalElevation
 import com.solita.devnotary.android.theme.LocalSpacing
 import com.solita.devnotary.android.theme.Typography
 import com.solita.devnotary.android.utils.NoteColor
+import com.solita.devnotary.domain.Response
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import org.kodein.di.instance
 
 @Composable
-fun SharedNoteContent() {
-
+fun SharedNoteContent(popBackStack : () -> Unit) {
 
     val viewModel: NotesViewModel by androidDi.instance()
     val titleInputState = viewModel.titleInput.collectAsState()
     val contentInputState = viewModel.contentInput.collectAsState()
     val noteColorState = viewModel.noteColor.collectAsState()
-    val menuOpenState = viewModel.isShareDropdownExpanded.collectAsState()
+    val noteSharingState = viewModel.noteSharingState.collectAsState().value
+
+    LaunchedEffect(noteSharingState){
+        if(noteSharingState is Response.Success){
+            popBackStack()
+        }
+    }
 
     Column(Modifier.fillMaxSize()) {
         Card(
@@ -41,15 +50,19 @@ fun SharedNoteContent() {
             elevation = LocalElevation.current.medium
         ) {
             Column {
-
-                Text(
-                    text = "Shared by guspielmichal@gmail.com", // PROTOTYPE, TODO : REAL IMPLEMENTATION.
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(LocalSpacing.current.xSmall),
-                    style = Typography.caption
-                )
-
+                when(val ownerUser = viewModel.noteOwnerUser.collectAsState().value){
+                    is Response.Loading -> {}
+                    is Response.Success -> {
+                        Text(
+                            text = stringResource(id = R.string.shared_by,ownerUser.data.userEmail),
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(LocalSpacing.current.xSmall),
+                            style = Typography.caption
+                        )
+                    }
+                    else -> {}
+                }
                 TitleTextField(titleInput = titleInputState.value, false)
 
                 ContentTextField(
@@ -63,7 +76,7 @@ fun SharedNoteContent() {
                         viewModel.formatDateTime(viewModel.noteDateTime)
                     ),
                     modifier = Modifier
-                        .align(Alignment.End)
+                        .align(End)
                         .padding(
                             end = LocalSpacing.current.default,
                             bottom = LocalSpacing.current.default
@@ -72,7 +85,7 @@ fun SharedNoteContent() {
                 )
             }
         }
-        SaveNoteLocallyButton(modifier = Modifier.align(Alignment.End))
+        SharedNoteButtons(modifier = Modifier.align(End))
     }
 
 }

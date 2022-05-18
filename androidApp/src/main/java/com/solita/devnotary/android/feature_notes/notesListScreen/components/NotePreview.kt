@@ -2,19 +2,20 @@ package com.solita.devnotary.android.feature_notes.notesListScreen.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.solita.devnotary.android.R
 import com.solita.devnotary.android.theme.LocalElevation
+import com.solita.devnotary.android.theme.LocalShapes
 import com.solita.devnotary.android.theme.LocalSpacing
 import com.solita.devnotary.android.theme.Typography
 import com.solita.devnotary.android.utils.NoteColor
@@ -29,12 +30,14 @@ fun NotePreview(
     navigateToNoteScreen: () -> Unit
 ) {
     Card(
-        shape = MaterialTheme.shapes.small,
-        backgroundColor = NoteColor(note.color).getColor().copy(alpha = 0.9f),
+        shape = LocalShapes.current.mediumRoundedCornerShape,
+        backgroundColor = NoteColor(note.color).getColor(),
         elevation = LocalElevation.current.medium,
         modifier = Modifier.padding(
-            horizontal = LocalSpacing.current.xxSmall,
-            vertical = if (!isFirst) LocalSpacing.current.default else 0.dp
+            start = LocalSpacing.current.xxSmall,
+            end = LocalSpacing.current.xxSmall,
+            bottom = LocalSpacing.current.default,
+            top = if(!isFirst) LocalSpacing.current.default else 0.dp
         )
     ) {
         Column {
@@ -76,7 +79,7 @@ fun NotePreview(
                     },
                     modifier = Modifier
                 ) {
-                    Text(text = stringResource(id = R.string.view_details))
+                    Text(text = stringResource(id = R.string.view_details), fontWeight = FontWeight.W600)
                 }
             }
         }
@@ -90,10 +93,9 @@ fun PreviewNotePreview() {
     val testNote = Note(
         noteId = "testid",
         title = "Database plan",
-        content = "Internal Database - For the private notes -  SQL,   Note(  ID,  Title,  Desc,  TimeDate,  Color,)" +
-                "External Database - For shared notes -  Firebase  SharedNote(  ownerUserID,  sharedUserID,  Title,  Desc,  SharedDate,  Color)",
+        content = "SOME RANDOM CONTENT",
         dateTime = "2015-12-31T12:30:00Z",
-        color = "green",
+        color = "red",
     )
 
     NotePreview(note = testNote, "2015.12.31 16:55") {}

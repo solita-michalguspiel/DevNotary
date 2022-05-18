@@ -4,7 +4,6 @@ import com.solita.devnotary.Constants.ERROR_MESSAGE
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.feature_notes.domain.Operation
 import com.solita.devnotary.feature_notes.domain.model.Note
-import com.solita.devnotary.feature_notes.domain.model.SharedNote
 import com.solita.devnotary.feature_notes.domain.use_case.local_notes_use_cases.*
 import com.solita.devnotary.feature_notes.domain.use_case.remote_notes_use_cases.*
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
@@ -12,8 +11,6 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.beInstanceOf
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.test.*
 import org.kodein.di.DI
 import org.kodein.di.bindSingleton
@@ -58,7 +55,7 @@ class NotesViewModelTest {
     private val firstNote = Note(
         noteId = "fidhsbagoipngöklsagagew",
         title = "Fresh note!",
-        content = "Description",
+        content = "Content!!!",
         dateTime = "dateAndTime",
         color = "pink"
     )
@@ -175,8 +172,14 @@ class NotesViewModelTest {
 
     @Test
     fun givenThereIsSharedNoteAndGetSharedNotesIsCalled_SharedNoteShouldAppearInSharedNotes() : TestResult = runTest {
+            viewModel.noteId = firstNote.noteId
+            viewModel.titleInput.value = firstNote.title
+            viewModel.contentInput.value = firstNote.content
+            viewModel.noteDateTime = firstNote.dateTime
+            viewModel.noteColor.value = firstNote.color
         launch {
-            viewModel.shareNote(remoteNotesRepository.appUser1, firstNote)
+            viewModel.anotherUserEmailAddress.value = remoteNotesRepository.appUser1
+            viewModel.shareNote()
         }
         advanceUntilIdle()
         remoteNotesRepository.currentUserId = remoteNotesRepository.appUser1 // SIMULATING THAT USER 1 IS USING APP
@@ -184,7 +187,7 @@ class NotesViewModelTest {
         advanceUntilIdle()
         viewModel.sharedNotesState.value shouldBe Response.Success(true)
         viewModel.sharedNotes.value shouldBe listOf(Note(firstNote.noteId,remoteNotesRepository.appUser3,
-              null,firstNote.title,firstNote.content,"TODAY",firstNote.color))
+            firstNote.title,firstNote.content,"TODAY",firstNote.color))
     }
 
 

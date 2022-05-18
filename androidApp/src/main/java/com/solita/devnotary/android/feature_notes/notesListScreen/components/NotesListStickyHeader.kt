@@ -71,7 +71,7 @@ fun NotesListStickyHeader() {
                 onDismissRequest = { viewModel.isSortOptionDropdownOpen.value = false }) {
                 DropdownMenuItem(onClick = {}) {
                     SortingRadioButtons(
-                        currentlySelectedSort = viewModel.getSelectedSort()
+                        currentlySelectedSort = viewModel.selectedSort
                             .collectAsState().value,
                         selectSort = { viewModel.changeSortSelection(it) },
                         closeDropdown = { viewModel.isSortOptionDropdownOpen.value = false }

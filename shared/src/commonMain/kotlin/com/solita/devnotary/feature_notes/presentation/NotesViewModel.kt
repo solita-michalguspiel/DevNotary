@@ -15,11 +15,9 @@ import com.solita.devnotary.feature_notes.domain.use_case.local_notes_use_cases.
 import com.solita.devnotary.feature_notes.domain.use_case.remote_notes_use_cases.RemoteNotesUseCases
 import com.solita.devnotary.feature_notes.domain.use_case.users_use_cases.UsersUseCases
 import com.solita.devnotary.utils.formatIso8601ToString
+import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import org.kodein.di.DI
@@ -28,9 +26,11 @@ import kotlin.random.Random
 
 class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
 
+    private val auth: FirebaseAuth by dependencyInjection.instance()
     private val localUseCases: LocalNotesUseCases by dependencyInjection.instance()
     private val remoteUseCases: RemoteNotesUseCases by dependencyInjection.instance()
     private val usersUseCases: UsersUseCases by dependencyInjection.instance()
+
 
     private val _noteModificationStatus: MutableStateFlow<Response<Operation>> =
         MutableStateFlow(Response.Empty)
@@ -59,14 +59,15 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
         MutableStateFlow(Response.Empty)
     val usersWithAccess: StateFlow<Response<List<User>>> = _usersWithAccess
 
-    private val _selectedSort: MutableStateFlow<Sort> = MutableStateFlow(SortOptions.BY_NAME_ASC.sort)
+    private val _selectedSort: MutableStateFlow<Sort> =
+        MutableStateFlow(SortOptions.BY_NAME_ASC.sort)
+    val selectedSort: StateFlow<Sort> get() = _selectedSort.asStateFlow()
+
+    private val _noteOwnerUser : MutableStateFlow<Response<User>> = MutableStateFlow(Response.Empty)
+    val noteOwnerUser : StateFlow<Response<User>> = _noteOwnerUser
 
     fun changeSortSelection(sort: Sort) {
         _selectedSort.value = sort
-    }
-
-    fun getSelectedSort(): StateFlow<Sort> {
-        return _selectedSort.asStateFlow()
     }
 
     private fun getNotes() {
@@ -250,6 +251,15 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
         }
     }
 
+    fun deleteOwnAccessFromSharedNote(){
+        viewModelScope.launch {
+            remoteUseCases.unshareNote.invoke(auth.currentUser!!.uid,noteId).collect{ response ->
+                println("Response : $response")
+                _noteSharingState.value  =  response
+            }
+        }
+    }
+
     fun getUsersWithAccess() {
         viewModelScope.launch {
             usersUseCases.getUsersWithAccess.invoke(noteId).collect { response ->
@@ -296,14 +306,31 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
         if (isScrollingUp.value) isScrollingUp.value = false
     }
 
-    fun prepareLists(localNotesList: List<Note>, sharedNotesList: List<Note>,searchedPhrase : String,chosenSort: Sort) {
-        val joinedNotes = localNotesList + sharedNotesList
-        val sorted = chosenSort.sort(joinedNotes)
-        val sortedAndSearched =
-            sorted.filter { it.title.lowercase().contains(searchedPhrase) }
-        _notes.value = sortedAndSearched
+    fun listenToNoteListChanges() {
+        viewModelScope.launch {
+            _selectedSort.collect {
+                prepareLists()
+            }
+        }
+        viewModelScope.launch {
+            noteSearchPhrase.collect {
+                prepareLists()
+            }
+        }
+        viewModelScope.launch {
+            _sharedNotes.collect {
+                prepareLists()
+            }
+        }
     }
 
+    private fun prepareLists() {
+        val joinedNotes = _localNotes.value + _sharedNotes.value
+        val sorted = _selectedSort.value.sort(joinedNotes)
+        val sortedAndSearched =
+            sorted.filter { it.title.lowercase().contains(noteSearchPhrase.value) }
+        _notes.value = sortedAndSearched
+    }
 
     private fun setNoteScreenState(noteIndex: String?) {
         if (noteIndex == null) changeNoteScreenState(NoteScreenState.NewNote)
@@ -325,7 +352,17 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
         this.contentInput.value = note.content
         this.noteDateTime = note.dateTime
         this.noteColor.value = note.color
+        if ( note.ownerUserId != null && note.ownerUserId != auth.currentUser?.uid) {
+             getNoteOwnerEmailAddress(note.ownerUserId)
+        }
+    }
 
+    private fun getNoteOwnerEmailAddress(noteOwnerUserId: String){
+        viewModelScope.launch {
+            usersUseCases.getUser.invoke(noteOwnerUserId).collect{ response ->
+                _noteOwnerUser.value = response
+            }
+        }
     }
 
     fun clearContent() {

@@ -1,5 +1,6 @@
 package com.solita.devnotary.android.feature_notes
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -34,6 +35,7 @@ import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import kotlinx.coroutines.launch
 import org.kodein.di.instance
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun NoteScreen(
     navController: NavController,
@@ -96,7 +98,7 @@ fun NoteScreen(
                 LocalNoteEditContent()
             }
             NoteScreenState.SharedNote -> {
-                SharedNoteContent()
+                SharedNoteContent{navController.popBackStack()}
             }
             else -> {}
         }

@@ -27,37 +27,44 @@ class UsersRepositoryImpl : UsersRepository {
     private val userId get() = auth.currentUser?.uid
 
     override suspend fun getUsers() = channelFlow {
-    try{
-    send(Response.Loading)
-        usersReference.snapshots.collect{ snap ->
-            val users = snap.documents.map { it.data<User>() }
-            send(Response.Success(users))
+        try {
+            send(Response.Loading)
+            usersReference.snapshots.collect { snap ->
+                val users = snap.documents.map { it.data<User>() }
+                send(Response.Success(users))
+            }
+        } catch (e: Exception) {
+            send(Response.Error(e.message ?: ERROR_MESSAGE))
         }
-    }
-    catch(e: Exception){
-    send(Response.Error(e.message ?: ERROR_MESSAGE))
-    }
     }
 
     override suspend fun getUsersWithAccess(
         noteId: String
     ): Flow<Response<List<User>>> = flow {
-        try{
-        emit(Response.Loading)
-        val sharedNotesRefs = sharedNotesRefsCollectionReference
-            .where(NOTE_ID,noteId)
-            .where(OWNER_USER_ID,userId)
-            .get().documents.map { it.data<SharedNoteRef>() }
+        try {
+            emit(Response.Loading)
+            val sharedNotesRefs = sharedNotesRefsCollectionReference
+                .where(NOTE_ID, noteId)
+                .where(OWNER_USER_ID, userId)
+                .get().documents.map { it.data<SharedNoteRef>() }
             val users = sharedNotesRefs.map { sharedNoteRef ->
                 usersReference
-                    .where("userId",sharedNoteRef.sharedUserId)
+                    .where("userId", sharedNoteRef.sharedUserId)
                     .get().documents.map { it.data<User>() }.first()
             }
             emit(Response.Success(users))
-        }
-        catch(e: Exception){
-        emit(Response.Error(e.message ?: ERROR_MESSAGE))
+        } catch (e: Exception) {
+            emit(Response.Error(e.message ?: ERROR_MESSAGE))
         }
     }
 
+    override suspend fun getUser(userId: String): Flow<Response<User>> = flow {
+        try {
+            emit(Response.Loading)
+            val user = usersReference.where("userId", userId).get().documents.first().data<User>()
+            emit(Response.Success(user))
+        } catch (e: Exception) {
+            emit(Response.Error(e.message ?: ERROR_MESSAGE))
+        }
+    }
 }

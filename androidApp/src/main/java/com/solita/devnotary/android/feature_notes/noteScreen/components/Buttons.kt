@@ -1,5 +1,6 @@
 package com.solita.devnotary.android.feature_notes._sharedComponents
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -23,11 +24,19 @@ fun PreviewLocalNoteButtons() {
     LocalNoteButtons(modifier = Modifier, isEditEnabled = true)
 }
 
+@Preview
+@Composable
+fun PreviewSharedNoteButtons(){
+    SharedNoteButtons(modifier = Modifier )
+}
+
 @Composable
 fun LocalNoteButtons(modifier: Modifier, isEditEnabled: Boolean) {
     val buttonModifier = Modifier.padding(LocalSpacing.current.xSmall)
     Row(
-        modifier = modifier.padding(LocalSpacing.current.small).fillMaxWidth(0.9f),
+        modifier = modifier
+            .padding(LocalSpacing.current.small)
+            .fillMaxWidth(0.9f),
         verticalAlignment = Alignment.Bottom
     ) {
         AddNewNoteButton(buttonModifier.weight(1f))
@@ -60,14 +69,43 @@ fun SaveButton(modifier: Modifier) {
 }
 
 @Composable
+fun SharedNoteButtons(modifier: Modifier){
+    val buttonModifier = Modifier.padding(LocalSpacing.current.xSmall)
+    Row(
+        modifier = modifier
+            .padding(LocalSpacing.current.small)
+            .fillMaxWidth(0.9f),
+        verticalAlignment = Alignment.Bottom,
+        horizontalArrangement = Arrangement.End
+    ) {
+        DeleteSharedNote(buttonModifier)
+        SaveNoteLocallyButton(buttonModifier)
+
+    }
+
+}
+
+
+@Composable
 fun SaveNoteLocallyButton(modifier: Modifier) {
     val viewModel: NotesViewModel by androidDi.instance()
     Button(
-        onClick = { viewModel.addNote() }, modifier = modifier.padding(LocalSpacing.current.small)
+        onClick = { viewModel.addNote() }, modifier = modifier
     ) {
         Text(text = stringResource(R.string.save_note_locally))
     }
 }
+
+@Composable
+fun DeleteSharedNote(modifier: Modifier){
+    val viewModel: NotesViewModel by androidDi.instance()
+    Button(
+        onClick = { viewModel.deleteOwnAccessFromSharedNote() }, modifier = modifier
+    ) {
+        Text(text = stringResource(R.string.delete_note))
+    }
+}
+
 
 @Composable
 fun DeleteButton(modifier: Modifier) {

@@ -26,12 +26,16 @@ import org.kodein.di.instance
 fun NotesListContent(paddingValues: PaddingValues, navController: NavController) {
 
     val viewModel: NotesViewModel by androidDi.instance()
+    val notesState = viewModel.notes.collectAsState()
 
     val lazyListState = rememberLazyListState()
     if (lazyListState.isScrollingUp()) viewModel.scrollingUp() else viewModel.scrollingDown()
 
-    Column {
+    LaunchedEffect(Unit) {
+        viewModel.listenToNoteListChanges()
+    }
 
+    Column {
         Box(
             Modifier
                 .fillMaxSize()
@@ -51,31 +55,26 @@ fun NotesListContent(paddingValues: PaddingValues, navController: NavController)
                     )
                 })
             {
-                viewModel.prepareLists(
-                    viewModel.localNotes.collectAsState().value,
-                    viewModel.sharedNotes.collectAsState().value,
-                    viewModel.noteSearchPhrase.collectAsState().value,
-                    viewModel.getSelectedSort().collectAsState().value
-                )
                 LazyColumn(
                     Modifier
                         .fillMaxSize(), state = lazyListState
                 ) {
-                    stickyHeader { androidx.compose.animation.AnimatedVisibility(
-                        visible = viewModel.isScrollingUp.collectAsState().value,
-                        enter = slideInVertically(initialOffsetY = {-it} ),
-                        exit = slideOutVertically(targetOffsetY = {-it}),
-                        modifier = Modifier.align(TopCenter)
-                    ) {
-                        NotesListStickyHeader()
-                    } }
-                    items(viewModel.notes.value)
-
+                    stickyHeader {
+                        androidx.compose.animation.AnimatedVisibility(
+                            visible = viewModel.isScrollingUp.collectAsState().value,
+                            enter = slideInVertically(initialOffsetY = { -it }),
+                            exit = slideOutVertically(targetOffsetY = { -it }),
+                            modifier = Modifier.align(TopCenter)
+                        ) {
+                            NotesListStickyHeader()
+                        }
+                    }
+                    items(notesState.value)
                     {
                         NotePreview(
                             note = it,
                             formattedDateTime = viewModel.formatDateTime(it.dateTime),
-                            isFirst = viewModel.notes.value.first() == it
+                            isFirst = notesState.value.first() == it
                         ) {
                             navController.navigate(
                                 Screen.NoteScreen.route +
@@ -88,7 +87,6 @@ fun NotesListContent(paddingValues: PaddingValues, navController: NavController)
         }
     }
 }
-
 
 @Composable
 private fun LazyListState.isScrollingUp(): Boolean {

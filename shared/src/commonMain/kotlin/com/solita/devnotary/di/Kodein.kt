@@ -14,6 +14,7 @@ import com.solita.devnotary.feature_notes.data.remote.RemoteNotesRepositoryImpl
 import com.solita.devnotary.feature_notes.data.remote.UsersRepositoryImpl
 import com.solita.devnotary.feature_notes.domain.use_case.local_notes_use_cases.*
 import com.solita.devnotary.feature_notes.domain.use_case.remote_notes_use_cases.*
+import com.solita.devnotary.feature_notes.domain.use_case.users_use_cases.GetUser
 import com.solita.devnotary.feature_notes.domain.use_case.users_use_cases.GetUsers
 import com.solita.devnotary.feature_notes.domain.use_case.users_use_cases.GetUsersWithAccess
 import com.solita.devnotary.feature_notes.domain.use_case.users_use_cases.UsersUseCases
@@ -86,7 +87,8 @@ val di = DI {
     bindSingleton {
         UsersUseCases(
             getUsers = GetUsers(instance()),
-            getUsersWithAccess = GetUsersWithAccess(instance())
+            getUsersWithAccess = GetUsersWithAccess(instance()),
+            getUser = GetUser(instance())
         )
     }
 
