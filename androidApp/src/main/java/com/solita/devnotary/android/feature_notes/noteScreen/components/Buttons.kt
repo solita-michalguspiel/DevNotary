@@ -21,7 +21,7 @@ import org.kodein.di.instance
 @Preview
 @Composable
 fun PreviewLocalNoteButtons() {
-    LocalNoteButtons(modifier = Modifier, isEditEnabled = true)
+    LocalNoteButtons(modifier = Modifier, isEditEnabled = true,{})
 }
 
 @Preview
@@ -31,7 +31,7 @@ fun PreviewSharedNoteButtons(){
 }
 
 @Composable
-fun LocalNoteButtons(modifier: Modifier, isEditEnabled: Boolean) {
+fun LocalNoteButtons(modifier: Modifier, isEditEnabled: Boolean,navigateToNewNote : () -> Unit) {
     val buttonModifier = Modifier.padding(LocalSpacing.current.xSmall)
     Row(
         modifier = modifier
@@ -39,17 +39,16 @@ fun LocalNoteButtons(modifier: Modifier, isEditEnabled: Boolean) {
             .fillMaxWidth(0.9f),
         verticalAlignment = Alignment.Bottom
     ) {
-        AddNewNoteButton(buttonModifier.weight(1f))
+        AddNewNoteButton(buttonModifier.weight(1f), navigateToNewNote = navigateToNewNote)
         DeleteButton(buttonModifier.weight(1f))
         if (isEditEnabled) SaveButton(buttonModifier.weight(1f)) else EditButton(buttonModifier.weight(1f))
     }
 }
 
 @Composable
-fun AddNewNoteButton(modifier: Modifier) {
-    val viewModel: NotesViewModel by androidDi.instance()
+fun AddNewNoteButton(modifier: Modifier,navigateToNewNote : () -> Unit) {
     Button(onClick = {
-        viewModel.changeNoteScreenState(NoteScreenState.NewNote)
+        navigateToNewNote()
     }, modifier = modifier) {
         Text(text = stringResource(id = R.string.new_note))
     }
@@ -124,7 +123,7 @@ fun EditButton(modifier: Modifier) {
     val viewModel: NotesViewModel by androidDi.instance()
     Button(
         onClick = {
-            viewModel.changeNoteScreenState(NoteScreenState.LocalNoteEdit)
+            viewModel.isEditEnabled.value = true
         }, modifier = modifier
     ) {
         Text(text = stringResource(id = R.string.edit_note))

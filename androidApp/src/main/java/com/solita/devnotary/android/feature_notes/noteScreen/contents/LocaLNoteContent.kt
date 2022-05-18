@@ -28,7 +28,8 @@ import org.kodein.di.instance
 
 @Composable
 fun LocalNoteContent(
-    navigateToUsersWithAccessScreen: () -> Unit
+    navigateToUsersWithAccessScreen: () -> Unit,
+    navigateToNewNote : () -> Unit
 ) {
     val viewModel: NotesViewModel by androidDi.instance()
     val titleInputState = viewModel.titleInput.collectAsState()
@@ -94,6 +95,6 @@ fun LocalNoteContent(
                 )
             }
         }
-        LocalNoteButtons(modifier = Modifier.align(End), false)
+        LocalNoteButtons(modifier = Modifier.align(End), false,navigateToNewNote)
     }
 }

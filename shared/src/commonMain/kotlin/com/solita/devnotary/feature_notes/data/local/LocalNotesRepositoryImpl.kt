@@ -5,6 +5,7 @@ import com.solita.devnotary.database.Local_note
 import com.solita.devnotary.dev_notary_db
 import com.solita.devnotary.feature_notes.domain.Operation
 import com.solita.devnotary.domain.Response
+import com.solita.devnotary.feature_notes.domain.model.Note
 import com.solita.devnotary.feature_notes.domain.repository.LocalNotesRepository
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
@@ -16,7 +17,7 @@ class LocalNotesRepositoryImpl(private val database : dev_notary_db) : LocalNote
         try {
             emit(Response.Loading)
             database.notesQueries.insert(note.note_id,note.title,note.content,note.date_time,note.color)
-            emit(Response.Success(Operation.Add()))
+            emit(Response.Success(Operation.Add(Note(note.note_id,null,note.title,note.content,note.date_time,note.color))))
         }catch (e : Exception){
             emit(Response.Error(e.message ?: ERROR_MESSAGE))
         }

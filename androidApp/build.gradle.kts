@@ -70,6 +70,9 @@ dependencies {
     //Accompanist swipe to refresh
     implementation ("com.google.accompanist:accompanist-swiperefresh:0.24.8-beta")
 
+    //GSON
+    implementation ("com.google.code.gson:gson:2.8.9")
+
 
 
 }

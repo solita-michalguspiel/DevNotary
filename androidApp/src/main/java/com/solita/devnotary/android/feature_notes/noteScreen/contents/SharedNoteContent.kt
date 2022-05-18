@@ -26,19 +26,12 @@ import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import org.kodein.di.instance
 
 @Composable
-fun SharedNoteContent(popBackStack : () -> Unit) {
+fun SharedNoteContent() {
 
     val viewModel: NotesViewModel by androidDi.instance()
     val titleInputState = viewModel.titleInput.collectAsState()
     val contentInputState = viewModel.contentInput.collectAsState()
     val noteColorState = viewModel.noteColor.collectAsState()
-    val noteSharingState = viewModel.noteSharingState.collectAsState().value
-
-    LaunchedEffect(noteSharingState){
-        if(noteSharingState is Response.Success){
-            popBackStack()
-        }
-    }
 
     Column(Modifier.fillMaxSize()) {
         Card(
@@ -49,11 +42,14 @@ fun SharedNoteContent(popBackStack : () -> Unit) {
             elevation = LocalElevation.current.medium
         ) {
             Column {
-                when(val ownerUser = viewModel.noteOwnerUser.collectAsState().value){
+                when (val ownerUser = viewModel.noteOwnerUser.collectAsState().value) {
                     is Response.Loading -> {}
                     is Response.Success -> {
                         Text(
-                            text = stringResource(id = R.string.shared_by,ownerUser.data.userEmail),
+                            text = stringResource(
+                                id = R.string.shared_by,
+                                ownerUser.data.userEmail
+                            ),
                             Modifier
                                 .fillMaxWidth()
                                 .padding(LocalSpacing.current.xSmall),

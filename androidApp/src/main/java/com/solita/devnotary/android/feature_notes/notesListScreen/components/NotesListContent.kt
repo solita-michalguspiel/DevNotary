@@ -1,5 +1,7 @@
 package com.solita.devnotary.android.feature_notes.notesListScreen.components
 
+import android.net.Uri
+import android.os.Bundle
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -15,6 +17,7 @@ import androidx.navigation.NavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.google.gson.Gson
 import com.solita.devnotary.android.androidDi
 import com.solita.devnotary.android.composables.ProgressIndicator
 import com.solita.devnotary.android.navigation.Screen
@@ -79,9 +82,9 @@ fun NotesListContent(paddingValues: PaddingValues, navController: NavController)
                                 formattedDateTime = viewModel.formatDateTime(it.dateTime),
                                 isFirst = notesState.value.first() == it
                             ) {
+                                val noteJson = Uri.encode(Gson().toJson(it))
                                 navController.navigate(
-                                    Screen.NoteScreen.route +
-                                            "?$NOTE_INDEX=${viewModel.notes.value.indexOf(it)}"
+                                    Screen.NoteScreen.route + "/$noteJson"
                                 )
                             }
                         }

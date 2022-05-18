@@ -20,7 +20,9 @@ import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import org.kodein.di.instance
 
 @Composable
-fun LocalNoteEditContent() {
+fun LocalNoteEditContent(
+    navigateToNewNote: () -> Unit
+) {
     val viewModel: NotesViewModel by androidDi.instance()
     val titleInputState = viewModel.titleInput.collectAsState()
     val contentInputState = viewModel.contentInput.collectAsState()
@@ -37,7 +39,7 @@ fun LocalNoteEditContent() {
             Column {
                 TitleTextField(titleInput = titleInputState.value,
                     isEditEnabled = true,
-                    onValueChange = {if (it.length <= 30) viewModel.titleInput.value = it})
+                    onValueChange = { if (it.length <= 30) viewModel.titleInput.value = it })
                 ContentTextField(
                     contentInput = contentInputState.value,
                     modifier = Modifier.weight(1.0f),
@@ -49,6 +51,6 @@ fun LocalNoteEditContent() {
                 }
             }
         }
-        LocalNoteButtons(modifier = Modifier.align(Alignment.End), true)
+        LocalNoteButtons(modifier = Modifier.align(Alignment.End), true, navigateToNewNote)
     }
 }

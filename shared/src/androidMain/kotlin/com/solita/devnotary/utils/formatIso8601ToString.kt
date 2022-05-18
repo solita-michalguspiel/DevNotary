@@ -10,6 +10,7 @@ import java.util.*
 
 
 actual fun formatIso8601ToString(iso8601: String,timeZone : TimeZone): String {
+    if(iso8601.isBlank()) return ""
     val localTime = iso8601.toInstant().toLocalDateTime(timeZone).toString()
     val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:SS", Locale.getDefault())
     val date = sdf.parse(localTime)
