@@ -34,7 +34,7 @@ fun PreviewSignInScreenContent() {
 
 @Composable
 fun SignInScreenContent() {
-    val authViewModel :AuthViewModel by androidDi.instance()
+    val authViewModel: AuthViewModel by androidDi.instance()
     val emailResendTimer = authViewModel.resendEmailTimer.collectAsState().value
     val sendLinkState = authViewModel.sendLinkState.collectAsState().value
     val emailAddressInput = authViewModel.emailAddressInput.collectAsState()
@@ -56,7 +56,7 @@ fun SignInScreenContent() {
             maxLines = 1,
             singleLine = true
         )
-        if(sendLinkState is Response.Error){
+        if (sendLinkState is Response.Error) {
             TextIndicatingError(errorMessage = sendLinkState.message)
         }
         if (emailResendTimer != 0) {
@@ -67,7 +67,10 @@ fun SignInScreenContent() {
             )
         }
         DefaultSpacer()
-        Button(onClick = { authViewModel.sendEmailLink() }, enabled = emailResendTimer == 0) {
+        Button(
+            onClick = { authViewModel.sendEmailLink() },
+            enabled = emailResendTimer == 0 && sendLinkState !is Response.Loading
+        ) {
             Text(text = stringResource(id = R.string.get_email))
         }
     }

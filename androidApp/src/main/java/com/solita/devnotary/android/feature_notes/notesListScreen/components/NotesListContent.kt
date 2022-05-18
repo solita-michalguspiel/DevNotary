@@ -16,6 +16,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.solita.devnotary.android.androidDi
+import com.solita.devnotary.android.composables.ProgressIndicator
 import com.solita.devnotary.android.navigation.Screen
 import com.solita.devnotary.android.utils.Constants.NOTE_INDEX
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
@@ -41,52 +42,55 @@ fun NotesListContent(paddingValues: PaddingValues, navController: NavController)
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            SwipeRefresh(state = rememberSwipeRefreshState(isRefreshing = viewModel.isRefreshing.collectAsState().value),
-                onRefresh = {
-                    viewModel.getSharedNotes()
-                    viewModel.isRefreshing.value = true
-                },
-                indicator = { state, trigger ->
-                    SwipeRefreshIndicator(
-                        state = state,
-                        refreshTriggerDistance = trigger,
-                        contentColor = com.solita.devnotary.android.theme.LocalColors.current.Black,
-                        backgroundColor = com.solita.devnotary.android.theme.LocalColors.current.LightBlue
-                    )
-                })
-            {
-                LazyColumn(
-                    Modifier
-                        .fillMaxSize(), state = lazyListState
-                ) {
-                    stickyHeader {
-                        androidx.compose.animation.AnimatedVisibility(
-                            visible = viewModel.isScrollingUp.collectAsState().value,
-                            enter = slideInVertically(initialOffsetY = { -it }),
-                            exit = slideOutVertically(targetOffsetY = { -it }),
-                            modifier = Modifier.align(TopCenter)
-                        ) {
-                            NotesListStickyHeader()
+            if (notesState.value.isEmpty()) ProgressIndicator()
+
+                SwipeRefresh(state = rememberSwipeRefreshState(isRefreshing = viewModel.isRefreshing.collectAsState().value),
+                    onRefresh = {
+                        viewModel.getSharedNotes()
+                        viewModel.isRefreshing.value = true
+                    },
+                    indicator = { state, trigger ->
+                        SwipeRefreshIndicator(
+                            state = state,
+                            refreshTriggerDistance = trigger,
+                            contentColor = com.solita.devnotary.android.theme.LocalColors.current.Black,
+                            backgroundColor = com.solita.devnotary.android.theme.LocalColors.current.LightBlue
+                        )
+                    })
+                {
+                    LazyColumn(
+                        Modifier
+                            .fillMaxSize(), state = lazyListState
+                    ) {
+                        stickyHeader {
+                            androidx.compose.animation.AnimatedVisibility(
+                                visible = viewModel.isScrollingUp.collectAsState().value,
+                                enter = slideInVertically(initialOffsetY = { -it }),
+                                exit = slideOutVertically(targetOffsetY = { -it }),
+                                modifier = Modifier.align(TopCenter)
+                            ) {
+                                NotesListStickyHeader()
+                            }
                         }
-                    }
-                    items(notesState.value)
-                    {
-                        NotePreview(
-                            note = it,
-                            formattedDateTime = viewModel.formatDateTime(it.dateTime),
-                            isFirst = notesState.value.first() == it
-                        ) {
-                            navController.navigate(
-                                Screen.NoteScreen.route +
-                                        "?$NOTE_INDEX=${viewModel.notes.value.indexOf(it)}"
-                            )
+                        items(notesState.value)
+                        {
+                            NotePreview(
+                                note = it,
+                                formattedDateTime = viewModel.formatDateTime(it.dateTime),
+                                isFirst = notesState.value.first() == it
+                            ) {
+                                navController.navigate(
+                                    Screen.NoteScreen.route +
+                                            "?$NOTE_INDEX=${viewModel.notes.value.indexOf(it)}"
+                                )
+                            }
                         }
                     }
                 }
             }
         }
     }
-}
+
 
 @Composable
 private fun LazyListState.isScrollingUp(): Boolean {
