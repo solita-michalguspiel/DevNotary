@@ -7,13 +7,11 @@ import com.solita.devnotary.di.di
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.domain.User
 import com.solita.devnotary.feature_auth.domain.use_case.AuthUseCases
+import com.solita.devnotary.utils.Timer
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import org.kodein.di.DI
 import org.kodein.di.instance
 
@@ -36,21 +34,15 @@ class AuthViewModel(dependencyInjection: DI = di) :
 
     val isUserAuthenticated get() = useCases.isUserAuthenticated.invoke()
 
-    val openDialogState = MutableStateFlow(false)
-
-    val errorMessageState = MutableStateFlow("")
-
     val resendEmailTimer = MutableStateFlow(0)
 
     val emailAddressInput = MutableStateFlow("")
-
-    private var job: Job? = null
 
     fun getCurrentUserDocument() {
         viewModelScope.launch {
             useCases.getCurrentUserDocument.invoke().collect { response ->
                 _userState.value = response
-                if (response is Response.Error) reactToError(response.message)
+                if (response is Response.Error) setError(response.message)
             }
         }
     }
@@ -60,7 +52,7 @@ class AuthViewModel(dependencyInjection: DI = di) :
         settings.putString(CURRENT_EMAIL_KEY, emailAddressInput.value)
         viewModelScope.launch {
             useCases.sendEmailLink.invoke(emailAddressInput.value).collect { response ->
-                if (response == Response.Success(true)) startTimer(RESEND_EMAIL_TIME)
+                if (response == Response.Success(true)) startTimer()
                 _sendLinkState.value = response
             }
         }
@@ -72,7 +64,7 @@ class AuthViewModel(dependencyInjection: DI = di) :
             useCases.signInWithEmailLink(email = email, intent = intent).collect { response ->
                 _userAuthState.value = response
                 when (response) {
-                    is Response.Error -> reactToError(response.message)
+                    is Response.Error -> setError(response.message)
                     is Response.Success -> stopTimer()
                     else -> {}
                 }
@@ -83,16 +75,17 @@ class AuthViewModel(dependencyInjection: DI = di) :
     fun signOut() {
         viewModelScope.launch {
             useCases.signOut.invoke().collect { response ->
-                println(response)
                 _userAuthState.value = response
                 getCurrentUserDocument()
-                if (response is Response.Error) reactToError(response.message)
-
+                if (response is Response.Error) setError(response.message)
             }
         }
     }
 
-    private fun reactToError(error: String) {
+    val openDialogState = MutableStateFlow(false)
+    val errorMessageState = MutableStateFlow("")
+
+    private fun setError(error: String) {
         errorMessageState.value = error
         openDialogState.value = true
     }
@@ -102,22 +95,18 @@ class AuthViewModel(dependencyInjection: DI = di) :
         errorMessageState.value = ""
     }
 
-    private fun startTimer(seconds: Int) {
-        var timer = seconds
-        job = viewModelScope.launch {
-            coroutineScope {
-                for (i in 0 until seconds) {
-                    delay(1000)
-                    timer -= 1
-                    println(timer)
-                    resendEmailTimer.value = timer
-                }
+    private val timer = Timer(RESEND_EMAIL_TIME)
+
+    private fun startTimer(){
+        viewModelScope.launch {
+            timer.startTimer().collect {
+                resendEmailTimer.value = it
             }
         }
     }
 
-    private fun stopTimer() {
-        job?.cancel()
+    private fun stopTimer(){
+        timer.stopTimer()
         resendEmailTimer.value = 0
         _sendLinkState.value = Response.Empty
     }

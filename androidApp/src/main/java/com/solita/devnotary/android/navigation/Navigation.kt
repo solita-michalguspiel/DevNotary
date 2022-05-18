@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.solita.devnotary.android.feature_auth.ProfileScreen
 import com.solita.devnotary.android.feature_auth.SignInScreen
-import com.solita.devnotary.android.feature_notes.LocalNotesScreen
+import com.solita.devnotary.android.feature_notes.NotesListScreen
 import com.solita.devnotary.android.feature_notes.NoteScreen
 import com.solita.devnotary.android.feature_notes.usersWithAccessScreen.UsersWithAccessScreen
 import com.solita.devnotary.android.utils.Constants.NOTE_INDEX
@@ -24,7 +24,7 @@ fun Navigation() {
             ProfileScreen(navController = navController)
         }
         composable(Screen.NotesListScreen.route) {
-            LocalNotesScreen(navController)
+            NotesListScreen(navController)
         }
         composable(
             route = Screen.NoteScreen.route +"?$NOTE_INDEX={$NOTE_INDEX}",

@@ -89,6 +89,7 @@ fun NoteScreen(
 
         when (viewModel.noteScreenState.collectAsState().value) {
             NoteScreenState.NewNote -> {
+                viewModel.prepareNoteScreen(null)
                 NewNoteContent()
             }
             NoteScreenState.LocalNote -> {

@@ -28,9 +28,6 @@ fun NewNoteContent() {
     val contentInputState = viewModel.contentInput.collectAsState()
     val noteColorState = viewModel.noteColor.collectAsState()
 
-    LaunchedEffect(Unit){
-        viewModel.clearContent()
-    }
 
     Column(Modifier.fillMaxSize()) {
         Card(

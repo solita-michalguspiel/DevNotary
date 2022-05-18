@@ -12,7 +12,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import com.solita.devnotary.android.R
 import com.solita.devnotary.android.androidDi
 import com.solita.devnotary.android.feature_notes._sharedComponents.SharedNoteButtons
@@ -73,7 +72,7 @@ fun SharedNoteContent(popBackStack : () -> Unit) {
                 Text(
                     text = stringResource(
                         R.string.note_time_date_stamp,
-                        viewModel.formatDateTime(viewModel.noteDateTime)
+                        viewModel.formatDateTime(viewModel.noteDateTime.value)
                     ),
                     modifier = Modifier
                         .align(End)

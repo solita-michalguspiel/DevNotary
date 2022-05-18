@@ -16,7 +16,8 @@ object Constants {
     const val USERS_FIREBASE = "user_firebase_reference"
 
     /**USERS*/
-    const val USER_EMAIL = "userEmail"
+    const val USER_ID = "userId"
+
     /**NOTES*/
     const val NOTE_ID = "noteId"
     const val OWNER_USER_ID = "ownerUserId"

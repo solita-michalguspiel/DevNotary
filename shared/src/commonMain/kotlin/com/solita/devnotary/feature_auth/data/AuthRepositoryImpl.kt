@@ -4,6 +4,7 @@ import com.solita.devnotary.Constants.ANDROID_PACKAGE_NAME
 import com.solita.devnotary.Constants.APP_URL
 import com.solita.devnotary.Constants.ERROR_MESSAGE
 import com.solita.devnotary.Constants.USERS_FIREBASE
+import com.solita.devnotary.Constants.USER_ID
 import com.solita.devnotary.di.di
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.domain.User
@@ -93,7 +94,7 @@ class AuthRepositoryImpl : AuthRepository {
         val query = usersReference.document(uid)
         try {
             query.snapshots.collectLatest { snap ->
-                val userIdRetrievedFromFirebase = snap.get<String?>("userId")
+                val userIdRetrievedFromFirebase = snap.get<String?>(USER_ID)
                 if (userIdRetrievedFromFirebase == "" || userIdRetrievedFromFirebase == null) {
                     usersReference.document(uid).set(User(uid, email))
                     send(Response.Success(true))

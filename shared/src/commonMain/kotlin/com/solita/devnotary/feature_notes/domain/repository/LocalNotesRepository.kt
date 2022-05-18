@@ -11,7 +11,7 @@ interface LocalNotesRepository {
 
     suspend fun deleteNote(noteId: String): Flow<Response<Operation>>
 
-    suspend fun editNote(note: Local_note): Flow<Response<Operation>>
+    suspend fun editNote(newTitle:String,newContent:String,newColor:String,id:String): Flow<Response<Operation>>
 
     fun getNotes():Flow<List<Local_note>>
 

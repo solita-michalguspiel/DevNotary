@@ -9,7 +9,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Alignment.Companion.TopEnd
 import androidx.compose.ui.Modifier
@@ -84,7 +83,7 @@ fun LocalNoteContent(
                     modifier = Modifier.weight(1.0f), isEditEnabled = false
                 )
                 Text(
-                    text = stringResource(R.string.note_time_date_stamp,viewModel.formatDateTime(viewModel.noteDateTime)),
+                    text = stringResource(R.string.note_time_date_stamp,viewModel.formatDateTime(viewModel.noteDateTime.value)),
                     modifier = Modifier
                         .align(End)
                         .padding(

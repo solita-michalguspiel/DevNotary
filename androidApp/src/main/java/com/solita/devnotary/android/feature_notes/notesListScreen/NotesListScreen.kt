@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 import org.kodein.di.instance
 
 @Composable
-fun LocalNotesScreen(navController: NavController) {
+fun NotesListScreen(navController: NavController) {
 
     val notesViewModel: NotesViewModel by androidDi.instance()
     val coroutineScope = rememberCoroutineScope()

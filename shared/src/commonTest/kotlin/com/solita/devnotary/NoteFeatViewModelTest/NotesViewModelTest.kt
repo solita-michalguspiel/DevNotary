@@ -10,7 +10,10 @@ import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.beInstanceOf
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.test.*
 import org.kodein.di.DI
 import org.kodein.di.bindSingleton
@@ -98,7 +101,7 @@ class NotesViewModelTest {
             launch {
                 setNote(firstNote)
                 viewModel.addNote(firstNote.noteId)
-                viewModel.noteId = firstNote.noteId
+                viewModel.noteId.value = firstNote.noteId
                 viewModel.contentInput.value = "ChangedContent"
                 viewModel.editNote()
             }
@@ -119,7 +122,7 @@ class NotesViewModelTest {
         }
         advanceUntilIdle()
         launch {
-            viewModel.noteId = secondNote.noteId
+            viewModel.noteId.value = secondNote.noteId
             viewModel.deleteNote()
         }
         advanceTimeBy(50)
@@ -139,7 +142,7 @@ class NotesViewModelTest {
         }
         advanceUntilIdle()
         launch {
-            viewModel.noteId = thirdNote.noteId
+            viewModel.noteId.value = thirdNote.noteId
             viewModel.deleteNote()
         }
         advanceUntilIdle()
@@ -154,8 +157,8 @@ class NotesViewModelTest {
         }
         advanceUntilIdle()
         launch {
-            viewModel.noteId = "Some uuid that does not exists"
-            viewModel.noteDateTime = "Some date"
+            viewModel.noteId.value = "Some uuid that does not exists"
+            viewModel.noteDateTime.value = "Some date"
             viewModel.editNote()
         }
         advanceUntilIdle()
@@ -172,10 +175,10 @@ class NotesViewModelTest {
 
     @Test
     fun givenThereIsSharedNoteAndGetSharedNotesIsCalled_SharedNoteShouldAppearInSharedNotes() : TestResult = runTest {
-            viewModel.noteId = firstNote.noteId
+            viewModel.noteId.value = firstNote.noteId
             viewModel.titleInput.value = firstNote.title
             viewModel.contentInput.value = firstNote.content
-            viewModel.noteDateTime = firstNote.dateTime
+            viewModel.noteDateTime.value = firstNote.dateTime
             viewModel.noteColor.value = firstNote.color
         launch {
             viewModel.anotherUserEmailAddress.value = remoteNotesRepository.appUser1
@@ -186,7 +189,7 @@ class NotesViewModelTest {
         launch { viewModel.getSharedNotes() }
         advanceUntilIdle()
         viewModel.sharedNotesState.value shouldBe Response.Success(true)
-        viewModel.sharedNotes.value shouldBe listOf(Note(firstNote.noteId,remoteNotesRepository.appUser3,
+        viewModel.notesSharedByOtherUsers.value shouldBe listOf(Note(firstNote.noteId,remoteNotesRepository.appUser3,
             firstNote.title,firstNote.content,"TODAY",firstNote.color))
     }
 

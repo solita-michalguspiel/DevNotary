@@ -32,10 +32,10 @@ class LocalNotesRepositoryImpl(private val database : dev_notary_db) : LocalNote
         }
     }
 
-    override suspend fun editNote(note: Local_note): Flow<Response<Operation>> = flow{
+    override suspend fun editNote(newTitle:String,newContent:String,newColor:String,id:String): Flow<Response<Operation>> = flow{
         try {
             emit(Response.Loading)
-            database.notesQueries.update(note.title,note.content,note.color,note.note_id)
+            database.notesQueries.update(newTitle,newContent,newColor,id)
             emit(Response.Success(Operation.Edit()))
         }catch (e : Exception){
             emit(Response.Error(e.message ?: ERROR_MESSAGE))

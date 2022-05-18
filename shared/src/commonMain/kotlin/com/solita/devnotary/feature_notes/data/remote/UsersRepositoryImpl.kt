@@ -5,6 +5,7 @@ import com.solita.devnotary.Constants.ERROR_MESSAGE
 import com.solita.devnotary.Constants.NOTE_ID
 import com.solita.devnotary.Constants.OWNER_USER_ID
 import com.solita.devnotary.Constants.USERS_FIREBASE
+import com.solita.devnotary.Constants.USER_ID
 import com.solita.devnotary.di.di
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.domain.User
@@ -49,7 +50,7 @@ class UsersRepositoryImpl : UsersRepository {
                 .get().documents.map { it.data<SharedNoteRef>() }
             val users = sharedNotesRefs.map { sharedNoteRef ->
                 usersReference
-                    .where("userId", sharedNoteRef.sharedUserId)
+                    .where(USER_ID, sharedNoteRef.sharedUserId)
                     .get().documents.map { it.data<User>() }.first()
             }
             emit(Response.Success(users))
@@ -61,7 +62,7 @@ class UsersRepositoryImpl : UsersRepository {
     override suspend fun getUser(userId: String): Flow<Response<User>> = flow {
         try {
             emit(Response.Loading)
-            val user = usersReference.where("userId", userId).get().documents.first().data<User>()
+            val user = usersReference.where(USER_ID, userId).get().documents.first().data<User>()
             emit(Response.Success(user))
         } catch (e: Exception) {
             emit(Response.Error(e.message ?: ERROR_MESSAGE))

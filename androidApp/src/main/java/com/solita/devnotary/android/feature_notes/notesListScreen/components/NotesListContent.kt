@@ -30,7 +30,7 @@ fun NotesListContent(paddingValues: PaddingValues, navController: NavController)
     val notesState = viewModel.notes.collectAsState()
 
     val lazyListState = rememberLazyListState()
-    if (lazyListState.isScrollingUp()) viewModel.scrollingUp() else viewModel.scrollingDown()
+    viewModel.isScrollingUp.value = lazyListState.isScrollingUp()
 
     LaunchedEffect(Unit) {
         viewModel.listenToNoteListChanges()

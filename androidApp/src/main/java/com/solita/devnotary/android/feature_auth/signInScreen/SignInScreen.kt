@@ -1,5 +1,6 @@
 package com.solita.devnotary.android.feature_auth
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import androidx.activity.compose.BackHandler
@@ -25,6 +26,7 @@ import com.solita.devnotary.feature_auth.presentation.AuthViewModel
 import kotlinx.coroutines.launch
 import org.kodein.di.instance
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SignInScreen(navController: NavController) {
