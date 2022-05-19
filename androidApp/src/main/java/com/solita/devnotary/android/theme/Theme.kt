@@ -7,6 +7,7 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 
 private val LightColorPalette = lightColors(
@@ -14,7 +15,7 @@ private val LightColorPalette = lightColors(
     surface = Colors().LightGray,
     primaryVariant = Colors().ThemeBlueSecond,
     secondary = Colors().ThemeDarkestYellow,
-    background = Color.White,
+    background = Colors().VeryLightGray,
     onBackground = Colors().Black,
     onSurface = Colors().Black,
     onPrimary = Colors().White
@@ -36,11 +37,13 @@ fun DevNotaryTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
+    val systemUiController = rememberSystemUiController()
     val colors = if (darkTheme) {
         DarkColorPalette
     } else {
         LightColorPalette
     }
+    systemUiController.setSystemBarsColor(colors.background)
     CompositionLocalProvider(LocalSpacing provides Spacing(),
         LocalElevation provides Elevation(),
         LocalColors provides Colors(),
