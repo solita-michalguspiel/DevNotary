@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,7 +32,7 @@ fun NotesListStickyHeader() {
     Row(
         Modifier
             .fillMaxWidth()
-            .background(Color.White)
+
             .padding(vertical = LocalSpacing.current.xSmall),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
@@ -67,7 +66,7 @@ fun NotesListStickyHeader() {
             }
             DropdownMenu(
                 expanded = viewModel.isSortOptionDropdownOpen.collectAsState().value,
-                modifier = Modifier.padding(0.dp),
+                modifier = Modifier.padding(0.dp).background(MaterialTheme.colors.surface),
                 onDismissRequest = { viewModel.isSortOptionDropdownOpen.value = false }) {
                 DropdownMenuItem(onClick = {}) {
                     SortingRadioButtons(
@@ -107,12 +106,11 @@ private fun SortingRadioButtons(
                             sortOption.sort.click()
                         },
                         colors = RadioButtonDefaults.colors(
-                            disabledColor = LocalColors.current.LightGray,
-                            selectedColor = LocalColors.current.Blue,
-                            unselectedColor = LocalColors.current.Gray
+                            selectedColor = MaterialTheme.colors.primary,
+                            unselectedColor = MaterialTheme.colors.onSurface
                         )
                     )
-                    Text(text = sortOption.sortName)
+                    Text(text = sortOption.sortName, color = MaterialTheme.colors.onSurface)
                 }
             }
         }

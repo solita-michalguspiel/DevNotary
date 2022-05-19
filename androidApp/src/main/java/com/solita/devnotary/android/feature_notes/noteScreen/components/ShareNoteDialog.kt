@@ -4,10 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
@@ -26,7 +23,10 @@ import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 @Composable
  fun ShareNoteDialog(viewModel: NotesViewModel) {
     AlertDialog(
-        onDismissRequest = { viewModel.closeShareDialog() },
+        onDismissRequest = {
+            viewModel.closeShareDialog()
+            viewModel.restartNoteSharingState()
+                           },
         title = {
             Text(
                 text = stringResource(id = R.string.share_note),
@@ -46,6 +46,12 @@ import com.solita.devnotary.feature_notes.presentation.NotesViewModel
                             style = Typography.caption
                         )
                     },
+                    colors = TextFieldDefaults.textFieldColors(
+                        textColor = Color.Black,
+                        disabledTextColor = Color.Black,
+                        focusedLabelColor = Color.Black,
+                        unfocusedLabelColor = Color.Black,
+                    ),
                     textStyle = Typography.body1.copy(color = Color.Black),
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)

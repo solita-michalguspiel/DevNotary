@@ -35,6 +35,7 @@ fun NotesListScreen(navController: NavController) {
     LaunchedEffect(Unit) {
         notesViewModel.getSharedNotes()
     }
+    notesViewModel.isEditEnabled.value = false
 
     LaunchedEffect(noteModificationStatus) {
         if (noteModificationStatus is Response.Success<Operation>) {

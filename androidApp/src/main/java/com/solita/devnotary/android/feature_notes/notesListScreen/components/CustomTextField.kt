@@ -52,7 +52,7 @@ fun CustomTextField(
                     if (value.isEmpty()) Text(
                         placeholderText,
                         style = LocalTextStyle.current.copy(
-                            color = MaterialTheme.colors.onSurface.copy(alpha = 0.3f),
+                            color = MaterialTheme.colors.onSurface.copy(alpha = 0.6f),
                             fontSize = fontSize
                         )
                     )

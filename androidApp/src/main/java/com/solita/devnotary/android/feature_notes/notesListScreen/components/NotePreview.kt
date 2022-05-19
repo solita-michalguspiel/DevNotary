@@ -2,6 +2,7 @@ package com.solita.devnotary.android.feature_notes.notesListScreen.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
@@ -14,10 +15,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.solita.devnotary.android.R
-import com.solita.devnotary.android.theme.LocalElevation
-import com.solita.devnotary.android.theme.LocalShapes
-import com.solita.devnotary.android.theme.LocalSpacing
-import com.solita.devnotary.android.theme.Typography
+import com.solita.devnotary.android.theme.*
 import com.solita.devnotary.android.utils.NoteColor
 import com.solita.devnotary.feature_notes.domain.model.Note
 
@@ -37,7 +35,7 @@ fun NotePreview(
             start = LocalSpacing.current.xxSmall,
             end = LocalSpacing.current.xxSmall,
             bottom = LocalSpacing.current.default,
-            top = if(!isFirst) LocalSpacing.current.default else 0.dp
+            top = if(!isFirst) LocalSpacing.current.default else LocalSpacing.current.xSmall
         )
     ) {
         Column {
@@ -48,7 +46,8 @@ fun NotePreview(
                 modifier = Modifier.padding(
                     start =
                     LocalSpacing.current.small, top = LocalSpacing.current.small
-                )
+                ),
+                color = LocalColors.current.Black
             )
             Text(
                 text = note.content,
@@ -60,7 +59,8 @@ fun NotePreview(
                     .padding(
                         LocalSpacing.current.default
                     )
-                    .heightIn(0.dp, 30.dp)
+                    .heightIn(0.dp, 30.dp),
+                color = LocalColors.current.Black
             )
             Row(
                 Modifier
@@ -72,7 +72,7 @@ fun NotePreview(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = formattedDateTime, style = Typography.caption)
+                Text(text = formattedDateTime, style = Typography.caption, color = LocalColors.current.Black)
                 TextButton(
                     onClick = {
                         navigateToNoteScreen()

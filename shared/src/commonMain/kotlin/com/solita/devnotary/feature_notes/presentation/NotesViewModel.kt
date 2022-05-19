@@ -115,7 +115,7 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
         viewModelScope.launch {
             localUseCases.addNote.invoke(note).collect { response ->
                 if (response is Response.Success)
-                _noteModificationStatus.value = response
+                    _noteModificationStatus.value = response
             }
         }
     }
@@ -256,19 +256,16 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
 
     fun listenToNoteListChanges() {
         viewModelScope.launch {
-            _selectedSort.collect {
-                prepareLists()
-            }
+            _selectedSort.collect { prepareLists() }
         }
         viewModelScope.launch {
-            noteSearchPhrase.collect {
-                prepareLists()
-            }
+            noteSearchPhrase.collect { prepareLists() }
         }
         viewModelScope.launch {
-            _notesSharedByOtherUsers.collect {
-                prepareLists()
-            }
+            _notesSharedByOtherUsers.collect { prepareLists() }
+        }
+        viewModelScope.launch {
+            _localNotes.collect { prepareLists() }
         }
     }
 
@@ -289,7 +286,7 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
         }
     }
 
-     fun prepareNoteScreen(note: Note?) {
+    fun prepareNoteScreen(note: Note?) {
         this.noteId.value = note?.noteId ?: ""
         this.titleInput.value = note?.title ?: ""
         this.contentInput.value = note?.content ?: ""
@@ -302,6 +299,9 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
 
     fun closeShareDialog() {
         isShareDialogOpen.value = false
+    }
+
+    fun restartNoteSharingState() {
         _noteSharingState.value = Response.Empty
     }
 }

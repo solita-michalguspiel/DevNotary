@@ -9,20 +9,26 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 
 
-private val DarkColorPalette = darkColors(
-    primary = Colors().Black,
+private val LightColorPalette = lightColors(
+    primary = Colors().ThemeBlue,
     surface = Colors().LightGray,
-    primaryVariant = Colors().LightBlack,
-    secondary = Colors().Gray,
+    primaryVariant = Colors().ThemeBlueSecond,
+    secondary = Colors().ThemeDarkestYellow,
     background = Color.White,
+    onBackground = Colors().Black,
+    onSurface = Colors().Black,
+    onPrimary = Colors().White
 )
 
-private val LightColorPalette = lightColors(
-    primary = Colors().Black,
-    surface = Colors().LightGray,
-    primaryVariant = Colors().LightBlack,
-    secondary = Colors().Gray,
-    background = Color.White,
+private val DarkColorPalette = darkColors(
+    primary = Colors().ThemeLightBlue,
+    surface = Colors().Gray,
+    primaryVariant = Colors().ThemeBlueSecond,
+    secondary = Colors().ThemeDarkYellow,
+    background = Colors().LightBlack,
+    onSurface = Colors().Black,
+    onBackground = Colors().White,
+    onPrimary = Colors().Black
 )
 
 @Composable

@@ -14,39 +14,42 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.solita.devnotary.android.R
 import com.solita.devnotary.android.androidDi
 import com.solita.devnotary.android.theme.LocalSpacing
-import com.solita.devnotary.feature_notes.presentation.NoteScreenState
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import org.kodein.di.instance
 
 @Preview
 @Composable
 fun PreviewLocalNoteButtons() {
-    LocalNoteButtons(modifier = Modifier, isEditEnabled = true,{})
+    LocalNoteButtons(modifier = Modifier, isEditEnabled = true, {})
 }
 
 @Preview
 @Composable
-fun PreviewSharedNoteButtons(){
-    SharedNoteButtons(modifier = Modifier )
+fun PreviewSharedNoteButtons() {
+    SharedNoteButtons(modifier = Modifier)
 }
 
 @Composable
-fun LocalNoteButtons(modifier: Modifier, isEditEnabled: Boolean,navigateToNewNote : () -> Unit) {
+fun LocalNoteButtons(modifier: Modifier, isEditEnabled: Boolean, navigateToNewNote: () -> Unit) {
     val buttonModifier = Modifier.padding(LocalSpacing.current.xSmall)
     Row(
         modifier = modifier
             .padding(LocalSpacing.current.small)
             .fillMaxWidth(0.9f),
-        verticalAlignment = Alignment.Bottom
+        verticalAlignment = Alignment.Bottom,
     ) {
         AddNewNoteButton(buttonModifier.weight(1f), navigateToNewNote = navigateToNewNote)
         DeleteButton(buttonModifier.weight(1f))
-        if (isEditEnabled) SaveButton(buttonModifier.weight(1f)) else EditButton(buttonModifier.weight(1f))
+        if (isEditEnabled) SaveButton(buttonModifier.weight(1f)) else EditButton(
+            buttonModifier.weight(
+                1f
+            )
+        )
     }
 }
 
 @Composable
-fun AddNewNoteButton(modifier: Modifier,navigateToNewNote : () -> Unit) {
+fun AddNewNoteButton(modifier: Modifier, navigateToNewNote: () -> Unit) {
     Button(onClick = {
         navigateToNewNote()
     }, modifier = modifier) {
@@ -68,7 +71,7 @@ fun SaveButton(modifier: Modifier) {
 }
 
 @Composable
-fun SharedNoteButtons(modifier: Modifier){
+fun SharedNoteButtons(modifier: Modifier) {
     val buttonModifier = Modifier.padding(LocalSpacing.current.xSmall)
     Row(
         modifier = modifier
@@ -96,7 +99,7 @@ fun SaveNoteLocallyButton(modifier: Modifier) {
 }
 
 @Composable
-fun DeleteSharedNote(modifier: Modifier){
+fun DeleteSharedNote(modifier: Modifier) {
     val viewModel: NotesViewModel by androidDi.instance()
     Button(
         onClick = { viewModel.deleteOwnAccessFromSharedNote() }, modifier = modifier

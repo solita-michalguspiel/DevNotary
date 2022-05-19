@@ -2,6 +2,7 @@ package com.solita.devnotary.android.feature_notes
 
 import android.annotation.SuppressLint
 import android.net.Uri
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
@@ -18,6 +19,7 @@ import com.solita.devnotary.android.feature_notes.noteScreen.contents.LocalNoteE
 import com.solita.devnotary.android.feature_notes.noteScreen.contents.NewNoteContent
 import com.solita.devnotary.android.feature_notes.noteScreen.contents.SharedNoteContent
 import com.solita.devnotary.android.navigation.Screen
+import com.solita.devnotary.android.navigation.navigateToNoteScreen
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.feature_notes.domain.Operation
 import com.solita.devnotary.feature_notes.domain.model.Note
@@ -49,7 +51,7 @@ fun NoteScreen(
         }
     }
 
-    Scaffold(scaffoldState = scaffoldState) {
+    Scaffold(scaffoldState = scaffoldState, contentColor = MaterialTheme.colors.primary) {
         when (noteModification) {
             is Response.Success<Operation> -> {
                 when (noteModification.data) {
@@ -63,12 +65,7 @@ fun NoteScreen(
                         Screen.NotesListScreen.route,
                         false
                     )
-                    is Operation.Add -> {
-                        val noteJson = Uri.encode(Gson().toJson(noteModification.data.note))
-                        navController.navigate(Screen.NoteScreen.route + "/${noteJson}") {
-                            popUpTo(Screen.NotesListScreen.route)
-                        }
-                    }
+                    is Operation.Add -> navController.navigateToNoteScreen(noteModification.data.note)
                     is Operation.Share -> {}
                 }
                 viewModel.resetNoteModificationStatus()
@@ -84,21 +81,15 @@ fun NoteScreen(
             ShareNoteDialog(viewModel)
         }
 
-        when{
+        when {
             note == null -> NewNoteContent()
-            note.ownerUserId != null -> SharedNoteContent()
+            note.ownerUserId != null -> SharedNoteContent { navController.popBackStack() }
             else -> {
-                if(viewModel.isEditEnabled.collectAsState().value) LocalNoteEditContent {
-                    navController.navigate(Screen.NoteScreen.route) {
-                        popUpTo(Screen.NotesListScreen.route)
-                    }
+                if (viewModel.isEditEnabled.collectAsState().value) LocalNoteEditContent {
+                    navController.navigateToNoteScreen()
                 }
                 else LocalNoteContent({ navController.navigate(Screen.UsersWithAccessScreen.route) },
-                    {
-                        navController.navigate(Screen.NoteScreen.route) {
-                            popUpTo(Screen.NotesListScreen.route)
-                        }
-                    })
+                    { navController.navigateToNoteScreen() })
             }
         }
     }

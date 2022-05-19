@@ -3,6 +3,7 @@ package com.solita.devnotary.android.feature_notes.noteScreen.components
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
@@ -29,9 +30,14 @@ fun TitleTextField(titleInput : String,
         modifier = Modifier
             .fillMaxWidth(),
         colors = TextFieldDefaults.textFieldColors(
+            textColor = Color.Black,
             backgroundColor = Color.White.copy(alpha = 0.0f),
             disabledTextColor = Color.Black,
-        ), label =
+            focusedLabelColor = Color.Black,
+            unfocusedLabelColor = Color.Black,
+            focusedIndicatorColor = Color.Black,
+            unfocusedIndicatorColor = Color.Black
+            ), label =
         { if (isEditEnabled) Text(text = stringResource(id = R.string.note_title_label)) },
         enabled = isEditEnabled,
         keyboardOptions = KeyboardOptions(imeAction = androidx.compose.ui.text.input.ImeAction.Next)

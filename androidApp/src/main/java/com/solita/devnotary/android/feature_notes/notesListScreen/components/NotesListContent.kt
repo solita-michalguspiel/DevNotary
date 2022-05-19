@@ -1,7 +1,5 @@
 package com.solita.devnotary.android.feature_notes.notesListScreen.components
 
-import android.net.Uri
-import android.os.Bundle
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -17,11 +15,10 @@ import androidx.navigation.NavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.google.gson.Gson
 import com.solita.devnotary.android.androidDi
 import com.solita.devnotary.android.composables.ProgressIndicator
-import com.solita.devnotary.android.navigation.Screen
-import com.solita.devnotary.android.utils.Constants.NOTE_INDEX
+import com.solita.devnotary.android.navigation.navigateToNoteScreen
+import com.solita.devnotary.domain.Response
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import org.kodein.di.instance
 
@@ -45,54 +42,49 @@ fun NotesListContent(paddingValues: PaddingValues, navController: NavController)
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            if (notesState.value.isEmpty()) ProgressIndicator()
-
-                SwipeRefresh(state = rememberSwipeRefreshState(isRefreshing = viewModel.isRefreshing.collectAsState().value),
-                    onRefresh = {
-                        viewModel.getSharedNotes()
-                        viewModel.isRefreshing.value = true
-                    },
-                    indicator = { state, trigger ->
-                        SwipeRefreshIndicator(
-                            state = state,
-                            refreshTriggerDistance = trigger,
-                            contentColor = com.solita.devnotary.android.theme.LocalColors.current.Black,
-                            backgroundColor = com.solita.devnotary.android.theme.LocalColors.current.LightBlue
-                        )
-                    })
-                {
-                    LazyColumn(
-                        Modifier
-                            .fillMaxSize(), state = lazyListState
-                    ) {
-                        stickyHeader {
-                            androidx.compose.animation.AnimatedVisibility(
-                                visible = viewModel.isScrollingUp.collectAsState().value,
-                                enter = slideInVertically(initialOffsetY = { -it }),
-                                exit = slideOutVertically(targetOffsetY = { -it }),
-                                modifier = Modifier.align(TopCenter)
-                            ) {
-                                NotesListStickyHeader()
-                            }
+            SwipeRefresh(state = rememberSwipeRefreshState(isRefreshing = viewModel.isRefreshing.collectAsState().value),
+                onRefresh = {
+                    viewModel.getSharedNotes()
+                    viewModel.isRefreshing.value = true
+                },
+                indicator = { state, trigger ->
+                    SwipeRefreshIndicator(
+                        state = state,
+                        refreshTriggerDistance = trigger,
+                        contentColor = com.solita.devnotary.android.theme.LocalColors.current.Black,
+                        backgroundColor = com.solita.devnotary.android.theme.LocalColors.current.ThemeLightBlue
+                    )
+                })
+            {
+                LazyColumn(
+                    Modifier
+                        .fillMaxSize(), state = lazyListState
+                ) {
+                    stickyHeader {
+                        androidx.compose.animation.AnimatedVisibility(
+                            visible = viewModel.isScrollingUp.collectAsState().value,
+                            enter = slideInVertically(initialOffsetY = { -it }),
+                            exit = slideOutVertically(targetOffsetY = { -it }),
+                            modifier = Modifier.align(TopCenter)
+                        ) {
+                            NotesListStickyHeader()
                         }
-                        items(notesState.value)
-                        {
-                            NotePreview(
-                                note = it,
-                                formattedDateTime = viewModel.formatDateTime(it.dateTime),
-                                isFirst = notesState.value.first() == it
-                            ) {
-                                val noteJson = Uri.encode(Gson().toJson(it))
-                                navController.navigate(
-                                    Screen.NoteScreen.route + "/$noteJson"
-                                )
-                            }
+                    }
+                    items(notesState.value)
+                    {
+                        NotePreview(
+                            note = it,
+                            formattedDateTime = viewModel.formatDateTime(it.dateTime),
+                            isFirst = notesState.value.first() == it
+                        ) {
+                            navController.navigateToNoteScreen(it)
                         }
                     }
                 }
             }
         }
     }
+}
 
 
 @Composable

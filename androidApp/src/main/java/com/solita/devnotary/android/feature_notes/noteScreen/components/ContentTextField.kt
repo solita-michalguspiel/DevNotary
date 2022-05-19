@@ -32,12 +32,15 @@ fun ContentTextField(
         modifier = modifier
             .fillMaxWidth(),
         colors = TextFieldDefaults.textFieldColors(
+            textColor = Color.Black,
             backgroundColor = Color.White.copy(alpha = 0.0f),
             unfocusedIndicatorColor = Color.White.copy(alpha = 0.0f),
             focusedIndicatorColor = Color.White.copy(alpha = 0.0f),
             disabledIndicatorColor = Color.White.copy(alpha = 0.0f),
             disabledTextColor = Color.Black,
-        ),
+            focusedLabelColor = Color.Black,
+            unfocusedLabelColor = Color.Black,
+            ),
         label = {
             if (isEditEnabled) Text(text = stringResource(id = R.string.note_content_label))
         },

@@ -54,6 +54,7 @@ dependencies {
     //NAVIGATION
     val nav_version = "2.4.2"
     implementation("androidx.navigation:navigation-compose:$nav_version")
+    implementation ("com.google.accompanist:accompanist-navigation-animation:0.24.9-beta")
 
     // FIREBASE
     implementation("com.google.firebase:firebase-common-ktx:20.1.0")

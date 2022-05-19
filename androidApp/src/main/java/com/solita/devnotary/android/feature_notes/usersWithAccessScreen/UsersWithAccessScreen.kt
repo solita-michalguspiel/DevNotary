@@ -1,12 +1,15 @@
 package com.solita.devnotary.android.feature_notes.usersWithAccessScreen
 
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -24,52 +27,54 @@ import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import org.kodein.di.instance
 
 @Composable
-fun UsersWithAccessScreen(
-) {
+fun UsersWithAccessScreen() {
     val viewModel: NotesViewModel by androidDi.instance()
 
-    Column(Modifier.fillMaxWidth()) {
-        Text(
-            text = stringResource(id = R.string.users_with_access),
-            style = Typography.h5,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = LocalSpacing.current.default)
-        )
+
+    Scaffold { paddingValues ->
+        Column(Modifier.fillMaxWidth().padding(paddingValues)) {
+            Text(
+                text = stringResource(id = R.string.users_with_access),
+                style = Typography.h5,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = LocalSpacing.current.default)
+            )
 
 
-        when (val response = viewModel.usersWithAccess.collectAsState().value) {
-            is Response.Loading -> ProgressIndicator()
-            is Response.Error -> Text(stringResource(id = R.string.undefined_error))
-            is Response.Success -> {
-                if (response.data.isEmpty()) Text(
-                    text = stringResource(id = R.string.note_not_shared_with_anybody),
-                    style = Typography.h6,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(top = LocalSpacing.current.xLarge)
-                        .fillMaxWidth()
-                )
-                else {
-                    LazyColumn {
-                        items(response.data) {
-                            Divider()
-                            UserWithAccessItem(
-                                modifier = Modifier.padding(
-                                    vertical = LocalSpacing.current.xSmall,
-                                    horizontal = LocalSpacing.current.small
-                                ),
-                                userEmailAddress = it.userEmail
-                            ) {
-                                viewModel.unShareNote(it.userId)
+            when (val response = viewModel.usersWithAccess.collectAsState().value) {
+                is Response.Loading -> ProgressIndicator()
+                is Response.Error -> Text(stringResource(id = R.string.undefined_error))
+                is Response.Success -> {
+                    if (response.data.isEmpty()) Text(
+                        text = stringResource(id = R.string.note_not_shared_with_anybody),
+                        style = Typography.h6,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .padding(top = LocalSpacing.current.xLarge)
+                            .fillMaxWidth()
+                    )
+                    else {
+                        LazyColumn {
+                            items(response.data) {
+                                Divider(modifier = Modifier.background(MaterialTheme.colors.onBackground))
+                                UserWithAccessItem(
+                                    modifier = Modifier.padding(
+                                        vertical = LocalSpacing.current.xSmall,
+                                        horizontal = LocalSpacing.current.small
+                                    ),
+                                    userEmailAddress = it.userEmail
+                                ) {
+                                    viewModel.unShareNote(it.userId)
+                                }
                             }
                         }
+                        Divider(modifier = Modifier.background(MaterialTheme.colors.onBackground))
                     }
-                    Divider()
                 }
+                else -> {}
             }
-            else -> {}
         }
     }
 }

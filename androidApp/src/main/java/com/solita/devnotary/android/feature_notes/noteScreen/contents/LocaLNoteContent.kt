@@ -12,6 +12,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Alignment.Companion.TopEnd
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.solita.devnotary.android.R
 import com.solita.devnotary.android.androidDi
@@ -56,7 +57,7 @@ fun LocalNoteContent(
                                 imageVector = Icons.Default.MoreHoriz,
                                 contentDescription = stringResource(
                                     id = R.string.menu
-                                )
+                                ), tint = com.solita.devnotary.android.theme.LocalColors.current.ThemeBlue
                             )
                         }
                         DropdownMenu(
@@ -91,7 +92,8 @@ fun LocalNoteContent(
                             end = LocalSpacing.current.default,
                             bottom = LocalSpacing.current.default
                         ),
-                    style = Typography.body2
+                    style = Typography.body2,
+                    color = Color.Black
                 )
             }
         }
