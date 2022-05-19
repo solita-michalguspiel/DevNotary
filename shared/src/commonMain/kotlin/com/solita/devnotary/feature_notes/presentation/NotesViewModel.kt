@@ -95,7 +95,8 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
 
     var isShareDropdownExpanded = MutableStateFlow(false)
     var isScrollingUp = MutableStateFlow(true)
-    var isConfirmDeleteDialogOpen = MutableStateFlow(false)
+    var isConfirmDeleteLocalNoteDialogOpen = MutableStateFlow(false)
+    var isConfirmDeleteAccessFromSharedNoteDialogOpen = MutableStateFlow(false)
     var isShareDialogOpen = MutableStateFlow(false)
     var isSortOptionDropdownOpen = MutableStateFlow(false)
     var isRefreshing = MutableStateFlow(false)
@@ -144,7 +145,7 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
 
     fun deleteNoteAndCloseDialog() {
         deleteNote()
-        isConfirmDeleteDialogOpen.value = false
+        isConfirmDeleteLocalNoteDialogOpen.value = false
     }
 
     fun deleteNote() {

@@ -102,7 +102,7 @@ fun SaveNoteLocallyButton(modifier: Modifier) {
 fun DeleteSharedNote(modifier: Modifier) {
     val viewModel: NotesViewModel by androidDi.instance()
     Button(
-        onClick = { viewModel.deleteOwnAccessFromSharedNote() }, modifier = modifier
+        onClick = { viewModel.isConfirmDeleteAccessFromSharedNoteDialogOpen.value = true }, modifier = modifier
     ) {
         Text(text = stringResource(R.string.delete_note))
     }
@@ -114,7 +114,7 @@ fun DeleteButton(modifier: Modifier) {
     val viewModel: NotesViewModel by androidDi.instance()
     Button(
         onClick = {
-            viewModel.isConfirmDeleteDialogOpen.value = true
+            viewModel.isConfirmDeleteLocalNoteDialogOpen.value = true
         }, modifier = modifier
     ) {
         Text(text = stringResource(id = R.string.delete_note))

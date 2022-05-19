@@ -13,15 +13,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import com.solita.devnotary.android.R
+import com.solita.devnotary.android.androidDi
 import com.solita.devnotary.android.composables.ProgressIndicator
 import com.solita.devnotary.android.composables.TextIndicatingError
 import com.solita.devnotary.android.theme.LocalSpacing
 import com.solita.devnotary.android.theme.Typography
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
+import org.kodein.di.instance
 
 @Composable
- fun ShareNoteDialog(viewModel: NotesViewModel) {
+ fun ShareNoteDialog() {
+    val viewModel: NotesViewModel by androidDi.instance()
     AlertDialog(
         onDismissRequest = {
             viewModel.closeShareDialog()

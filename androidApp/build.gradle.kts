@@ -68,8 +68,9 @@ dependencies {
     //DateTime
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
 
-    //Accompanist swipe to refresh
+    //Accompanist
     implementation ("com.google.accompanist:accompanist-swiperefresh:0.24.8-beta")
+    implementation ("com.google.accompanist:accompanist-systemuicontroller:0.24.9-beta")
 
     //GSON
     implementation ("com.google.code.gson:gson:2.8.9")

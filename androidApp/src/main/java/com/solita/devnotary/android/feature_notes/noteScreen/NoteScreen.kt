@@ -1,7 +1,6 @@
 package com.solita.devnotary.android.feature_notes
 
 import android.annotation.SuppressLint
-import android.net.Uri
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
@@ -10,7 +9,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavController
-import com.google.gson.Gson
 import com.solita.devnotary.android.androidDi
 import com.solita.devnotary.android.feature_notes.noteScreen.components.ConfirmDeleteDialog
 import com.solita.devnotary.android.feature_notes.noteScreen.components.ShareNoteDialog
@@ -73,12 +71,17 @@ fun NoteScreen(
             else -> {}
         }
 
-        if (viewModel.isConfirmDeleteDialogOpen.collectAsState().value) {
-            ConfirmDeleteDialog(viewModel)
+        if (viewModel.isConfirmDeleteLocalNoteDialogOpen.collectAsState().value) {
+            ConfirmDeleteDialog({viewModel.deleteNoteAndCloseDialog()},{viewModel.isConfirmDeleteLocalNoteDialogOpen.value = false})
+        }
+
+        if(viewModel.isConfirmDeleteAccessFromSharedNoteDialogOpen.collectAsState().value){
+            ConfirmDeleteDialog(deleteNote = { viewModel.deleteOwnAccessFromSharedNote() }) {viewModel.isConfirmDeleteAccessFromSharedNoteDialogOpen.value = false
+            }
         }
 
         if (viewModel.isShareDialogOpen.collectAsState().value) {
-            ShareNoteDialog(viewModel)
+            ShareNoteDialog()
         }
 
         when {

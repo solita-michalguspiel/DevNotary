@@ -11,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.solita.devnotary.android.R
 import com.solita.devnotary.android.androidDi
@@ -40,6 +41,7 @@ fun SharedNoteContent(popBackStack : () -> Unit) {
             popBackStack()
         }
         viewModel.restartNoteSharingState()
+        viewModel.isConfirmDeleteAccessFromSharedNoteDialogOpen.value = false
     }
 
     Column(Modifier.fillMaxSize()) {
@@ -62,7 +64,8 @@ fun SharedNoteContent(popBackStack : () -> Unit) {
                             Modifier
                                 .fillMaxWidth()
                                 .padding(LocalSpacing.current.xSmall),
-                            style = Typography.caption
+                            style = Typography.caption,
+                            color = Color.Black
                         )
                     }
                     else -> {}
@@ -85,7 +88,8 @@ fun SharedNoteContent(popBackStack : () -> Unit) {
                             end = LocalSpacing.current.default,
                             bottom = LocalSpacing.current.default
                         ),
-                    style = Typography.body2
+                    style = Typography.body2,
+                    color = Color.Black
                 )
             }
         }
