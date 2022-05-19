@@ -14,6 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.solita.devnotary.android.R
 import com.solita.devnotary.android.theme.*
 import com.solita.devnotary.android.utils.NoteColor
@@ -35,7 +36,7 @@ fun NotePreview(
             start = LocalSpacing.current.xxSmall,
             end = LocalSpacing.current.xxSmall,
             bottom = LocalSpacing.current.default,
-            top = if(!isFirst) LocalSpacing.current.default else LocalSpacing.current.xSmall
+            top = if (!isFirst) LocalSpacing.current.default else LocalSpacing.current.xSmall
         )
     ) {
         Column {
@@ -72,14 +73,23 @@ fun NotePreview(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = formattedDateTime, style = Typography.caption, color = LocalColors.current.Black)
+                Text(
+                    text = formattedDateTime,
+                    style = Typography.caption,
+                    color = LocalColors.current.Black
+                )
                 TextButton(
                     onClick = {
                         navigateToNoteScreen()
                     },
                     modifier = Modifier
                 ) {
-                    Text(text = stringResource(id = R.string.view_details), fontWeight = FontWeight.W600)
+                    Text(
+                        text = stringResource(id = R.string.view_details),
+                        fontWeight = FontWeight.W600,
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colors.onSurface
+                    )
                 }
             }
         }
