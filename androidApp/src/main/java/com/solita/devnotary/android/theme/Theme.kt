@@ -44,6 +44,7 @@ fun DevNotaryTheme(
         LightColorPalette
     }
     systemUiController.setSystemBarsColor(colors.background)
+    systemUiController.setNavigationBarColor(Color.Black)
     CompositionLocalProvider(LocalSpacing provides Spacing(),
         LocalElevation provides Elevation(),
         LocalColors provides Colors(),
