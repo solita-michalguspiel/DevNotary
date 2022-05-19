@@ -4,6 +4,7 @@ import com.benasher44.uuid.Uuid
 import com.solita.devnotary.database.Local_note
 import com.solita.devnotary.feature_notes.domain.model.Note
 import com.solita.devnotary.feature_notes.domain.model.SharedNote
+import com.solita.devnotary.utils.Crypto
 import kotlinx.datetime.Clock
 import kotlin.random.Random
 
@@ -35,13 +36,14 @@ fun Local_note.changeToNote(): Note {
 }
 
 fun SharedNote.changeToNote(): Note {
+    val crypto = Crypto()
     return Note(
-        noteId = this.noteId,
-        ownerUserId = this.ownerUserId,
-        title = this.title,
-        content = this.content,
-        dateTime = this.dateTime,
-        color = this.color
+        noteId = noteId,
+        ownerUserId = ownerUserId,
+        title = crypto.decryptMessage(noteId,title),
+        content = crypto.decryptMessage(noteId,content),
+        dateTime = dateTime,
+        color = color
     )
 }
 
@@ -54,5 +56,5 @@ fun prepareLists(
 ): List<Note> {
     val joinedNotes = localNotes + notesSharedByOtherUsers
     val sorted = selectedSort.sort(joinedNotes)
-    return sorted.filter { it.title.lowercase().contains(searchedPhrase) }
+    return sorted.filter { it.title.lowercase().contains(searchedPhrase.lowercase()) }
 }

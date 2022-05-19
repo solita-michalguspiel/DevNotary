@@ -13,6 +13,7 @@ import com.solita.devnotary.feature_notes.domain.model.Note
 import com.solita.devnotary.feature_notes.domain.model.SharedNote
 import com.solita.devnotary.feature_notes.domain.model.SharedNoteRef
 import com.solita.devnotary.feature_notes.domain.repository.RemoteNotesRepository
+import com.solita.devnotary.utils.Crypto
 import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.firestore.CollectionReference
 import dev.gitlive.firebase.firestore.ServerTimestampBehavior
@@ -28,6 +29,9 @@ class RemoteNotesRepositoryImpl : RemoteNotesRepository {
     private val users: CollectionReference by di.instance(tag = USERS_FIREBASE)
 
     private val userId get() = auth.currentUser?.uid
+
+    private val crypto = Crypto()
+
 
     override suspend fun getSharedNotes() = channelFlow {
         if (userId == null) send(Response.Error("User is not logged in"))
@@ -63,7 +67,7 @@ class RemoteNotesRepositoryImpl : RemoteNotesRepository {
                     sharedNotesSnapshot.documents.map { it.data<SharedNote>(ServerTimestampBehavior.NONE) }
                 if (fetchedSharedNotes.isEmpty()) {
                     val sharedNote = SharedNote(
-                        note.noteId, userId!!, note.title, note.content,
+                        note.noteId, userId!!, crypto.encryptMessage(note.noteId,note.title), crypto.encryptMessage(key = note.noteId,message =  note.content),
                         note.dateTime, note.color
                     )
                     sharedNotes.document.set(sharedNote)
@@ -80,6 +84,7 @@ class RemoteNotesRepositoryImpl : RemoteNotesRepository {
             } catch (e: NoSuchElementException) {
                 send(Response.Error("Did not find user with given email address."))
             } catch (e: Exception) {
+                println("Error" + e.message)
                 send(Response.Error(e.message ?: ERROR_MESSAGE))
             }
         }
@@ -140,8 +145,8 @@ class RemoteNotesRepositoryImpl : RemoteNotesRepository {
                     val newDoc = SharedNote(
                         noteId,
                         oldDoc.ownerUserId,
-                        newNoteTitle,
-                        newNoteContent,
+                        crypto.encryptMessage(noteId,newNoteTitle),
+                        crypto.encryptMessage(noteId,newNoteContent),
                         oldDoc.dateTime,
                         newNoteColor
                     )

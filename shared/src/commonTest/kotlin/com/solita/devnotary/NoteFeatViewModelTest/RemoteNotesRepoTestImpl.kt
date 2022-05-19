@@ -6,11 +6,13 @@ import com.solita.devnotary.feature_notes.domain.model.Note
 import com.solita.devnotary.feature_notes.domain.model.SharedNote
 import com.solita.devnotary.feature_notes.domain.model.SharedNoteRef
 import com.solita.devnotary.feature_notes.domain.repository.RemoteNotesRepository
+import com.solita.devnotary.utils.Crypto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
 
 class RemoteNotesRepoTestImpl : RemoteNotesRepository {
+    private val crypto = Crypto()
 
 
     val appUser1 = "te156262nsd"
@@ -47,7 +49,7 @@ class RemoteNotesRepoTestImpl : RemoteNotesRepository {
                 emit(Response.Loading)
                 sharedNotesRefList.add(SharedNoteRef(note.noteId, currentUserId!!, sharedUserEmail))
                 val sharedNote =
-                    SharedNote(note.noteId, userId!!, note.title, note.content, "TODAY", note.color)
+                    SharedNote(note.noteId, userId!!, crypto.encryptMessage(note.noteId,note.title), crypto.encryptMessage(note.noteId,note.content), "TODAY", note.color)
                 sharedNotesList.add(sharedNote)
                 emit(Response.Success(true))
             } catch (e: Exception) {

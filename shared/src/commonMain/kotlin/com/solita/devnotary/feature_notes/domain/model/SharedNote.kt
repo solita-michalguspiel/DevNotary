@@ -3,11 +3,11 @@ package com.solita.devnotary.feature_notes.domain.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SharedNote(
+class SharedNote(
     val noteId: String,
     val ownerUserId : String,
-    val title: String,
-    val content: String,
+    val title: Array<Int>,
+    val content: Array<Int>,
     val dateTime: String,
     val color: String
 )
