@@ -4,7 +4,6 @@ import com.solita.devnotary.Constants.ERROR_MESSAGE
 import com.solita.devnotary.database.Local_note
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.feature_notes.domain.Operation
-import com.solita.devnotary.feature_notes.domain.model.Note
 import com.solita.devnotary.feature_notes.domain.repository.LocalNotesRepository
 import com.solita.devnotary.feature_notes.presentation.changeToNote
 import kotlinx.coroutines.delay

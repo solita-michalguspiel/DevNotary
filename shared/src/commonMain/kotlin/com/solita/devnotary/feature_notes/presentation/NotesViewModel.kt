@@ -115,8 +115,7 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
             createNewLocalNote(providedId, titleInput.value, contentInput.value, noteColor.value)
         viewModelScope.launch {
             localUseCases.addNote.invoke(note).collect { response ->
-                if (response is Response.Success)
-                    _noteModificationStatus.value = response
+                _noteModificationStatus.value = response
             }
         }
     }
