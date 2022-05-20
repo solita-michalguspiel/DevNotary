@@ -21,6 +21,7 @@
     <string name="call_to_action_prompt">Go ahead and add or read notes!</string>
     <!-- Notes List screen -->
     <string name="view_details">View details</string>
+    <string name="shared">Shared note</string>
 
     <!--  note screen -->
     <string name="add_note">Add note</string>

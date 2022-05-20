@@ -16,9 +16,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.solita.devnotary.android.androidDi
-import com.solita.devnotary.android.composables.ProgressIndicator
 import com.solita.devnotary.android.navigation.navigateToNoteScreen
-import com.solita.devnotary.domain.Response
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import org.kodein.di.instance
 
@@ -61,14 +59,16 @@ fun NotesListContent(paddingValues: PaddingValues, navController: NavController)
                         .fillMaxSize(), state = lazyListState
                 ) {
                     stickyHeader {
-                        androidx.compose.animation.AnimatedVisibility(
-                            visible = viewModel.isScrollingUp.collectAsState().value,
-                            enter = slideInVertically(initialOffsetY = { -it }),
-                            exit = slideOutVertically(targetOffsetY = { -it }),
-                            modifier = Modifier.align(TopCenter)
-                        ) {
-                            NotesListStickyHeader()
-                        }
+                        if(lazyListState.isHavingMoreItemsThanDisplaying()) {
+                            androidx.compose.animation.AnimatedVisibility(
+                                visible = viewModel.isScrollingUp.collectAsState().value,
+                                enter = slideInVertically(initialOffsetY = { -it }),
+                                exit = slideOutVertically(targetOffsetY = { -it }),
+                                modifier = Modifier.align(TopCenter)
+                            ) {
+                                NotesListStickyHeader()
+                            }
+                        }else NotesListStickyHeader()
                     }
                     items(notesState.value)
                     {
@@ -86,6 +86,10 @@ fun NotesListContent(paddingValues: PaddingValues, navController: NavController)
     }
 }
 
+@Composable
+private fun LazyListState.isHavingMoreItemsThanDisplaying(): Boolean {
+    return layoutInfo.totalItemsCount > layoutInfo.visibleItemsInfo.size
+}
 
 @Composable
 private fun LazyListState.isScrollingUp(): Boolean {

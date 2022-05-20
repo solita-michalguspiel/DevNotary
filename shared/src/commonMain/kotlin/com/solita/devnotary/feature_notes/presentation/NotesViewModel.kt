@@ -93,7 +93,6 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
     var noteColor = MutableStateFlow("")
     var anotherUserEmailAddress = MutableStateFlow("")
 
-    var isShareDropdownExpanded = MutableStateFlow(false)
     var isScrollingUp = MutableStateFlow(true)
     var isConfirmDeleteLocalNoteDialogOpen = MutableStateFlow(false)
     var isConfirmDeleteAccessFromSharedNoteDialogOpen = MutableStateFlow(false)

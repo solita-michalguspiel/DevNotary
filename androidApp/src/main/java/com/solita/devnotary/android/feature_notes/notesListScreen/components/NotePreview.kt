@@ -1,10 +1,9 @@
 package com.solita.devnotary.android.feature_notes.notesListScreen.components
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FolderShared
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,21 +34,37 @@ fun NotePreview(
         modifier = Modifier.padding(
             start = LocalSpacing.current.xxSmall,
             end = LocalSpacing.current.xxSmall,
-            bottom = LocalSpacing.current.default,
-            top = if (!isFirst) LocalSpacing.current.default else LocalSpacing.current.xSmall
+            bottom = LocalSpacing.current.small,
+            top = if (!isFirst) LocalSpacing.current.small else LocalSpacing.current.xSmall
         )
     ) {
         Column {
-            Text(
-                text = note.title,
-                style = Typography.h5,
-                textAlign = TextAlign.Start,
-                modifier = Modifier.padding(
-                    start =
-                    LocalSpacing.current.small, top = LocalSpacing.current.small
-                ),
-                color = LocalColors.current.Black
-            )
+            Row(
+                Modifier.fillMaxWidth().padding(top = LocalSpacing.current.xSmall),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
+            ) {
+                Text(
+                    text = note.title,
+                    style = Typography.h5,
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier.padding(
+                        start =
+                        LocalSpacing.current.small
+                    ).weight(0.9f),
+                    color = LocalColors.current.Black,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                if (note.ownerUserId != null) {
+                    Icon(
+                        imageVector = Icons.Default.FolderShared,
+                        contentDescription = stringResource(R.string.shared),
+                        Modifier
+                            .padding(horizontal = LocalSpacing.current.xSmall)
+                    )
+                }
+            }
             Text(
                 text = note.content,
                 style = Typography.body2,
@@ -103,6 +118,21 @@ fun PreviewNotePreview() {
     val testNote = Note(
         noteId = "testid",
         title = "Database plan",
+        content = "SOME RANDOM CONTENT",
+        dateTime = "2015-12-31T12:30:00Z",
+        color = "red",
+    )
+
+    NotePreview(note = testNote, "2015.12.31 16:55") {}
+}
+
+@Preview
+@Composable
+fun PreviewSharedNotePreview() {
+    val testNote = Note(
+        noteId = "testid",
+        title = "Database plan",
+        ownerUserId = "somerandomuserID",
         content = "SOME RANDOM CONTENT",
         dateTime = "2015-12-31T12:30:00Z",
         color = "red",

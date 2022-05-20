@@ -70,7 +70,7 @@ fun SharedNoteContent(popBackStack : () -> Unit) {
                     }
                     else -> {}
                 }
-                TitleTextField(titleInput = titleInputState.value, false)
+                TitleTextField(titleInput = titleInputState.value, isEditEnabled = false)
 
                 ContentTextField(
                     contentInput = contentInputState.value,

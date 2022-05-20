@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.sp
 import com.solita.devnotary.android.R
 import com.solita.devnotary.android.androidDi
 import com.solita.devnotary.android.theme.Colors
-import com.solita.devnotary.android.theme.LocalColors
 import com.solita.devnotary.android.theme.LocalSpacing
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import com.solita.devnotary.feature_notes.presentation.Sort
@@ -32,7 +31,7 @@ fun NotesListStickyHeader() {
     Row(
         Modifier
             .fillMaxWidth()
-
+            .background(MaterialTheme.colors.background)
             .padding(vertical = LocalSpacing.current.xSmall),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
