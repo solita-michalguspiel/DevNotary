@@ -59,17 +59,15 @@ fun NotesListContent(paddingValues: PaddingValues, navController: NavController)
                         .fillMaxSize(), state = lazyListState
                 ) {
                     stickyHeader {
-                        if(lazyListState.isHavingMoreItemsThanDisplaying()) {
                             androidx.compose.animation.AnimatedVisibility(
-                                visible = viewModel.isScrollingUp.collectAsState().value,
+                                visible = !lazyListState.isHavingMoreItemsThanDisplaying() || viewModel.isScrollingUp.collectAsState().value,
                                 enter = slideInVertically(initialOffsetY = { -it }),
                                 exit = slideOutVertically(targetOffsetY = { -it }),
                                 modifier = Modifier.align(TopCenter)
                             ) {
                                 NotesListStickyHeader()
                             }
-                        }else NotesListStickyHeader()
-                    }
+                        }
                     items(notesState.value)
                     {
                         NotePreview(
