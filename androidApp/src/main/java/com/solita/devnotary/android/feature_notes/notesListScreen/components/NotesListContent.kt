@@ -15,8 +15,8 @@ import androidx.navigation.NavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.solita.devnotary.android.androidDi
 import com.solita.devnotary.android.navigation.navigateToNoteScreen
+import com.solita.devnotary.di.di
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import org.kodein.di.instance
 
@@ -24,7 +24,7 @@ import org.kodein.di.instance
 @Composable
 fun NotesListContent(paddingValues: PaddingValues, navController: NavController) {
 
-    val viewModel: NotesViewModel by androidDi.instance()
+    val viewModel: NotesViewModel by di.instance()
     val notesState = viewModel.notes.collectAsState()
 
     val lazyListState = rememberLazyListState()

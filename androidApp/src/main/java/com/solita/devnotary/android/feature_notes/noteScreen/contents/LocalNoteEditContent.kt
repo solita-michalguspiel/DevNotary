@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.solita.devnotary.android.androidDi
 import com.solita.devnotary.android.feature_notes._sharedComponents.ColorBallsRow
 import com.solita.devnotary.android.feature_notes._sharedComponents.LocalNoteButtons
 import com.solita.devnotary.android.feature_notes.noteScreen.components.ContentTextField
@@ -16,6 +15,7 @@ import com.solita.devnotary.android.feature_notes.noteScreen.components.TitleTex
 import com.solita.devnotary.android.theme.LocalElevation
 import com.solita.devnotary.android.theme.LocalSpacing
 import com.solita.devnotary.android.utils.NoteColor
+import com.solita.devnotary.di.di
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import org.kodein.di.instance
 
@@ -23,7 +23,7 @@ import org.kodein.di.instance
 fun LocalNoteEditContent(
     navigateToNewNote: () -> Unit
 ) {
-    val viewModel: NotesViewModel by androidDi.instance()
+    val viewModel: NotesViewModel by di.instance()
     val titleInputState = viewModel.titleInput.collectAsState()
     val contentInputState = viewModel.contentInput.collectAsState()
     val noteColorState = viewModel.noteColor.collectAsState()

@@ -14,9 +14,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.solita.devnotary.android.R
-import com.solita.devnotary.android.androidDi
 import com.solita.devnotary.android.theme.Colors
 import com.solita.devnotary.android.theme.LocalSpacing
+import com.solita.devnotary.di.di
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import com.solita.devnotary.feature_notes.presentation.Sort
 import com.solita.devnotary.feature_notes.presentation.SortOptions
@@ -25,7 +25,7 @@ import org.kodein.di.instance
 @Composable
 fun NotesListStickyHeader() {
 
-    val viewModel: NotesViewModel by androidDi.instance()
+    val viewModel: NotesViewModel by di.instance()
     val notesSearchPhrase = viewModel.noteSearchPhrase.collectAsState()
 
     Row(

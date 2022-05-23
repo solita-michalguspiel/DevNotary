@@ -5,12 +5,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.toLowerCase
-import com.solita.devnotary.android.androidDi
 import com.solita.devnotary.android.feature_notes._sharedComponents.AddButton
 import com.solita.devnotary.android.feature_notes._sharedComponents.ColorBallsRow
 import com.solita.devnotary.android.feature_notes.noteScreen.components.ContentTextField
@@ -18,12 +15,13 @@ import com.solita.devnotary.android.feature_notes.noteScreen.components.TitleTex
 import com.solita.devnotary.android.theme.LocalElevation
 import com.solita.devnotary.android.theme.LocalSpacing
 import com.solita.devnotary.android.utils.NoteColor
+import com.solita.devnotary.di.di
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import org.kodein.di.instance
 
 @Composable
 fun NewNoteContent() {
-    val viewModel: NotesViewModel by androidDi.instance()
+    val viewModel: NotesViewModel by di.instance()
     val titleInputState = viewModel.titleInput.collectAsState()
     val contentInputState = viewModel.contentInput.collectAsState()
     val noteColorState = viewModel.noteColor.collectAsState()

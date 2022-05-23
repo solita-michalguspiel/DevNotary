@@ -15,12 +15,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import com.solita.devnotary.android.R
-import com.solita.devnotary.android.androidDi
 import com.solita.devnotary.android.composables.DefaultSpacer
 import com.solita.devnotary.android.composables.TextIndicatingError
 import com.solita.devnotary.android.theme.LocalColors
 import com.solita.devnotary.android.theme.LocalSpacing
 import com.solita.devnotary.android.theme.Typography
+import com.solita.devnotary.di.di
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.feature_auth.presentation.AuthViewModel
 import org.kodein.di.instance
@@ -34,7 +34,7 @@ fun PreviewSignInScreenContent() {
 
 @Composable
 fun SignInScreenContent() {
-    val authViewModel: AuthViewModel by androidDi.instance()
+    val authViewModel: AuthViewModel by di.instance()
     val emailResendTimer = authViewModel.resendEmailTimer.collectAsState().value
     val sendLinkState = authViewModel.sendLinkState.collectAsState().value
     val emailAddressInput = authViewModel.emailAddressInput.collectAsState()

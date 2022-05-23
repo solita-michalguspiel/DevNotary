@@ -15,12 +15,12 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.solita.devnotary.android.R
-import com.solita.devnotary.android.androidDi
 import com.solita.devnotary.android.composables.ProgressIndicator
 import com.solita.devnotary.android.feature_auth.signInScreen.SignInScreenContent
 import com.solita.devnotary.android.navigation.Screen
-import com.solita.devnotary.android.signInIntent
+import com.solita.devnotary.android.utils.signInIntent
 import com.solita.devnotary.android.utils.Constants
+import com.solita.devnotary.di.di
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.feature_auth.presentation.AuthViewModel
 import kotlinx.coroutines.launch
@@ -38,7 +38,7 @@ fun SignInScreen(navController: NavController) {
 
     val linkSentMessage = stringResource(id = R.string.link_sent)
 
-    val authViewModel: AuthViewModel by androidDi.instance()
+    val authViewModel: AuthViewModel by di.instance()
 
     val userAuthState = authViewModel.userAuthState.collectAsState()
     val sendEmailLinkState = authViewModel.sendLinkState.collectAsState()
