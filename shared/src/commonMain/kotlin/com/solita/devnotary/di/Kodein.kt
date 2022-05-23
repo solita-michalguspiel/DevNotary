@@ -7,6 +7,7 @@ import com.solita.devnotary.Constants.USERS_FIREBASE
 import com.solita.devnotary.dev_notary_db
 import com.solita.devnotary.feature_auth.data.AuthRepositoryImpl
 import com.solita.devnotary.feature_auth.domain.use_case.*
+import com.solita.devnotary.feature_auth.presentation.AuthViewModel
 import com.solita.devnotary.feature_notes.data.local.DbArgs
 import com.solita.devnotary.feature_notes.data.local.LocalNotesRepositoryImpl
 import com.solita.devnotary.feature_notes.data.local.getSqlDriver
@@ -18,6 +19,7 @@ import com.solita.devnotary.feature_notes.domain.use_case.users_use_cases.GetUse
 import com.solita.devnotary.feature_notes.domain.use_case.users_use_cases.GetUsers
 import com.solita.devnotary.feature_notes.domain.use_case.users_use_cases.GetUsersWithAccess
 import com.solita.devnotary.feature_notes.domain.use_case.users_use_cases.UsersUseCases
+import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.firestore.firestore
@@ -100,5 +102,12 @@ val di = DI {
     bindSingleton { getSqlDriver(dbArgs) }
 
     bindSingleton { dev_notary_db(instance()) }
+
+
+    /**ViewModels*/
+    bindSingleton { NotesViewModel() }
+
+    bindSingleton { AuthViewModel() }
+
 
 }
