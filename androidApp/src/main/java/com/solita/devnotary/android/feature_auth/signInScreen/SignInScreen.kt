@@ -18,8 +18,8 @@ import com.solita.devnotary.android.R
 import com.solita.devnotary.android.composables.ProgressIndicator
 import com.solita.devnotary.android.feature_auth.signInScreen.SignInScreenContent
 import com.solita.devnotary.android.navigation.Screen
-import com.solita.devnotary.android.utils.signInIntent
 import com.solita.devnotary.android.utils.Constants
+import com.solita.devnotary.android.utils.signInIntent
 import com.solita.devnotary.di.di
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.feature_auth.presentation.AuthViewModel
@@ -40,8 +40,8 @@ fun SignInScreen(navController: NavController) {
 
     val authViewModel: AuthViewModel by di.instance()
 
-    val userAuthState = authViewModel.userAuthState.collectAsState()
-    val sendEmailLinkState = authViewModel.sendLinkState.collectAsState()
+    val userAuthState = authViewModel.userAuthState.collectAsState(Response.Empty)
+    val sendEmailLinkState = authViewModel.sendLinkState.collectAsState(Response.Empty)
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
     val keyboardController = LocalSoftwareKeyboardController.current

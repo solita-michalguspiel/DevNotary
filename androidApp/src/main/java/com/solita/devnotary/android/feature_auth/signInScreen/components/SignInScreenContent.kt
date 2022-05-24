@@ -35,9 +35,9 @@ fun PreviewSignInScreenContent() {
 @Composable
 fun SignInScreenContent() {
     val authViewModel: AuthViewModel by di.instance()
-    val emailResendTimer = authViewModel.resendEmailTimer.collectAsState().value
-    val sendLinkState = authViewModel.sendLinkState.collectAsState().value
-    val emailAddressInput = authViewModel.emailAddressInput.collectAsState()
+    val emailResendTimer = authViewModel.resendEmailTimer.collectAsState(0).value
+    val sendLinkState = authViewModel.sendLinkState.collectAsState(Response.Empty).value
+    val emailAddressInput = authViewModel.emailAddressInput.collectAsState("")
 
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
         DefaultSpacer()
@@ -51,7 +51,7 @@ fun SignInScreenContent() {
         DefaultSpacer()
         TextField(
             value = emailAddressInput.value,
-            onValueChange = { authViewModel.emailAddressInput.value = it },
+            onValueChange = { authViewModel.changeEmailAddress(it) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             maxLines = 1,
             singleLine = true

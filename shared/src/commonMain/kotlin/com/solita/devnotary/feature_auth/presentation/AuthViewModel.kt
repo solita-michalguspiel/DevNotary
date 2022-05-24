@@ -7,10 +7,11 @@ import com.solita.devnotary.di.di
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.domain.User
 import com.solita.devnotary.feature_auth.domain.use_case.AuthUseCases
+import com.solita.devnotary.utils.CommonFlow
 import com.solita.devnotary.utils.SharedViewModel
 import com.solita.devnotary.utils.Timer
+import com.solita.devnotary.utils.asCommonFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.kodein.di.DI
 import org.kodein.di.instance
@@ -23,20 +24,26 @@ class AuthViewModel(dependencyInjection: DI = di) :
 
     private val _userAuthState: MutableStateFlow<Response<Boolean>> =
         MutableStateFlow(Response.Empty)
-    val userAuthState: StateFlow<Response<Boolean>> = _userAuthState
+    val userAuthState: CommonFlow<Response<Boolean>> = _userAuthState.asCommonFlow()
 
     private val _sendLinkState: MutableStateFlow<Response<Boolean>> =
         MutableStateFlow(Response.Empty)
-    val sendLinkState: StateFlow<Response<Boolean>> = _sendLinkState
+    val sendLinkState: CommonFlow<Response<Boolean>> = _sendLinkState.asCommonFlow()
 
     private val _userState: MutableStateFlow<Response<User>> = MutableStateFlow(Response.Empty)
-    val userState: StateFlow<Response<User>> = _userState
+    val userState: CommonFlow<Response<User>> = _userState.asCommonFlow()
 
     val isUserAuthenticated get() = useCases.isUserAuthenticated.invoke()
 
-    val resendEmailTimer = MutableStateFlow(0)
+    private val _resendEmailTimer = MutableStateFlow(0)
+    val resendEmailTimer : CommonFlow<Int> = _resendEmailTimer.asCommonFlow()
 
-    val emailAddressInput = MutableStateFlow("")
+    private val _emailAddressInput = MutableStateFlow("")
+    val emailAddressInput : CommonFlow<String> = _emailAddressInput.asCommonFlow()
+
+    fun changeEmailAddress(newEmailAddress : String){
+        _emailAddressInput.value = newEmailAddress
+    }
 
     fun getCurrentUserDocument() {
         sharedScope.launch {
@@ -49,9 +56,9 @@ class AuthViewModel(dependencyInjection: DI = di) :
 
     fun sendEmailLink() {
         _userAuthState.value = Response.Empty
-        settings.putString(CURRENT_EMAIL_KEY, emailAddressInput.value)
+        settings.putString(CURRENT_EMAIL_KEY, _emailAddressInput.value)
         sharedScope.launch {
-            useCases.sendEmailLink.invoke(emailAddressInput.value).collect { response ->
+            useCases.sendEmailLink.invoke(_emailAddressInput.value).collect { response ->
                 if (response == Response.Success(true)) startTimer()
                 _sendLinkState.value = response
             }
@@ -100,14 +107,14 @@ class AuthViewModel(dependencyInjection: DI = di) :
     private fun startTimer(){
         sharedScope.launch {
             timer.startTimer().collect {
-                resendEmailTimer.value = it
+                _resendEmailTimer.value = it
             }
         }
     }
 
     private fun stopTimer(){
         timer.stopTimer()
-        resendEmailTimer.value = 0
+        _resendEmailTimer.value = 0
         _sendLinkState.value = Response.Empty
     }
 

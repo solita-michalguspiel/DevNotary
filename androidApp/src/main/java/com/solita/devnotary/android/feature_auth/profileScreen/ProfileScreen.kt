@@ -18,8 +18,8 @@ import org.kodein.di.instance
 fun ProfileScreen(navController: NavController) {
     val authViewModel: AuthViewModel by di.instance()
 
-    val authState = authViewModel.userAuthState.collectAsState()
-    val userState = authViewModel.userState.collectAsState()
+    val authState = authViewModel.userAuthState.collectAsState(Response.Empty)
+    val userState = authViewModel.userState.collectAsState(Response.Empty)
 
     LaunchedEffect(Unit) {
         authViewModel.getCurrentUserDocument()
