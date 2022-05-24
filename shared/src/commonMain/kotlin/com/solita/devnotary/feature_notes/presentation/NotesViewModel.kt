@@ -11,9 +11,9 @@ import com.solita.devnotary.feature_notes.domain.model.Note
 import com.solita.devnotary.feature_notes.domain.use_case.local_notes_use_cases.LocalNotesUseCases
 import com.solita.devnotary.feature_notes.domain.use_case.remote_notes_use_cases.RemoteNotesUseCases
 import com.solita.devnotary.feature_notes.domain.use_case.users_use_cases.UsersUseCases
+import com.solita.devnotary.utils.SharedViewModel
 import com.solita.devnotary.utils.formatIso8601ToString
 import dev.gitlive.firebase.auth.FirebaseAuth
-import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 import org.kodein.di.DI
 import org.kodein.di.instance
 
-class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
+class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
 
     private val auth: FirebaseAuth by dependencyInjection.instance()
     private val localUseCases: LocalNotesUseCases by dependencyInjection.instance()
@@ -75,7 +75,7 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
     }
 
     private fun getLocalNotes() {
-        viewModelScope.launch {
+        sharedScope.launch {
             localUseCases.getNotes.invoke().collect { response ->
                 val notes = response.map { localNote ->
                     localNote.changeToNote()
@@ -112,7 +112,7 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
         }
         val note =
             createNewLocalNote(providedId, titleInput.value, contentInput.value, noteColor.value)
-        viewModelScope.launch {
+        sharedScope.launch {
             localUseCases.addNote.invoke(note).collect { response ->
                 _noteModificationStatus.value = response
             }
@@ -120,7 +120,7 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
     }
 
     fun editNote() {
-        viewModelScope.launch {
+        sharedScope.launch {
             localUseCases.editNote.invoke(
                 titleInput.value,
                 contentInput.value,
@@ -147,7 +147,7 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
     }
 
     fun deleteNote() {
-        viewModelScope.launch {
+        sharedScope.launch {
             localUseCases.deleteNote.invoke(noteId.value).collect { response ->
                 _noteModificationStatus.value = response
                 if (response is Response.Success) deleteSharedNote(noteId.value)
@@ -156,7 +156,7 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
     }
 
     fun getSharedNotes() {
-        viewModelScope.launch {
+        sharedScope.launch {
             remoteUseCases.getSharedNotes.invoke().collect { response ->
                 when (response) {
                     is Response.Success -> {
@@ -190,7 +190,7 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
             dateTime = noteDateTime.value,
             color = noteColor.value
         )
-        viewModelScope.launch {
+        sharedScope.launch {
             remoteUseCases.shareNote.invoke(anotherUserEmailAddress.value, note)
                 .collect { response ->
                     _noteSharingState.value = response
@@ -200,7 +200,7 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
     }
 
     private fun deleteSharedNote(noteId: String) {
-        viewModelScope.launch {
+        sharedScope.launch {
             remoteUseCases.deleteSharedNote.invoke(noteId = noteId).collect { response ->
                 _noteSharingState.value = response
             }
@@ -213,14 +213,14 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
         noteContent: String,
         noteColor: String
     ) {
-        viewModelScope.launch {
+        sharedScope.launch {
             remoteUseCases.editSharedNote.invoke(noteId, noteTitle, noteContent, noteColor)
                 .collect()
         }
     }
 
     fun unShareNote(sharedUserId: String) {
-        viewModelScope.launch {
+        sharedScope.launch {
             remoteUseCases.unshareNote.invoke(sharedUserId, noteId.value).collect { response ->
                 _noteSharingState.value = response
                 if (response is Response.Success) getUsersWithAccess()
@@ -229,7 +229,7 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
     }
 
     fun deleteOwnAccessFromSharedNote() {
-        viewModelScope.launch {
+        sharedScope.launch {
             remoteUseCases.unshareNote.invoke(auth.currentUser!!.uid, noteId.value)
                 .collect { response ->
                     _noteSharingState.value = response
@@ -238,7 +238,7 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
     }
 
     fun getUsersWithAccess() {
-        viewModelScope.launch {
+        sharedScope.launch {
             usersUseCases.getUsersWithAccess.invoke(noteId.value).collect { response ->
                 _usersWithAccess.value = response
             }
@@ -254,16 +254,16 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
     }
 
     fun listenToNoteListChanges() {
-        viewModelScope.launch {
+        sharedScope.launch {
             _selectedSort.collect { prepareLists() }
         }
-        viewModelScope.launch {
+        sharedScope.launch {
             noteSearchPhrase.collect { prepareLists() }
         }
-        viewModelScope.launch {
+        sharedScope.launch {
             _notesSharedByOtherUsers.collect { prepareLists() }
         }
-        viewModelScope.launch {
+        sharedScope.launch {
             _localNotes.collect { prepareLists() }
         }
     }
@@ -278,7 +278,7 @@ class NotesViewModel(dependencyInjection: DI = di) : ViewModel() {
     }
 
     private fun getNoteOwnerEmailAddress(noteOwnerUserId: String) {
-        viewModelScope.launch {
+        sharedScope.launch {
             usersUseCases.getUser.invoke(noteOwnerUserId).collect { response ->
                 _noteOwnerUser.value = response
             }

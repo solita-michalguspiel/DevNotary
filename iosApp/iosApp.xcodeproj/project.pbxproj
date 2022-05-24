@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4D33A386FC1F1C4C2FCB38A7 /* Pods_iosApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7946546C010E498FA518021C /* Pods_iosApp.framework */; };
 		5F3E7F2E2837BC9600AB37CF /* iosAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F3E7F2D2837BC9600AB37CF /* iosAppApp.swift */; };
 		5F3E7F302837BC9600AB37CF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F3E7F2F2837BC9600AB37CF /* ContentView.swift */; };
 		5F3E7F322837BC9700AB37CF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5F3E7F312837BC9700AB37CF /* Assets.xcassets */; };
@@ -38,6 +39,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		519026662C6955BA25ADE4A1 /* Pods-iosApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.debug.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.debug.xcconfig"; sourceTree = "<group>"; };
 		5F3E7F2A2837BC9600AB37CF /* iosApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iosApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F3E7F2D2837BC9600AB37CF /* iosAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iosAppApp.swift; sourceTree = "<group>"; };
 		5F3E7F2F2837BC9600AB37CF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -50,6 +52,8 @@
 		5F3E7F4A2837BC9700AB37CF /* iosAppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iosAppUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		5F5E7F78283B6E1300E14B4D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5F5E7F7A283B6EE900E14B4D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		7946546C010E498FA518021C /* Pods_iosApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iosApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F3294F70492D4CA63BD602DC /* Pods-iosApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.release.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +63,7 @@
 			files = (
 				5F5E7F75283B6DDE00E14B4D /* FirebaseAuth in Frameworks */,
 				5F5E7F77283B6DDE00E14B4D /* FirebaseFirestore in Frameworks */,
+				4D33A386FC1F1C4C2FCB38A7 /* Pods_iosApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,6 +91,8 @@
 				5F3E7F3D2837BC9700AB37CF /* iosAppTests */,
 				5F3E7F472837BC9700AB37CF /* iosAppUITests */,
 				5F3E7F2B2837BC9600AB37CF /* Products */,
+				EAAAC883CF2B8146984A367B /* Pods */,
+				76FFF3F17D6B4262B84D2B18 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -137,6 +144,24 @@
 			path = iosAppUITests;
 			sourceTree = "<group>";
 		};
+		76FFF3F17D6B4262B84D2B18 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7946546C010E498FA518021C /* Pods_iosApp.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		EAAAC883CF2B8146984A367B /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				519026662C6955BA25ADE4A1 /* Pods-iosApp.debug.xcconfig */,
+				F3294F70492D4CA63BD602DC /* Pods-iosApp.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -144,6 +169,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5F3E7F4E2837BC9700AB37CF /* Build configuration list for PBXNativeTarget "iosApp" */;
 			buildPhases = (
+				5B04F82C1AA54F3A095685C5 /* [CP] Check Pods Manifest.lock */,
 				5F3E7F572837BDDE00AB37CF /* ShellScript */,
 				5F3E7F262837BC9600AB37CF /* Sources */,
 				5F3E7F272837BC9600AB37CF /* Frameworks */,
@@ -272,6 +298,28 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		5B04F82C1AA54F3A095685C5 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-iosApp-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		5F3E7F572837BDDE00AB37CF /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -451,6 +499,7 @@
 		};
 		5F3E7F4F2837BC9700AB37CF /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 519026662C6955BA25ADE4A1 /* Pods-iosApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -485,6 +534,7 @@
 		};
 		5F3E7F502837BC9700AB37CF /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F3294F70492D4CA63BD602DC /* Pods-iosApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
