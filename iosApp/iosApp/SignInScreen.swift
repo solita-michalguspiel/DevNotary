@@ -17,6 +17,19 @@ class AuthViewModelHelper : ObservableObject{
     
     @Published var emailAddress : String = ""
     
+    @Published var timerCount : Int = 0
+    
+    init(){
+        start()
+    }
+    
+    func start(){
+        
+        authViewModel.resendEmailTimer.watch{ timer in
+            self.timerCount = ( timer.map({KotlinInt.init(int: Int32(truncating: $0))}) ) as! Int
+        }
+        
+    }
     
 }
 
@@ -42,6 +55,7 @@ struct SignInScreen: View {
             Text("Dev notary")
             Spacer()
             TextField(/*@START_MENU_TOKEN@*/"Placeholder"/*@END_MENU_TOKEN@*/, text: binding)
+            Text("Loading :" + String(authViewModel.timerCount))
             Spacer()
             Button("Click me"){
                 authViewModel.authViewModel.sendEmailLink()

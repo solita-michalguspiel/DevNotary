@@ -37,8 +37,7 @@ kotlin {
 
     sourceSets["commonMain"].dependencies {
         // Coroutines:
-        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
-
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1-native-mt")
         // DI with kodein:
         implementation("org.kodein.di:kodein-di:7.10.0")
         // Firebase auth and firestore:
