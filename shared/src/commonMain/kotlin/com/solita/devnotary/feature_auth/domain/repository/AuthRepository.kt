@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
 
+
     fun isUserAuthenticated(): Boolean
 
     fun getCurrentUserId() : String?

@@ -5,6 +5,7 @@ import com.solita.devnotary.Constants.SHARED_NOTES_FIREBASE
 import com.solita.devnotary.Constants.SHARED_NOTES_REF_FIREBASE
 import com.solita.devnotary.Constants.USERS_FIREBASE
 import com.solita.devnotary.dev_notary_db
+import com.solita.devnotary.di.diConstants.AUTH_TAG
 import com.solita.devnotary.feature_auth.data.AuthRepositoryImpl
 import com.solita.devnotary.feature_auth.domain.use_case.*
 import com.solita.devnotary.feature_auth.presentation.AuthViewModel
@@ -30,6 +31,10 @@ import org.kodein.di.instance
 
 lateinit var dbArgs: DbArgs
 
+object diConstants{
+    const val AUTH_TAG = "auth"
+}
+
 val di = DI {
     /**Firebase*/
     val firebaseFirestore = Firebase.firestore
@@ -48,7 +53,7 @@ val di = DI {
     }
 
     /**Repositories*/
-    bindSingleton { AuthRepositoryImpl() }
+    bindSingleton(AUTH_TAG) { AuthRepositoryImpl() }
 
     bindSingleton { LocalNotesRepositoryImpl(instance()) }
 
@@ -60,11 +65,11 @@ val di = DI {
 
     bindSingleton {
         AuthUseCases(
-            getCurrentUserDocument = GetCurrentUserDocument(instance()),
-            sendEmailLink = SendEmailLink(instance()),
-            signOut = SignOut(instance()),
-            isUserAuthenticated = IsUserAuthenticated(instance()),
-            signInWithEmailLink = SignInWithEmailLink(instance())
+            getCurrentUserDocument = GetCurrentUserDocument(instance<AuthRepositoryImpl>(AUTH_TAG)),
+            sendEmailLink = SendEmailLink(instance<AuthRepositoryImpl>(AUTH_TAG)),
+            signOut = SignOut(instance<AuthRepositoryImpl>(AUTH_TAG)),
+            isUserAuthenticated = IsUserAuthenticated(instance<AuthRepositoryImpl>(AUTH_TAG)),
+            signInWithEmailLink = SignInWithEmailLink(instance<AuthRepositoryImpl>(AUTH_TAG))
         )
     }
 

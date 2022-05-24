@@ -36,12 +36,12 @@ class AuthViewModel(dependencyInjection: DI = di) :
     val isUserAuthenticated get() = useCases.isUserAuthenticated.invoke()
 
     private val _resendEmailTimer = MutableStateFlow(0)
-    val resendEmailTimer : CommonFlow<Int> = _resendEmailTimer.asCommonFlow()
+    val resendEmailTimer: CommonFlow<Int> = _resendEmailTimer.asCommonFlow()
 
     private val _emailAddressInput = MutableStateFlow("")
-    val emailAddressInput : CommonFlow<String> = _emailAddressInput.asCommonFlow()
+    val emailAddressInput: CommonFlow<String> = _emailAddressInput.asCommonFlow()
 
-    fun changeEmailAddress(newEmailAddress : String){
+    fun changeEmailAddress(newEmailAddress: String) {
         _emailAddressInput.value = newEmailAddress
     }
 
@@ -104,7 +104,7 @@ class AuthViewModel(dependencyInjection: DI = di) :
 
     private val timer = Timer(RESEND_EMAIL_TIME)
 
-    private fun startTimer(){
+    private fun startTimer() {
         sharedScope.launch {
             timer.startTimer().collect {
                 _resendEmailTimer.value = it
@@ -112,7 +112,7 @@ class AuthViewModel(dependencyInjection: DI = di) :
         }
     }
 
-    private fun stopTimer(){
+    private fun stopTimer() {
         timer.stopTimer()
         _resendEmailTimer.value = 0
         _sendLinkState.value = Response.Empty

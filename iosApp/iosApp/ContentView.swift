@@ -8,15 +8,12 @@
 import SwiftUI
 import shared
 var authViewModel = iosDI().getAuthViewModel()
-var sameViewModel = iosDI().getAuthViewModel()
 struct ContentView: View {
-    
-    var string = String("authViewModel.timer.seconds")
-    
+        
     var body: some View {
         VStack{
             Spacer()
-        Text(string)
+        Text("string")
             .padding()
         }
 

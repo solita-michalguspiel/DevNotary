@@ -12,7 +12,7 @@ struct iosAppApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            SignInScreen()
         }
     }
 }
