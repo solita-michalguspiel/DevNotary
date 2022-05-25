@@ -53,7 +53,7 @@ class AuthViewModelHelper : ObservableObject{
     func isSendLinkButtonDisabled() -> Bool{
         print("Timer count : " + String(timerCount != 0))
         print("is Loading:  : " + String(sendLinkState.isKind(of: ResponseLoading.self)))
-        return (timerCount != 0 || sendLinkState.isKind(of: ResponseLoading.self))
+        return (!(timerCount == 0) || sendLinkState.isKind(of: ResponseLoading.self))
     }
     
 }
