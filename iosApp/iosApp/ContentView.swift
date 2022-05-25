@@ -7,16 +7,13 @@
 
 import SwiftUI
 import shared
-var authViewModel = iosDI().getAuthViewModel()
 struct ContentView: View {
         
     var body: some View {
-        VStack{
-            Spacer()
-        Text("string")
-            .padding()
+        NavigationView{
+            
         }
-
+        .navigationViewStyle(.stack)
     }
 }
 
