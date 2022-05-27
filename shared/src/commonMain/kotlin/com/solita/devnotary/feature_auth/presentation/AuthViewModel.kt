@@ -41,6 +41,7 @@ class AuthViewModel(dependencyInjection: DI = di) :
     private val _emailAddressInput = MutableStateFlow("")
     val emailAddressInput: CommonFlow<String> = _emailAddressInput.asCommonFlow()
 
+
     fun changeEmailAddress(newEmailAddress: String) {
         _emailAddressInput.value = newEmailAddress
     }
@@ -50,6 +51,7 @@ class AuthViewModel(dependencyInjection: DI = di) :
             useCases.getCurrentUserDocument.invoke().collect { response ->
                 _userState.value = response
                 if (response is Response.Error) setError(response.message)
+                println(response)
             }
         }
     }
@@ -57,6 +59,7 @@ class AuthViewModel(dependencyInjection: DI = di) :
     fun sendEmailLink() {
         _userAuthState.value = Response.Empty
         settings.putString(CURRENT_EMAIL_KEY, _emailAddressInput.value)
+        println(settings.getString(CURRENT_EMAIL_KEY))
         sharedScope.launch {
             useCases.sendEmailLink.invoke(_emailAddressInput.value).collect { response ->
                 if (response == Response.Success(true)) startTimer()

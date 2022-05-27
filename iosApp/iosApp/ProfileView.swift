@@ -7,22 +7,57 @@
 
 import Foundation
 import SwiftUI
+import shared
+
+
+class ProfileViewStateObject : ObservableObject{
+    
+
+    
+    var authViewModel = iosDI().getAuthViewModel()
+
+    @Published var userState : AnyObject = ResponseEmpty()
+
+    
+    init(){
+        start()
+    }
+    
+    func start(){
+        authViewModel.userState.watch{state in
+              let response = state! as Any
+              self.userState = watchResponse(response: response)
+        }
+    }
+    
+}
 
 
 struct ProfileView : View{
     
-    @State var navigationDestination : String? = nil
+    @StateObject var stateObject = ProfileViewStateObject()
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+
+    
     var body : some View {
-        
+        if(stateObject.userState.isKind!(of: ResponseSuccess<User>.self)){
+            let user = (stateObject.userState as! ResponseSuccess<User>)
             VStack(spacing : 30){
-                NavigationLink(destination : SignInView(), tag : Constants.SIGN_IN_SCREEN,selection : $navigationDestination){EmptyView()}
                 
-                Text("test@gmail.com - fake name")
+                Text(user.data!.userEmail)
                 
                 Button("Sign out"){
-                    self.presentationMode.wrappedValue.dismiss()
+                    stateObject.authViewModel.signOut()
+                    presentationMode.wrappedValue.dismiss()
                 }
             }.navigationBarBackButtonHidden(true)
         }
+    else{
+        Text("Loading...").onAppear(){
+            stateObject.authViewModel.getCurrentUserDocument()
+        }
+    }
+    }
+
+
 }

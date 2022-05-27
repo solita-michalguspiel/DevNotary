@@ -10,8 +10,7 @@ import SwiftUI
 import shared
 import Combine
 
-
-class AuthViewModelHelper : ObservableObject{
+class SignInViewStateObject : ObservableObject{
     
     var authViewModel = iosDI().getAuthViewModel()
     
@@ -21,64 +20,77 @@ class AuthViewModelHelper : ObservableObject{
     
     @Published var sendLinkState : AnyObject = ResponseEmpty()
     
+    @Published var userAuthState : AnyObject = ResponseEmpty()
+    
+    @Published var userState : AnyObject = ResponseEmpty()
+    
+    @Published var shouldNavigate : Bool = false
+    
     init(){
         start()
     }
     
     func start(){
-        
         authViewModel.resendEmailTimer.watch{ timer in
             self.timerCount = ( timer.map({KotlinInt.init(int: Int32(truncating: $0))}) ) as! Int
         }
         
         authViewModel.sendLinkState.watch{  state in
             let response = state! as Any
-            switch response{
-            case _ as ResponseEmpty :
-                self.sendLinkState = ResponseEmpty()
-            case _ as ResponseError :
-                self.sendLinkState = ResponseError.self
-            case _ as ResponseLoading :
-                self.sendLinkState = ResponseLoading()
-            case _ as ResponseSuccess<AnyObject> :
-                self.sendLinkState = (response as! ResponseSuccess<AnyObject>)
-            default : print("It's something else")
-            }
+            self.sendLinkState = watchResponse(response: response)
+        }
+        
+        authViewModel.userState.watch{state in
+              let response = state! as Any
+              self.userState = watchResponse(response: response)
+        }
+        
+        authViewModel.userAuthState.watch{state in
+            let response = state! as Any
+            self.userAuthState = watchResponse(response: response)
             
-            print(state! as Response)
+            if(self.userAuthState.isKind(of: ResponseSuccess<AnyObject>.self)){
+                let userAuthState = self.userAuthState as! ResponseSuccess<KotlinBoolean>
+                if(userAuthState.data == true){
+                    print("True, let's log in")
+                    self.shouldNavigate = true
+                }
+                else{
+                    print("False, means signed out!")
+                }
+            }
         }
         
     }
-    
+
     func isSendLinkButtonDisabled() -> Bool{
-        print("Timer count : " + String(timerCount != 0))
-        print("is Loading:  : " + String(sendLinkState.isKind(of: ResponseLoading.self)))
         return (!(timerCount == 0) || sendLinkState.isKind(of: ResponseLoading.self))
     }
     
 }
 
 struct SignInView: View {
-    @ObservedObject var authViewModel = AuthViewModelHelper()
-    @State var email = ""
-    @State var navigateToProfileScreen = false
+    @StateObject var stateObject = SignInViewStateObject()
     
+    @State var email = ""
+    @State var signInState : AnyObject? = nil
+   
     var body: some View {
-        
         let binding = Binding<String>(get: {
             self.email
         }, set: {
             self.email = $0
-            authViewModel.authViewModel.changeEmailAddress(newEmailAddress: self.email)
+            stateObject.authViewModel.changeEmailAddress(newEmailAddress: self.email)
         })
         
         var buttonColor: Color {
-            return !authViewModel.isSendLinkButtonDisabled() ? Color.buttons : .gray
+            return !stateObject.isSendLinkButtonDisabled() ? Color.buttons : .gray
            }
+        
         
         return NavigationView{
             VStack{
-                NavigationLink(destination: ProfileView(),isActive: $navigateToProfileScreen){
+                NavigationLink(destination: ProfileView(),isActive: $stateObject.shouldNavigate){
                     EmptyView()
                 }
                 Text("Dev notary")
@@ -91,10 +103,9 @@ struct SignInView: View {
                     TextField("Enter email address", text: binding)
                         .padding(.horizontal, 30.0).textFieldStyle(RoundedBorderTextFieldStyle())
                 }
-                
                 Spacer()
                 Button(action : {
-                      authViewModel.authViewModel.sendEmailLink()
+                    stateObject.authViewModel.sendEmailLink()
                 }){
                     Text("Get email")
                         .fontWeight(.bold)
@@ -108,15 +119,20 @@ struct SignInView: View {
                             RoundedRectangle(cornerRadius: 25)
                                 .stroke(buttonColor, lineWidth: 3)
                         ).padding(.bottom,3.0)
-                }.disabled(authViewModel.isSendLinkButtonDisabled())
+                }.disabled(stateObject.isSendLinkButtonDisabled())
                 
                 
-                if authViewModel.timerCount != 0{
-                    Text("Send again in: " + String(authViewModel.timerCount) + " seconds.")
+                if stateObject.timerCount != 0{
+                    Text("Send again in: " + String(stateObject.timerCount) + " seconds.")
                         .font(.callout)
                         .foregroundColor(.gray)
                         .padding(.bottom)
                 }
+            }
+        }.onAppear(){
+            if(stateObject.authViewModel.isUserAuthenticated){
+                print("Already authenticated!")
+                stateObject.shouldNavigate = true
             }
         }
     }

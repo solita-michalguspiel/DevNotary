@@ -4,6 +4,7 @@ object Constants {
 
     const val APP_URL = "https://dev-notary.web.app"
     const val ANDROID_PACKAGE_NAME = "com.solita.devnotary.android"
+    const val IOS_BUNDLE_ID = "com.michal.devAcademyNotary"
     const val CURRENT_EMAIL_KEY = "email_key"
 
     const val RESEND_EMAIL_TIME = 60
