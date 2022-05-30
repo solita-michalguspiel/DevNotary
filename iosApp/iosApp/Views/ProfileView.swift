@@ -56,15 +56,7 @@ struct ProfileView : View{
 
     var body : some View {
         
-    return TabView{
-        Text("This is going to show notes")
-        .tabItem{
-            Image(systemName: "house.fill")
-            Text("Notes")
-        }
-        
-        
-        ZStack{
+    return ZStack{
         if(stateObject.userState.isKind!(of: ResponseSuccess<User>.self)){
             let user = (stateObject.userState as! ResponseSuccess<User>)
             VStack(spacing : 30){
@@ -82,10 +74,8 @@ struct ProfileView : View{
         if stateObject.shouldPopBackStack {
             Text("").onAppear(){ presentationMode.wrappedValue.dismiss()}
             }
-        }.tabItem{
-            Image(systemName: "person.fill")
-            Text("Profile ")
-        }
-    }.navigationBarBackButtonHidden(true)
+        }.navigationBarBackButtonHidden(true)
     }
 }
+    
+

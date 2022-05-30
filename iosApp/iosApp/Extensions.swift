@@ -16,4 +16,11 @@ extension Color{
     static let text = Color("Text")
     static let systemBackground = Color(uiColor: .systemBackground)
 
+    
+    static let red = Color("Red")
+    static let blue = Color("Blue")
+    static let green = Color("Green")
+    static let pink = Color("Pink")
+    static let yellow = Color("Yellow")
+    static let white = Color("White")
 }

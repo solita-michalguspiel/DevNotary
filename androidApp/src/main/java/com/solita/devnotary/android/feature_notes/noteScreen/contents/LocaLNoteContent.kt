@@ -23,7 +23,7 @@ import com.solita.devnotary.android.theme.LocalColors
 import com.solita.devnotary.android.theme.LocalElevation
 import com.solita.devnotary.android.theme.LocalSpacing
 import com.solita.devnotary.android.theme.Typography
-import com.solita.devnotary.android.utils.NoteColor
+import com.solita.devnotary.android.feature_notes.domain.NoteColor
 import com.solita.devnotary.di.di
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import org.kodein.di.instance

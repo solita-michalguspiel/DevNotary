@@ -1,4 +1,4 @@
-package com.solita.devnotary.android.utils
+package com.solita.devnotary.android.feature_notes.domain
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
