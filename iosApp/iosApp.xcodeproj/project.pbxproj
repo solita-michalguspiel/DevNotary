@@ -28,6 +28,7 @@
 		5FFE5E972844DBAE001B2E8A /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFE5E962844DBAE001B2E8A /* MainView.swift */; };
 		5FFE5E9C2844DEA6001B2E8A /* NotePreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFE5E9B2844DEA6001B2E8A /* NotePreview.swift */; };
 		5FFE5EA02844EB2D001B2E8A /* NoteColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFE5E9F2844EB2D001B2E8A /* NoteColor.swift */; };
+		5FFE5EA22845070A001B2E8A /* AddNewNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFE5EA12845070A001B2E8A /* AddNewNoteView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +72,7 @@
 		5FFE5E962844DBAE001B2E8A /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		5FFE5E9B2844DEA6001B2E8A /* NotePreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotePreview.swift; sourceTree = "<group>"; };
 		5FFE5E9F2844EB2D001B2E8A /* NoteColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteColor.swift; sourceTree = "<group>"; };
+		5FFE5EA12845070A001B2E8A /* AddNewNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNewNoteView.swift; sourceTree = "<group>"; };
 		7946546C010E498FA518021C /* Pods_iosApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iosApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3294F70492D4CA63BD602DC /* Pods-iosApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.release.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -185,6 +187,7 @@
 				5F0EC23B283CF73F003B6CBB /* SignInView.swift */,
 				5FFE5E982844DE00001B2E8A /* NotesView */,
 				5FFE5E9F2844EB2D001B2E8A /* NoteColor.swift */,
+				5FFE5EA12845070A001B2E8A /* AddNewNoteView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -410,6 +413,7 @@
 				5F31CE422840BD2A003720DB /* SceneDelegate.swift in Sources */,
 				5F31CE442840EA20003720DB /* Utils.swift in Sources */,
 				5FFE5E952844DB6E001B2E8A /* NotesView.swift in Sources */,
+				5FFE5EA22845070A001B2E8A /* AddNewNoteView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

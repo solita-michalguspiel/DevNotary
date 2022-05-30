@@ -75,6 +75,10 @@ kotlin {
         implementation("org.robolectric:robolectric:4.8")
     }
 
+    sourceSets["iosX64Main"].dependencies {
+        implementation(SqlDelight.native)
+    }
+
     sourceSets {
         val commonMain by getting
         val commonTest by getting {
@@ -92,6 +96,9 @@ kotlin {
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
         val iosMain by creating {
+            dependencies{
+                implementation(SqlDelight.native)
+            }
             dependsOn(commonMain)
             iosX64Main.dependsOn(this)
             iosArm64Main.dependsOn(this)

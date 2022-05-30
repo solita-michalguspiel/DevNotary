@@ -6,6 +6,9 @@ import com.solita.devnotary.Constants.SHARED_NOTES_REF_FIREBASE
 import com.solita.devnotary.Constants.USERS_FIREBASE
 import com.solita.devnotary.dev_notary_db
 import com.solita.devnotary.di.diConstants.AUTH_TAG
+import com.solita.devnotary.di.diConstants.LOCAL_NOTES_TAG
+import com.solita.devnotary.di.diConstants.REMOTE_NOTES_TAG
+import com.solita.devnotary.di.diConstants.USERS_TAG
 import com.solita.devnotary.feature_auth.data.AuthRepositoryImpl
 import com.solita.devnotary.feature_auth.domain.use_case.*
 import com.solita.devnotary.feature_auth.presentation.AuthViewModel
@@ -29,10 +32,13 @@ import org.kodein.di.bindConstant
 import org.kodein.di.bindSingleton
 import org.kodein.di.instance
 
-lateinit var dbArgs: DbArgs
+var dbArgs: DbArgs? = null
 
 object diConstants{
     const val AUTH_TAG = "auth"
+    const val LOCAL_NOTES_TAG = "local_notes"
+    const val REMOTE_NOTES_TAG = "remote_notes"
+    const val USERS_TAG = "users"
 }
 
 val di = DI {
@@ -55,11 +61,11 @@ val di = DI {
     /**Repositories*/
     bindSingleton(AUTH_TAG) { AuthRepositoryImpl() }
 
-    bindSingleton { LocalNotesRepositoryImpl(instance()) }
+    bindSingleton(LOCAL_NOTES_TAG) { LocalNotesRepositoryImpl(instance()) }
 
-    bindSingleton { RemoteNotesRepositoryImpl() }
+    bindSingleton(REMOTE_NOTES_TAG) { RemoteNotesRepositoryImpl() }
 
-    bindSingleton { UsersRepositoryImpl() }
+    bindSingleton(USERS_TAG) { UsersRepositoryImpl() }
 
     /**UseCases*/
 
@@ -75,27 +81,27 @@ val di = DI {
 
     bindSingleton {
         LocalNotesUseCases(
-            addNote = AddNote(instance()),
-            deleteNote = DeleteNote(instance()),
-            editNote = EditNote(instance()),
-            getNotes = GetNotes(instance())
+            addNote = AddNote(instance<LocalNotesRepositoryImpl>(LOCAL_NOTES_TAG)),
+            deleteNote = DeleteNote(instance<LocalNotesRepositoryImpl>(LOCAL_NOTES_TAG)),
+            editNote = EditNote(instance<LocalNotesRepositoryImpl>(LOCAL_NOTES_TAG)),
+            getNotes = GetNotes(instance<LocalNotesRepositoryImpl>(LOCAL_NOTES_TAG))
         )
     }
     bindSingleton {
         RemoteNotesUseCases(
-            shareNote = ShareNote(instance()),
-            unshareNote = UnshareNote(instance()),
-            deleteSharedNote = DeleteSharedNote(instance()),
-            getSharedNotes = GetSharedNotes(instance()),
-            editSharedNote = EditSharedNote(instance())
+            shareNote = ShareNote(instance<RemoteNotesRepositoryImpl>(REMOTE_NOTES_TAG)),
+            unshareNote = UnshareNote(instance<RemoteNotesRepositoryImpl>(REMOTE_NOTES_TAG)),
+            deleteSharedNote = DeleteSharedNote(instance<RemoteNotesRepositoryImpl>(REMOTE_NOTES_TAG)),
+            getSharedNotes = GetSharedNotes(instance<RemoteNotesRepositoryImpl>(REMOTE_NOTES_TAG)),
+            editSharedNote = EditSharedNote(instance<RemoteNotesRepositoryImpl>(REMOTE_NOTES_TAG))
         )
     }
 
     bindSingleton {
         UsersUseCases(
-            getUsers = GetUsers(instance()),
-            getUsersWithAccess = GetUsersWithAccess(instance()),
-            getUser = GetUser(instance())
+            getUsers = GetUsers(instance<UsersRepositoryImpl>(USERS_TAG)),
+            getUsersWithAccess = GetUsersWithAccess(instance<UsersRepositoryImpl>(USERS_TAG)),
+            getUser = GetUser(instance<UsersRepositoryImpl>(USERS_TAG))
         )
     }
 
@@ -104,7 +110,12 @@ val di = DI {
 
     /**Database*/
 
-    bindSingleton { getSqlDriver(dbArgs) }
+    bindSingleton {
+        println("Trying to bind driver!")
+        if(dbArgs != null)getSqlDriver(dbArgs)
+        else getSqlDriver(null)
+
+    }
 
     bindSingleton { dev_notary_db(instance()) }
 

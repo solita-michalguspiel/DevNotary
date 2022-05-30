@@ -12,13 +12,13 @@ import shared
 
 struct NotesView : View{
     
-    static let testNote = Note.init(noteId: "testID", ownerUserId: "59017250192", title:"Database plan", content: "Some random SQL database plan, loreum ipseum bla la test loreum", dateTime: "2015.12.30 16:35", color: "blue")
+    static let testNote = Note.init(noteId: "testID", ownerUserId: "59017250192", title:"Database plan", content: "Some random SQL database plan, loreum ipseum bla la test loreum", dateTime: "2022-05-17T08:08:08.715Z", color: "pink")
     
     var body : some View{
         
         
        return ZStack{
-            
+           
            ScrollView{
                LazyVStack{
                    ForEach(0 ... 20, id: \.self){ _ in
@@ -26,9 +26,28 @@ struct NotesView : View{
                    }
                }
            }
+           
+           
+           VStack{
+               Spacer()
+               HStack{
+                   Spacer()
+                   NavigationLink(destination: AddNewNoteView()){
+                           Image(systemName: "plus")
+                               .font(.largeTitle)
+                               .frame(width: 70, height: 70)
+                               .background(Color.buttons)
+                               .clipShape(Circle())
+                               .foregroundColor(.white)
+                       }
+                   }
+                  
+               }
+           }
+           
         }
     }
-}
+
 
 struct NoteView_Previews : PreviewProvider{
     static var previews : some View  {

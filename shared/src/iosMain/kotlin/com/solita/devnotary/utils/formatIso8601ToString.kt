@@ -3,5 +3,7 @@ package com.solita.devnotary.utils
 import kotlinx.datetime.TimeZone
 
 actual fun formatIso8601ToString(iso8601: String,timeZone : TimeZone): String {
-    TODO("Not yet implemented")
+    if(iso8601.isBlank()) return ""
+
+    return iso8601
 }

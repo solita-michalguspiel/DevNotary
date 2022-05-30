@@ -9,6 +9,6 @@ actual class DbArgs(
     var context : Context
 )
 
-actual fun getSqlDriver(dbArgs: DbArgs): SqlDriver {
-   return AndroidSqliteDriver(dev_notary_db.Schema,dbArgs.context,"dev_notary_db")
+actual fun getSqlDriver(dbArgs: DbArgs?): SqlDriver {
+   return AndroidSqliteDriver(dev_notary_db.Schema,dbArgs!!.context,"dev_notary_db")
 }
