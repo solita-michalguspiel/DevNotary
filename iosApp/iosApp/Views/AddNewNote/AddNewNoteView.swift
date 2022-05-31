@@ -64,42 +64,41 @@ struct AddNewNoteView : View{
             stateObject.notesViewModel.changeContentInput(newContent: self.content)
         })
         
-        ZStack{
-            RoundedRectangle(cornerRadius: 20,style: .continuous)
-                .fill(NoteColor.init(color: stateObject.chosenColor).getColor())
-            
-            GeometryReader{ geo in
-                VStack{
-                    TextField("Note title",text: $stateObject.title)
-                        .font(.title)
-                        .padding(.horizontal)
-                        .padding(.vertical,10)
-                    Divider()
-                    TextEditor(text : contentBinding)
-                        .background(.clear)
-                        .frame(height: geo.size.height * 0.6)
-                        .textFieldStyle(PlainTextFieldStyle())
-                        .padding(.horizontal,10)
+        VStack{
+            ZStack{
+                RoundedRectangle(cornerRadius: 20,style: .continuous)
+                    .fill(NoteColor.init(color: stateObject.chosenColor).getColor())
+                
+                GeometryReader{ geo in
+                    VStack{
+                        TextField("Note title",text: $stateObject.title)
+                            .font(.title)
+                            .padding(.horizontal)
+                            .padding(.vertical,10)
+                        Divider()
+                        TextEditor(text : contentBinding)
+                            .background(.clear)
+                            .frame(height: geo.size.height * 0.7)
+                            .textFieldStyle(PlainTextFieldStyle())
+                            .padding(.horizontal,10)
+                           
+                        Divider()
+                        BallsRow(
+                                    chosenColor: stateObject.chosenColor,
+                                    pickColor : { color in stateObject.notesViewModel.changeNoteColor(newColor: color)}
+                        ).frame(height: geo.size.height * 0.15,alignment: .center)
+                        Spacer()
                        
-                    Divider()
-                    BallsRow(
-                                chosenColor: stateObject.chosenColor,
-                                pickColor : { color in stateObject.notesViewModel.changeNoteColor(newColor: color)}
-                            )
-                    Spacer()
-                    HStack{
-                        Text("Button1")
-                        Text("Button2")
-                        Button("Add note"){
-                            stateObject.notesViewModel.addNote(providedId: nil)
-                        }
                     }
-                    .frame(height: geo.size.height * 0.2)
                 }
+            }.padding()
+            HStack{
+                Spacer()
+                Button("Add note"){
+                    stateObject.notesViewModel.addNote(providedId: nil)
+                }.padding()
             }
-            
-        }.padding()
-        
+    }
     }
     
 }

@@ -63,6 +63,7 @@ struct NotesView : View{
                                .background(Color.buttons)
                                .clipShape(Circle())
                                .foregroundColor(.white)
+                               .padding()
                        }
                    }
                   
