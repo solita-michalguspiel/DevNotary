@@ -92,22 +92,27 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
     var noteDateTime = MutableStateFlow("")
 
     private var _titleInput = MutableStateFlow("")
-    var titleInput : CommonFlow<String> = _titleInput.asCommonFlow()
+    val titleInput : CommonFlow<String> = _titleInput.asCommonFlow()
 
     fun changeTitleInput(newTitle: String) {
         _titleInput.value = newTitle
     }
 
     private var _contentInput = MutableStateFlow("")
-    var contentInput : CommonFlow<String> = _contentInput.asCommonFlow()
+    val contentInput : CommonFlow<String> = _contentInput.asCommonFlow()
 
     fun changeContentInput(newContent: String) {
         _contentInput.value = newContent
     }
 
-    var noteColor = MutableStateFlow("")
-    var anotherUserEmailAddress = MutableStateFlow("")
+    private var _noteColor = MutableStateFlow("")
+    val noteColor : CommonFlow<String> = _noteColor.asCommonFlow()
 
+    fun changeNoteColor(newColor : String){
+        _noteColor.value = newColor
+    }
+
+    var anotherUserEmailAddress = MutableStateFlow("")
     var isScrollingUp = MutableStateFlow(true)
     var isConfirmDeleteLocalNoteDialogOpen = MutableStateFlow(false)
     var isConfirmDeleteAccessFromSharedNoteDialogOpen = MutableStateFlow(false)
@@ -129,7 +134,7 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
             return
         }
         val note =
-            createNewLocalNote(providedId, _titleInput.value, _contentInput.value, noteColor.value)
+            createNewLocalNote(providedId, _titleInput.value, _contentInput.value, _noteColor.value)
         sharedScope.launch {
             localUseCases.addNote.invoke(note).collect { response ->
                 println("response arrived: $response")
@@ -143,7 +148,7 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
             localUseCases.editNote.invoke(
                 _titleInput.value,
                 _contentInput.value,
-                noteColor.value,
+                _noteColor.value,
                 noteId.value
             ).collect { response ->
                 _noteModificationStatus.value = response
@@ -153,7 +158,7 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
                         noteId.value,
                         _titleInput.value,
                         _contentInput.value,
-                        noteColor.value
+                        _noteColor.value
                     )
                 }
             }
@@ -309,7 +314,7 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
         this._titleInput.value = note?.title ?: ""
         this._contentInput.value = note?.content ?: ""
         this.noteDateTime.value = note?.dateTime ?: ""
-        this.noteColor.value = note?.color ?: Constants.WHITE_COLOR
+        this._noteColor.value = note?.color ?: Constants.WHITE_COLOR
         if ((note == null) || (note.ownerUserId == null)) return
         if (note.ownerUserId == auth.currentUser?.uid) getUsersWithAccess()
         else getNoteOwnerEmailAddress(note.ownerUserId)

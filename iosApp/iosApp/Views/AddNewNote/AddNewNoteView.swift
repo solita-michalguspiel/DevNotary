@@ -14,6 +14,8 @@ class AddNewNoteViewHelper : ObservableObject{
     
     var notesViewModel = iosDI().getNotesViewModel()
 
+    @Published var chosenColor = ""
+    
     let limit = 30
     @Published var title = ""{
         didSet{
@@ -30,6 +32,17 @@ class AddNewNoteViewHelper : ObservableObject{
         }
     }
     
+    init(){
+        start()
+    }
+    
+    func start(){
+        self.notesViewModel.noteColor.watch(block : { newColor in
+            self.chosenColor = newColor! as String
+        })
+    }
+    
+    
 }
 
 
@@ -37,6 +50,10 @@ struct AddNewNoteView : View{
     
     @State var content = ""
     @ObservedObject var stateObject = AddNewNoteViewHelper()
+    
+    init() {
+          UITextView.appearance().backgroundColor = .clear
+      }
     
     var body : some View{
         
@@ -49,7 +66,7 @@ struct AddNewNoteView : View{
         
         ZStack{
             RoundedRectangle(cornerRadius: 20,style: .continuous)
-                .fill(Color.blue)
+                .fill(NoteColor.init(color: stateObject.chosenColor).getColor())
             
             GeometryReader{ geo in
                 VStack{
@@ -59,11 +76,16 @@ struct AddNewNoteView : View{
                         .padding(.vertical,10)
                     Divider()
                     TextEditor(text : contentBinding)
-                        .frame(height: geo.size.height * 0.5)
-                        .textFieldStyle(PlainTextFieldStyle())
                         .background(.clear)
+                        .frame(height: geo.size.height * 0.6)
+                        .textFieldStyle(PlainTextFieldStyle())
+                        .padding(.horizontal,10)
+                       
                     Divider()
-                    BallsRow()
+                    BallsRow(
+                                chosenColor: stateObject.chosenColor,
+                                pickColor : { color in stateObject.notesViewModel.changeNoteColor(newColor: color)}
+                            )
                     Spacer()
                     HStack{
                         Text("Button1")

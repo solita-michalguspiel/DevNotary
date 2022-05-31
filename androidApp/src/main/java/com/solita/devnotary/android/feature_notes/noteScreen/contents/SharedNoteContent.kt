@@ -31,7 +31,7 @@ fun SharedNoteContent(popBackStack : () -> Unit) {
     val viewModel: NotesViewModel by com.solita.devnotary.di.di.instance()
     val titleInputState = viewModel.titleInput.collectAsState("")
     val contentInputState = viewModel.contentInput.collectAsState("")
-    val noteColorState = viewModel.noteColor.collectAsState()
+    val noteColorState = viewModel.noteColor.collectAsState("")
 
     val noteSharingState = viewModel.noteSharingState.collectAsState().value
 

@@ -26,7 +26,7 @@ fun LocalNoteEditContent(
     val viewModel: NotesViewModel by di.instance()
     val titleInputState = viewModel.titleInput.collectAsState("")
     val contentInputState = viewModel.contentInput.collectAsState("")
-    val noteColorState = viewModel.noteColor.collectAsState()
+    val noteColorState = viewModel.noteColor.collectAsState("")
 
     Column(Modifier.fillMaxSize()) {
         Card(
@@ -47,7 +47,7 @@ fun LocalNoteEditContent(
                     onValueChange = { viewModel.changeContentInput(it) }
                 )
                 ColorBallsRow(chosenNoteColor = noteColorState.value) {
-                    viewModel.noteColor.value = it
+                    viewModel.changeNoteColor(it)
                 }
             }
         }

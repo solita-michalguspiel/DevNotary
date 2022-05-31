@@ -35,7 +35,7 @@ struct NotePreview: View {
                 .padding(.horizontal, 10)
                 .padding(.vertical, 5)
                 Text(note.content)
-                .multilineTextAlignment(.leading)
+                    .frame(maxWidth: .infinity, alignment : .leading)
                 .font(.body)
                 .lineLimit(1)
                 .padding(.horizontal, 10)

@@ -28,9 +28,11 @@ class NoteColor{
         }
     }
     
+    
+   
 }
 
-class AvailableNoteColor{
+class AvailableNoteColor: Identifiable{
     let color : Color
     let colorName : String
     
@@ -38,6 +40,7 @@ class AvailableNoteColor{
         self.color = color
         self.colorName = colorName
     }
+    
 }
 
 struct AvailableNoteColors{
@@ -47,10 +50,10 @@ struct AvailableNoteColors{
     let PINK    : AvailableNoteColor  = AvailableNoteColor.init(color: Color.pink, colorName: "pink")
     let YELLOW  : AvailableNoteColor  = AvailableNoteColor.init(color: Color.yellow, colorName: "yellow")
     let WHITE   : AvailableNoteColor  = AvailableNoteColor.init(color: Color.white, colorName: "white")
-}
-
-func getAvailableColors() -> Array<AvailableNoteColor>{
-    let colors = AvailableNoteColors.init()
     
-    return [colors.RED,colors.BLUE,colors.GREEN,colors.PINK,colors.YELLOW,colors.WHITE]
+    func getAvailableColors() -> Array<AvailableNoteColor>{
+        let colors = AvailableNoteColors.init()
+        
+        return [colors.RED,colors.BLUE,colors.GREEN,colors.PINK,colors.YELLOW,colors.WHITE]
+    }
 }
