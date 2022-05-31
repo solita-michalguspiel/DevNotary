@@ -83,8 +83,8 @@ class NotesViewModelTest {
     fun givenNoteWasAdded_StateOfNoteModShouldChangeToLoadingAndThenToSuccess(): TestResult =
         runTest {
             launch {
-                viewModel.titleInput.value = firstNote.title
-                viewModel.contentInput.value = firstNote.content
+                viewModel.changeTitleInput(firstNote.title)
+                viewModel.changeContentInput(firstNote.content)
                 viewModel.noteColor.value = firstNote.color
                 viewModel.addNote(firstNote.noteId)
             }
@@ -102,7 +102,7 @@ class NotesViewModelTest {
                 setNote(firstNote)
                 viewModel.addNote(firstNote.noteId)
                 viewModel.noteId.value = firstNote.noteId
-                viewModel.contentInput.value = "ChangedContent"
+                viewModel.changeContentInput("ChangedContent")
                 viewModel.editNote()
             }
             advanceTimeBy(50)
@@ -176,8 +176,8 @@ class NotesViewModelTest {
     @Test
     fun givenThereIsSharedNoteAndGetSharedNotesIsCalled_SharedNoteShouldAppearInSharedNotes() : TestResult = runTest {
             viewModel.noteId.value = firstNote.noteId
-            viewModel.titleInput.value = firstNote.title
-            viewModel.contentInput.value = firstNote.content
+            viewModel.changeTitleInput(firstNote.title)
+            viewModel.changeContentInput(firstNote.content)
             viewModel.noteDateTime.value = firstNote.dateTime
             viewModel.noteColor.value = firstNote.color
         launch {
@@ -195,8 +195,8 @@ class NotesViewModelTest {
 
 
     private fun setNote(note: Note){
-        viewModel.titleInput.value = note.title
-        viewModel.contentInput.value = note.content
+        viewModel.changeTitleInput(note.title)
+        viewModel.changeContentInput(note.content)
         viewModel.noteColor.value = note.color
     }
 

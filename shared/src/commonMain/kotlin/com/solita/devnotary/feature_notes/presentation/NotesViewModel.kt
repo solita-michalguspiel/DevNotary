@@ -11,7 +11,9 @@ import com.solita.devnotary.feature_notes.domain.model.Note
 import com.solita.devnotary.feature_notes.domain.use_case.local_notes_use_cases.LocalNotesUseCases
 import com.solita.devnotary.feature_notes.domain.use_case.remote_notes_use_cases.RemoteNotesUseCases
 import com.solita.devnotary.feature_notes.domain.use_case.users_use_cases.UsersUseCases
+import com.solita.devnotary.utils.CommonFlow
 import com.solita.devnotary.utils.SharedViewModel
+import com.solita.devnotary.utils.asCommonFlow
 import com.solita.devnotary.utils.formatIso8601ToString
 import dev.gitlive.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,7 +50,7 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
 
     private val _notes: MutableStateFlow<List<Note>> =
         MutableStateFlow(listOf())
-    val notes: StateFlow<List<Note>> = _notes
+    val notes: CommonFlow<List<Note>> = _notes.asCommonFlow()
 
     private val _usersWithAccess: MutableStateFlow<Response<List<User>>> =
         MutableStateFlow(Response.Empty)
@@ -88,8 +90,21 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
     var noteSearchPhrase = MutableStateFlow("")
     var noteId = MutableStateFlow("")
     var noteDateTime = MutableStateFlow("")
-    var titleInput = MutableStateFlow("")
-    var contentInput = MutableStateFlow("")
+
+    private var _titleInput = MutableStateFlow("")
+    var titleInput : CommonFlow<String> = _titleInput.asCommonFlow()
+
+    fun changeTitleInput(newTitle: String) {
+        _titleInput.value = newTitle
+    }
+
+    private var _contentInput = MutableStateFlow("")
+    var contentInput : CommonFlow<String> = _contentInput.asCommonFlow()
+
+    fun changeContentInput(newContent: String) {
+        _contentInput.value = newContent
+    }
+
     var noteColor = MutableStateFlow("")
     var anotherUserEmailAddress = MutableStateFlow("")
 
@@ -102,18 +117,22 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
     var isEditEnabled = MutableStateFlow(false)
 
     fun addNote(providedId: String? = null) {
-        if (titleInput.value.isBlank()) {
+        println("Adding new note!")
+        if (_titleInput.value.isBlank()) {
             _noteModificationStatus.value = Response.Error(NO_TITLE_ERROR)
+            println("title blank!")
             return
         }
-        if (contentInput.value.isBlank()) {
+        if (_contentInput.value.isBlank()) {
             _noteModificationStatus.value = Response.Error(BLANK_NOTE_ERROR)
+            println("content blank!")
             return
         }
         val note =
-            createNewLocalNote(providedId, titleInput.value, contentInput.value, noteColor.value)
+            createNewLocalNote(providedId, _titleInput.value, _contentInput.value, noteColor.value)
         sharedScope.launch {
             localUseCases.addNote.invoke(note).collect { response ->
+                println("response arrived: $response")
                 _noteModificationStatus.value = response
             }
         }
@@ -122,8 +141,8 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
     fun editNote() {
         sharedScope.launch {
             localUseCases.editNote.invoke(
-                titleInput.value,
-                contentInput.value,
+                _titleInput.value,
+                _contentInput.value,
                 noteColor.value,
                 noteId.value
             ).collect { response ->
@@ -132,8 +151,8 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
                     isEditEnabled.value = false
                     editSharedNote(
                         noteId.value,
-                        titleInput.value,
-                        contentInput.value,
+                        _titleInput.value,
+                        _contentInput.value,
                         noteColor.value
                     )
                 }
@@ -185,8 +204,8 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
     fun shareNote() {
         val note = Note(
             noteId = noteId.value,
-            title = titleInput.value,
-            content = contentInput.value,
+            title = _titleInput.value,
+            content = _contentInput.value,
             dateTime = noteDateTime.value,
             color = noteColor.value
         )
@@ -287,8 +306,8 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
 
     fun prepareNoteScreen(note: Note?) {
         this.noteId.value = note?.noteId ?: ""
-        this.titleInput.value = note?.title ?: ""
-        this.contentInput.value = note?.content ?: ""
+        this._titleInput.value = note?.title ?: ""
+        this._contentInput.value = note?.content ?: ""
         this.noteDateTime.value = note?.dateTime ?: ""
         this.noteColor.value = note?.color ?: Constants.WHITE_COLOR
         if ((note == null) || (note.ownerUserId == null)) return

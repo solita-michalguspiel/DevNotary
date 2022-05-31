@@ -25,7 +25,7 @@ import org.kodein.di.instance
 fun NotesListContent(paddingValues: PaddingValues, navController: NavController) {
 
     val viewModel: NotesViewModel by di.instance()
-    val notesState = viewModel.notes.collectAsState()
+    val notesState = viewModel.notes.collectAsState(listOf())
 
     val lazyListState = rememberLazyListState()
     viewModel.isScrollingUp.value = lazyListState.isScrollingUp()

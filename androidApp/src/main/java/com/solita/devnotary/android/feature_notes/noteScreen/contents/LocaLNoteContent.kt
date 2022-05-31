@@ -17,13 +17,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.solita.devnotary.android.R
 import com.solita.devnotary.android.feature_notes._sharedComponents.LocalNoteButtons
+import com.solita.devnotary.android.feature_notes.domain.NoteColor
 import com.solita.devnotary.android.feature_notes.noteScreen.components.ContentTextField
 import com.solita.devnotary.android.feature_notes.noteScreen.components.TitleTextField
 import com.solita.devnotary.android.theme.LocalColors
 import com.solita.devnotary.android.theme.LocalElevation
 import com.solita.devnotary.android.theme.LocalSpacing
 import com.solita.devnotary.android.theme.Typography
-import com.solita.devnotary.android.feature_notes.domain.NoteColor
 import com.solita.devnotary.di.di
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
 import org.kodein.di.instance
@@ -35,8 +35,8 @@ fun LocalNoteContent(
     navigateToNewNote: () -> Unit
 ) {
     val viewModel: NotesViewModel by di.instance()
-    val titleInputState = viewModel.titleInput.collectAsState()
-    val contentInputState = viewModel.contentInput.collectAsState()
+    val titleInputState = viewModel.titleInput.collectAsState("")
+    val contentInputState = viewModel.contentInput.collectAsState("")
     val noteColorState = viewModel.noteColor.collectAsState()
 
     Column(Modifier.fillMaxSize()) {

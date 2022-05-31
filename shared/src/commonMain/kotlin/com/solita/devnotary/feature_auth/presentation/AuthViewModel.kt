@@ -85,6 +85,7 @@ class AuthViewModel(dependencyInjection: DI = di) :
     fun signOut() {
         sharedScope.launch {
             useCases.signOut.invoke().collect { response ->
+                println("setting response $response")
                 _userAuthState.value = response
                 getCurrentUserDocument()
                 if (response is Response.Error) setError(response.message)

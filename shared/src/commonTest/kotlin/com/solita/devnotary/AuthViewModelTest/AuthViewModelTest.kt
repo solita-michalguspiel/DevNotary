@@ -70,7 +70,7 @@ class AuthViewModelTest {
             launch {
                 viewModel = AuthViewModel(dependencyInjection = testDI)
                 viewModel.sendLinkState.value shouldBe Response.Empty
-                viewModel.emailAddressInput.value = "RandomEmailAddress@example.com"
+                viewModel.changeEmailAddress("RandomEmailAddress@example.com")
                 viewModel.sendEmailLink()
             }
             advanceUntilIdle()

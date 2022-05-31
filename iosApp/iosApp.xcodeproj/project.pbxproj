@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		4D33A386FC1F1C4C2FCB38A7 /* Pods_iosApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7946546C010E498FA518021C /* Pods_iosApp.framework */; };
 		5F0EC23C283CF73F003B6CBB /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F0EC23B283CF73F003B6CBB /* SignInView.swift */; };
+		5F308342284640C900712FFE /* BallsRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F308341284640C900712FFE /* BallsRow.swift */; };
 		5F31CE3B2840AABE003720DB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5F31CE3A2840AABE003720DB /* GoogleService-Info.plist */; };
 		5F31CE402840B357003720DB /* FirebaseDynamicLinks in Frameworks */ = {isa = PBXBuildFile; productRef = 5F31CE3F2840B357003720DB /* FirebaseDynamicLinks */; };
 		5F31CE422840BD2A003720DB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F31CE412840BD2A003720DB /* SceneDelegate.swift */; };
@@ -51,6 +52,7 @@
 /* Begin PBXFileReference section */
 		519026662C6955BA25ADE4A1 /* Pods-iosApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.debug.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.debug.xcconfig"; sourceTree = "<group>"; };
 		5F0EC23B283CF73F003B6CBB /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
+		5F308341284640C900712FFE /* BallsRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BallsRow.swift; sourceTree = "<group>"; };
 		5F31CE3A2840AABE003720DB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5F31CE3C2840AB8C003720DB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5F31CE3D2840AC53003720DB /* iosApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iosApp.entitlements; sourceTree = "<group>"; };
@@ -106,6 +108,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5F308340284640B500712FFE /* AddNewNote */ = {
+			isa = PBXGroup;
+			children = (
+				5FFE5EA12845070A001B2E8A /* AddNewNoteView.swift */,
+				5F308341284640C900712FFE /* BallsRow.swift */,
+			);
+			path = AddNewNote;
+			sourceTree = "<group>";
+		};
 		5F3E7F212837BC9600AB37CF = {
 			isa = PBXGroup;
 			children = (
@@ -182,12 +193,12 @@
 		5FFE5E9D2844DEE4001B2E8A /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				5F308340284640B500712FFE /* AddNewNote */,
 				5FFE5E962844DBAE001B2E8A /* MainView.swift */,
 				5F72614A283E16AA0062BA9A /* ProfileView.swift */,
 				5F0EC23B283CF73F003B6CBB /* SignInView.swift */,
 				5FFE5E982844DE00001B2E8A /* NotesView */,
 				5FFE5E9F2844EB2D001B2E8A /* NoteColor.swift */,
-				5FFE5EA12845070A001B2E8A /* AddNewNoteView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -409,6 +420,7 @@
 				5FFE5E972844DBAE001B2E8A /* MainView.swift in Sources */,
 				5F72614D283E174C0062BA9A /* Constants.swift in Sources */,
 				5FFE5EA02844EB2D001B2E8A /* NoteColor.swift in Sources */,
+				5F308342284640C900712FFE /* BallsRow.swift in Sources */,
 				5F72614B283E16AA0062BA9A /* ProfileView.swift in Sources */,
 				5F31CE422840BD2A003720DB /* SceneDelegate.swift in Sources */,
 				5F31CE442840EA20003720DB /* Utils.swift in Sources */,
