@@ -59,10 +59,12 @@ fun NoteScreen(
                             false
                         )
                     }
-                    is Operation.Delete -> navController.popBackStack(
+                    is Operation.Delete ->{
+                        navController.popBackStack(
                         Screen.NotesListScreen.route,
                         false
                     )
+                    }
                     is Operation.Add -> navController.navigateToNoteScreen(noteModification.data.note)
                     is Operation.Share -> {}
                 }

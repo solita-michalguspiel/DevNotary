@@ -23,10 +23,6 @@ class NotesViewHelper : ObservableObject{
 
     func start() {
         notesViewModel.notes.watch(block:{newNotes in
-            for note in newNotes as! Array<Note> {
-                print("Watching notes:")
-                print(note.title)
-            }
             let newNotesAsArray = newNotes as! Array<Note>
             self.notes = newNotesAsArray
         })
@@ -35,13 +31,18 @@ class NotesViewHelper : ObservableObject{
 }
 
 struct NotesView : View{
+    @State var isActive : Bool = false
     
-    static let testNote = Note.init(noteId: "testID", ownerUserId: "59017250192", title:"Database plan", content: "Some random SQL database plan, loreum ipseum bla la test loreum", dateTime: "2022-05-17T08:08:08.715Z", color: "pink")
     @StateObject var stateObject = NotesViewHelper()
         
     var body : some View{
         
        return ZStack{
+           
+           NavigationLink(destination: MainView(selectedTab : 2),isActive: self.$isActive){
+               EmptyView()
+           }
+           
            ScrollView{
                VStack{
                    ForEach(stateObject.notes, id: \.self){ note in
@@ -62,11 +63,11 @@ struct NotesView : View{
                                               .clipShape(Circle())
                                               .foregroundColor(.white)
                                               .padding()
-                                      }
+                    }
                    }
                   
                }
-           }
+       }.navigationBarBackButtonHidden(true)
            
         }
     }

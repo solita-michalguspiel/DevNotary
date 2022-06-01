@@ -38,7 +38,6 @@ class AddNewNoteViewHelper : ObservableObject{
     }
     
     init(){
-        print("AddNewNoteHelper init")
         notesViewModel.prepareNoteScreen(note: nil)
         start()
     }
@@ -52,7 +51,6 @@ class AddNewNoteViewHelper : ObservableObject{
         self.notesViewModel.noteModificationStatus.watch(block : { response in
             if(response is ResponseSuccess){
                 let opResponse = response as! ResponseSuccess<shared.Operation>
-                print(opResponse.description())
                 switch (opResponse.data){
                 case _ as shared.Operation.Add:
                     self.addedNote = opResponse.data?.note
@@ -71,13 +69,13 @@ class AddNewNoteViewHelper : ObservableObject{
 
 struct AddNewNoteView : View{
     
+
     @State var content = ""
     @StateObject var stateObject = AddNewNoteViewHelper()
-
-    init() {
+    
+    init(){
         UITextView.appearance().backgroundColor = .clear
-        print("addNewNoteView init!")
-      }
+    }
     
     var body : some View{
     
@@ -91,10 +89,9 @@ struct AddNewNoteView : View{
         VStack{
             if(stateObject.addedNote != nil){
                 
-                NavigationLink(destination : LocalNoteView(note: stateObject.addedNote!),isActive: $stateObject.shouldNavigate){
+                NavigationLink(destination : LocalNoteView(note: stateObject.addedNote!)
+                               ,isActive: $stateObject.shouldNavigate){
                     Text("").onAppear{
-                        print("STATE OBJECT SHOULD NAVIGATE :   ")
-                        print(stateObject.shouldNavigate)
                         stateObject.notesViewModel.resetNoteModificationStatus()
                     }
                 }
@@ -133,14 +130,6 @@ struct AddNewNoteView : View{
                 }.padding()
             }
         }.background(Color.background)
-    }
-    
-}
-
-struct AddNewNotePreview : PreviewProvider{
-    
-    static var previews: some View {
-        AddNewNoteView()
     }
     
 }

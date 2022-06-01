@@ -8,20 +8,20 @@
 import Foundation
 import SwiftUI
 
-
 struct MainView : View{
+    @State var selectedTab : Int
     
     var body : some View{
     
-    return TabView{
+        return TabView(selection: $selectedTab){
         ProfileView().tabItem{
                 Image(systemName: "person.fill")
                 Text("Profile ")
-        }
+        }.tag(1)
         NotesView().tabItem{
             Image(systemName: "house.fill")
             Text("Notes")
-        }
+        }.tag(2)
     }
 }
 }

@@ -12,13 +12,13 @@ class NotePreviewHelper : ObservableObject{
     
     let notesViewModel = iosDI().getNotesViewModel()
     
-    
 }
 
 struct NotePreview: View {
     let note: Note
     let notePreviewHelper = NotePreviewHelper()
     
+
     @State var selection : Note? = nil
     
     var body: some View {
@@ -70,14 +70,5 @@ struct NotePreview: View {
               maxHeight: .infinity,
               alignment: .topLeading
             )
-    }
-}
-
-struct NotePreview_Previews: PreviewProvider {
-    
-    static let testNote = Note.init(noteId: "testID", ownerUserId: "59017250192", title:"Database plan", content: "Some random SQL database plan, loreum ipseum bla la test loreum", dateTime: "2015.12.30 16:35", color: "blue")
-    
-    static var previews: some View {
-        NotePreview(note: testNote )
     }
 }

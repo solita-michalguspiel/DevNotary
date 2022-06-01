@@ -24,9 +24,7 @@ class LocaLNoteViewHelper : ObservableObject{
     
     @Published var shouldPopBackStack : Bool = false
 
-
     init(){
-        print("Local note view helper init")
         start()
     }
     
@@ -49,8 +47,6 @@ class LocaLNoteViewHelper : ObservableObject{
                 switch (opResponse.data){
                 case _ as shared.Operation.Delete:
                     self.shouldPopBackStack = true
-                    //self.notesViewModel.resetNoteModificationStatus()
-
                 default :
                     print("Default")
                 }
@@ -65,18 +61,19 @@ struct LocalNoteView: View {
         
     @ObservedObject var stateObject : LocaLNoteViewHelper = LocaLNoteViewHelper()
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-
+    
+        
     let note: Note
     
     init(note: Note){
         self.note = note
-        print("preparing the screen with note : ")
-        print(note.description())
         stateObject.notesViewModel.prepareNoteScreen(note: note)
+
     }
     
     var body: some View {
         VStack{
+            
             ZStack{
                 RoundedRectangle(cornerRadius: 20,style: .continuous)
                     .fill(NoteColor.init(color: stateObject.chosenColor).getColor())
@@ -121,7 +118,14 @@ struct LocalNoteView: View {
                 }
             }.padding()
         }.background(Color.background)
-        
+            .navigationBarBackButtonHidden(true)
+            .toolbar(){
+                ToolbarItem(placement: .navigationBarLeading){
+                NavigationLink(destination: MainView(selectedTab: 2)){
+                    Image(systemName: "arrow.left")
+                }
+            }
+            }
         if stateObject.shouldPopBackStack {
             Text("").onAppear(){
                     presentationMode.wrappedValue.dismiss()
@@ -134,13 +138,4 @@ struct LocalNoteView: View {
         return note.ownerUserId == nil
     }
     
-}
-
-struct LocalNoteView_Previews: PreviewProvider {
-    
-    static let testNote = Note.init(noteId: "testID", ownerUserId: "59017250192", title:"Database plan", content: "Some random SQL database plan, loreum ipseum bla la test loreum", dateTime: "2015.12.30 16:35", color: "blue")
-    
-    static var previews: some View {
-        LocalNoteView(note: testNote)
-    }
 }

@@ -223,6 +223,7 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
         sharedScope.launch {
             remoteUseCases.deleteSharedNote.invoke(noteId = noteId).collect { response ->
                 _noteSharingState.value = response
+                restartNoteSharingState()
             }
         }
     }

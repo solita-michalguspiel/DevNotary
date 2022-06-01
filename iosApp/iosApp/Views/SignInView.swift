@@ -90,7 +90,7 @@ struct SignInView: View {
         
         return NavigationView{
             VStack{
-                NavigationLink(destination: MainView(),isActive: $stateObject.shouldNavigate){
+                NavigationLink(destination: MainView(selectedTab : 1),isActive: $stateObject.shouldNavigate){
                     EmptyView()
                 }
                 Text("Dev notary")
