@@ -31,6 +31,7 @@ class LocaLNoteViewHelper : ObservableObject{
     }
     
     func start(){
+        
         self.notesViewModel.noteColor.watch(block : { newColor in
             self.chosenColor = newColor! as String
         })

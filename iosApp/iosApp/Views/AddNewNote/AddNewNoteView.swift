@@ -16,6 +16,11 @@ class AddNewNoteViewHelper : ObservableObject{
 
     @Published var chosenColor = ""
     
+    @Published var addedNote : Note? = nil
+    
+    @Published var shouldNavigate = false
+    
+    
     let limit = 30
     @Published var title = ""{
         didSet{
@@ -42,6 +47,22 @@ class AddNewNoteViewHelper : ObservableObject{
         self.notesViewModel.noteColor.watch(block : { newColor in
             self.chosenColor = newColor! as String
         })
+        
+        
+        self.notesViewModel.noteModificationStatus.watch(block : { response in
+            if(response is ResponseSuccess){
+                let opResponse = response as! ResponseSuccess<shared.Operation>
+                print(opResponse.description())
+                switch (opResponse.data){
+                case _ as shared.Operation.Add:
+                    self.addedNote = opResponse.data?.note
+                    self.shouldNavigate = true
+                default :
+                    print("Default")
+                }
+            }
+        })
+        
     }
     
     
@@ -51,14 +72,15 @@ class AddNewNoteViewHelper : ObservableObject{
 struct AddNewNoteView : View{
     
     @State var content = ""
-    @ObservedObject var stateObject = AddNewNoteViewHelper()
-    
+    @StateObject var stateObject = AddNewNoteViewHelper()
+
     init() {
-          UITextView.appearance().backgroundColor = .clear
+        UITextView.appearance().backgroundColor = .clear
+        print("addNewNoteView init!")
       }
     
     var body : some View{
-        
+    
         let contentBinding = Binding<String>(get: {
             self.content
         }, set: {
@@ -67,6 +89,16 @@ struct AddNewNoteView : View{
         })
         
         VStack{
+            if(stateObject.addedNote != nil){
+                
+                NavigationLink(destination : LocalNoteView(note: stateObject.addedNote!),isActive: $stateObject.shouldNavigate){
+                    Text("").onAppear{
+                        print("STATE OBJECT SHOULD NAVIGATE :   ")
+                        print(stateObject.shouldNavigate)
+                        stateObject.notesViewModel.resetNoteModificationStatus()
+                    }
+                }
+            }
             ZStack{
                 RoundedRectangle(cornerRadius: 20,style: .continuous)
                     .fill(NoteColor.init(color: stateObject.chosenColor).getColor())

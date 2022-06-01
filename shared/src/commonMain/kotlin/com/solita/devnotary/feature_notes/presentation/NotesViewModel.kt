@@ -83,6 +83,8 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
                     localNote.changeToNote()
                 }
                 _localNotes.value = notes
+                println("Printing notes!")
+                println(notes)
             }
         }
     }
@@ -212,7 +214,7 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
             title = _titleInput.value,
             content = _contentInput.value,
             dateTime = noteDateTime.value,
-            color = noteColor.value
+            color = _noteColor.value
         )
         sharedScope.launch {
             remoteUseCases.shareNote.invoke(anotherUserEmailAddress.value, note)
@@ -262,8 +264,10 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
     }
 
     fun getUsersWithAccess() {
+        println("getting users with access!")
         sharedScope.launch {
             usersUseCases.getUsersWithAccess.invoke(noteId.value).collect { response ->
+                println("getting users with access$response")
                 _usersWithAccess.value = response
             }
         }
@@ -274,6 +278,7 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
     }
 
     fun resetNoteModificationStatus() {
+        println("RESET NOTE MODIFICATION STATUS!")
         _noteModificationStatus.value = Response.Empty
     }
 
@@ -310,6 +315,11 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
     }
 
     fun prepareNoteScreen(note: Note?) {
+        println("Prepare note screen!")
+        if (note != null) {
+            println("Note owner user id: ${note.ownerUserId}")
+        }
+        println("this user id ${auth.currentUser?.uid}")
         this.noteId.value = note?.noteId ?: ""
         this._titleInput.value = note?.title ?: ""
         this._contentInput.value = note?.content ?: ""

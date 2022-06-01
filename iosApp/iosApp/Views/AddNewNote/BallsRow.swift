@@ -23,7 +23,8 @@ struct BallsRow: View {
         HStack{
             ForEach(AvailableNoteColors().getAvailableColors()){ color in
                 let isChosen = isChosen(ballColorName: color.colorName, chosenColorName: chosenColor)
-                Ball.init(color: color,isChosen: isChosen).onTapGesture {
+                Ball.init(color: color,isChosen: isChosen)
+                    .onTapGesture {
                     pickColor(color.colorName)}
                 }
             }
