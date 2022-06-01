@@ -19,7 +19,13 @@ struct NotePreview: View {
     let note: Note
     let notePreviewHelper = NotePreviewHelper()
     
+    @State var selection : Note? = nil
+    
     var body: some View {
+        
+        NavigationLink(destination : LocalNoteView(note: note), tag: note, selection : $selection){
+            EmptyView()
+        }
     
         ZStack{
             RoundedRectangle(cornerRadius: 20, style: RoundedCornerStyle.continuous)
@@ -44,7 +50,7 @@ struct NotePreview: View {
                     Text(notePreviewHelper.notesViewModel.formatDateTime(date: note.dateTime)).font(.caption)
                     Spacer()
                     Button(action: {
-                        print("View details!")
+                        selection = note
                     }){
                         Text("View details")
                             .fontWeight(.bold)

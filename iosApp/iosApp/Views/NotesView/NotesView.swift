@@ -39,7 +39,10 @@ struct NotesView : View{
     static let testNote = Note.init(noteId: "testID", ownerUserId: "59017250192", title:"Database plan", content: "Some random SQL database plan, loreum ipseum bla la test loreum", dateTime: "2022-05-17T08:08:08.715Z", color: "pink")
     @StateObject var stateObject = NotesViewHelper()
     
+    
+    
     var body : some View{
+        
         
         
        return ZStack{

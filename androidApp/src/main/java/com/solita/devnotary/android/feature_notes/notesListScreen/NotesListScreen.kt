@@ -32,7 +32,7 @@ fun NotesListScreen(navController: NavController) {
 
     val isScrollingUp = notesViewModel.isScrollingUp.collectAsState()
     val noteModificationStatus =
-        notesViewModel.noteModificationStatus.collectAsState().value
+        notesViewModel.noteModificationStatus.collectAsState(Response.Empty).value
 
     LaunchedEffect(Unit) {
         notesViewModel.getSharedNotes()

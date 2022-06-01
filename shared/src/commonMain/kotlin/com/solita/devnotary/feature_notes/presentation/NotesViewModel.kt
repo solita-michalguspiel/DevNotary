@@ -32,7 +32,7 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
 
     private val _noteModificationStatus: MutableStateFlow<Response<Operation>> =
         MutableStateFlow(Response.Empty)
-    val noteModificationStatus: StateFlow<Response<Operation>> = _noteModificationStatus
+    val noteModificationStatus: CommonFlow<Response<Operation>> = _noteModificationStatus.asCommonFlow()
 
     private val _sharedNotesState: MutableStateFlow<Response<Boolean>> =
         MutableStateFlow(Response.Empty)

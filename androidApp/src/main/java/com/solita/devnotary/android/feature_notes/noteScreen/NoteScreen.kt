@@ -34,7 +34,7 @@ fun NoteScreen(
     val viewModel: NotesViewModel by di.instance()
     val coroutineScope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
-    val noteModification = viewModel.noteModificationStatus.collectAsState().value
+    val noteModification = viewModel.noteModificationStatus.collectAsState(Response.Empty).value
 
     LaunchedEffect(Unit) {
         viewModel.prepareNoteScreen(note)

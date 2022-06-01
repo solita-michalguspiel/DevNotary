@@ -33,6 +33,8 @@ class AddNewNoteViewHelper : ObservableObject{
     }
     
     init(){
+        print("AddNewNoteHelper init")
+        notesViewModel.prepareNoteScreen(note: nil)
         start()
     }
     
@@ -94,11 +96,11 @@ struct AddNewNoteView : View{
             }.padding()
             HStack{
                 Spacer()
-                Button("Add note"){
+                CustomBorderedButton(text  : "Add note"){
                     stateObject.notesViewModel.addNote(providedId: nil)
                 }.padding()
             }
-    }
+        }.background(Color.background)
     }
     
 }
