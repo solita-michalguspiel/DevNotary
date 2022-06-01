@@ -83,8 +83,6 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
                     localNote.changeToNote()
                 }
                 _localNotes.value = notes
-                println("Printing notes!")
-                println(notes)
             }
         }
     }
@@ -124,22 +122,18 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
     var isEditEnabled = MutableStateFlow(false)
 
     fun addNote(providedId: String? = null) {
-        println("Adding new note!")
         if (_titleInput.value.isBlank()) {
             _noteModificationStatus.value = Response.Error(NO_TITLE_ERROR)
-            println("title blank!")
             return
         }
         if (_contentInput.value.isBlank()) {
             _noteModificationStatus.value = Response.Error(BLANK_NOTE_ERROR)
-            println("content blank!")
             return
         }
         val note =
             createNewLocalNote(providedId, _titleInput.value, _contentInput.value, _noteColor.value)
         sharedScope.launch {
             localUseCases.addNote.invoke(note).collect { response ->
-                println("response arrived: $response")
                 _noteModificationStatus.value = response
             }
         }
@@ -248,7 +242,6 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
     fun unShareNote(sharedUserId: String) {
         sharedScope.launch {
             remoteUseCases.unshareNote.invoke(sharedUserId, noteId.value).collect { response ->
-                _noteSharingState.value = response
                 if (response is Response.Success) getUsersWithAccess()
             }
         }
@@ -264,10 +257,8 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
     }
 
     fun getUsersWithAccess() {
-        println("getting users with access!")
         sharedScope.launch {
             usersUseCases.getUsersWithAccess.invoke(noteId.value).collect { response ->
-                println("getting users with access$response")
                 _usersWithAccess.value = response
             }
         }
@@ -278,7 +269,6 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
     }
 
     fun resetNoteModificationStatus() {
-        println("RESET NOTE MODIFICATION STATUS!")
         _noteModificationStatus.value = Response.Empty
     }
 
@@ -315,11 +305,6 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
     }
 
     fun prepareNoteScreen(note: Note?) {
-        println("Prepare note screen!")
-        if (note != null) {
-            println("Note owner user id: ${note.ownerUserId}")
-        }
-        println("this user id ${auth.currentUser?.uid}")
         this.noteId.value = note?.noteId ?: ""
         this._titleInput.value = note?.title ?: ""
         this._contentInput.value = note?.content ?: ""

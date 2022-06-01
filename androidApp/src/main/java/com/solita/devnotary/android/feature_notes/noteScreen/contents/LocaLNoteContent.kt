@@ -56,10 +56,10 @@ fun LocalNoteContent(
                     )
                     ShareRelatedButtonRow(
                         modifier = Modifier.align(TopEnd),
-                        navigateToUsersWithAccessScreen = navigateToUsersWithAccessScreen
-                    ) {
-                        viewModel.isShareDialogOpen.value = true
-                    }
+                        navigateToUsersWithAccessScreen = navigateToUsersWithAccessScreen,
+                        openSharingDialog = {viewModel.isShareDialogOpen.value = true},
+                        getUsersWithAccess = { viewModel.getUsersWithAccess() }
+                    )
                 }
                 ContentTextField(
                     contentInput = contentInputState.value,
@@ -89,7 +89,8 @@ fun LocalNoteContent(
 fun ShareRelatedButtonRow(
     modifier: Modifier,
     navigateToUsersWithAccessScreen: () -> Unit,
-    openSharingDialog: () -> Unit
+    openSharingDialog: () -> Unit,
+    getUsersWithAccess: () -> Unit
 ) {
     Row(modifier) {
         IconButton(
@@ -105,7 +106,10 @@ fun ShareRelatedButtonRow(
             )
         }
         IconButton(
-            onClick = { navigateToUsersWithAccessScreen() },
+            onClick = {
+                getUsersWithAccess()
+                navigateToUsersWithAccessScreen()
+                      },
         ) {
             Icon(
                 imageVector = Icons.Default.People,
