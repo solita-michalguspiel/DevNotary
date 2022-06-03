@@ -17,21 +17,21 @@ import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.solita.devnotary.android.navigation.navigateToNoteScreen
 import com.solita.devnotary.di.di
-import com.solita.devnotary.feature_notes.presentation.NotesViewModel
+import com.solita.devnotary.feature_notes.presentation.notesList.NotesListViewModel
 import org.kodein.di.instance
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun NotesListContent(paddingValues: PaddingValues, navController: NavController) {
 
-    val viewModel: NotesViewModel by di.instance()
-    val notesState = viewModel.notes.collectAsState(listOf())
+    val notesListViewModel: NotesListViewModel by di.instance()
+    val notesState = notesListViewModel.notes.collectAsState(listOf())
 
     val lazyListState = rememberLazyListState()
-    viewModel.isScrollingUp.value = lazyListState.isScrollingUp()
+    notesListViewModel.isScrollingUp.value = lazyListState.isScrollingUp()
 
     LaunchedEffect(Unit) {
-        viewModel.listenToNoteListChanges()
+        notesListViewModel.listenToNoteListChanges()
     }
 
     Column {
@@ -40,10 +40,10 @@ fun NotesListContent(paddingValues: PaddingValues, navController: NavController)
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            SwipeRefresh(state = rememberSwipeRefreshState(isRefreshing = viewModel.isRefreshing.collectAsState().value),
+            SwipeRefresh(state = rememberSwipeRefreshState(isRefreshing = notesListViewModel.isRefreshing.collectAsState().value),
                 onRefresh = {
-                    viewModel.getSharedNotes()
-                    viewModel.isRefreshing.value = true
+                    notesListViewModel.getSharedNotes()
+                    notesListViewModel.isRefreshing.value = true
                 },
                 indicator = { state, trigger ->
                     SwipeRefreshIndicator(
@@ -60,7 +60,7 @@ fun NotesListContent(paddingValues: PaddingValues, navController: NavController)
                 ) {
                     stickyHeader {
                             androidx.compose.animation.AnimatedVisibility(
-                                visible = !lazyListState.isHavingMoreItemsThanDisplaying() || viewModel.isScrollingUp.collectAsState().value,
+                                visible = !lazyListState.isHavingMoreItemsThanDisplaying() || notesListViewModel.isScrollingUp.collectAsState().value,
                                 enter = slideInVertically(initialOffsetY = { -it }),
                                 exit = slideOutVertically(targetOffsetY = { -it }),
                                 modifier = Modifier.align(TopCenter)
@@ -72,7 +72,7 @@ fun NotesListContent(paddingValues: PaddingValues, navController: NavController)
                     {
                         NotePreview(
                             note = it,
-                            formattedDateTime = viewModel.formatDateTime(it.dateTime),
+                            formattedDateTime = notesListViewModel.formatDateTime(it.dateTime),
                             isFirst = notesState.value.first() == it
                         ) {
                             navController.navigateToNoteScreen(it)

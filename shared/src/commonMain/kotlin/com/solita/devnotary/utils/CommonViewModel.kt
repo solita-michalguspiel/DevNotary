@@ -4,7 +4,7 @@ import kotlinx.coroutines.CoroutineScope
 
 
 @Suppress("EmptyDefaultConstructor")
-expect open class SharedViewModel() {
+expect open class CommonViewModel() {
     protected val sharedScope: CoroutineScope
 
     open fun onCleared()

@@ -15,9 +15,7 @@ class SignInViewStateObject : ObservableObject{
     var authViewModel = iosDI().getAuthViewModel()
     
     @Published var emailAddress : String = ""
-    
-    @Published var timerCount : Int = 0
-    
+        
     @Published var sendLinkState : AnyObject = ResponseEmpty()
     
     @Published var userAuthState : AnyObject = ResponseEmpty()
@@ -31,21 +29,21 @@ class SignInViewStateObject : ObservableObject{
     }
     
     func start(){
-        authViewModel.resendEmailTimer.watch{ timer in
-            self.timerCount = ( timer.map({KotlinInt.init(int: Int32(truncating: $0))}) ) as! Int
-        }
-        
-        authViewModel.sendLinkState.watch{  state in
+        authViewModel.watch(authViewModel.sendLinkState,block: {  state in
             let response = state! as Any
             self.sendLinkState = watchResponse(response: response)
-        }
+        })
+        authViewModel.watch(authViewModel.sendLinkState,block: {  state in
+            let response = state! as Any
+            self.sendLinkState = watchResponse(response: response)
+        })
         
-        authViewModel.userState.watch{state in
+        authViewModel.watch(authViewModel.userState,block: {state in
               let response = state! as Any
               self.userState = watchResponse(response: response)
-        }
+        })
         
-        authViewModel.userAuthState.watch{state in
+        authViewModel.watch(authViewModel.userAuthState,block: {state in
             let response = state! as Any
             self.userAuthState = watchResponse(response: response)
             
@@ -59,12 +57,8 @@ class SignInViewStateObject : ObservableObject{
                     print("False, means signed out!")
                 }
             }
-        }
+        })
         
-    }
-
-    func isSendLinkButtonDisabled() -> Bool{
-        return (!(timerCount == 0) || sendLinkState.isKind(of: ResponseLoading.self))
     }
     
 }
@@ -82,10 +76,6 @@ struct SignInView: View {
             self.email = $0
             stateObject.authViewModel.changeEmailAddress(newEmailAddress: self.email)
         })
-        
-        var buttonColor: Color {
-            return !stateObject.isSendLinkButtonDisabled() ? Color.buttons : .gray
-           }
         
         
         return NavigationView{
@@ -111,23 +101,16 @@ struct SignInView: View {
                         .fontWeight(.bold)
                         .font(.body)
                         .padding(10)
-                        .background(buttonColor)
+                        .background(Color.buttons)
                         .cornerRadius(20)
                         .foregroundColor(.white)
                         .padding(5)
                         .overlay(
                             RoundedRectangle(cornerRadius: 25)
-                                .stroke(buttonColor, lineWidth: 3)
+                                .stroke(Color.buttons, lineWidth: 3)
                         ).padding(.bottom,3.0)
-                }.disabled(stateObject.isSendLinkButtonDisabled())
-                
-                
-                if stateObject.timerCount != 0{
-                    Text("Send again in: " + String(stateObject.timerCount) + " seconds.")
-                        .font(.callout)
-                        .foregroundColor(.gray)
-                        .padding(.bottom)
                 }
+                
             }
         }.onAppear(){
             if(stateObject.authViewModel.isUserAuthenticated){

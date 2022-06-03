@@ -12,17 +12,17 @@ import shared
 
 class NotesViewHelper : ObservableObject{
     
-    let notesViewModel = iosDI().getNotesViewModel()
+    let notesListViewModel = iosDI().getNotesListViewModel()
 
     @Published var notes : Array<Note> = Array()
     
     init(){
         start()
-        notesViewModel.listenToNoteListChanges()
+        notesListViewModel.listenToNoteListChanges()
     }
 
     func start() {
-        notesViewModel.notes.watch(block:{newNotes in
+        notesListViewModel.watch(notesListViewModel.notes, block: {newNotes in
             let newNotesAsArray = newNotes as! Array<Note>
             self.notes = newNotesAsArray
         })

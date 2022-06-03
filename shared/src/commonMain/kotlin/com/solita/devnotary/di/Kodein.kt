@@ -24,6 +24,7 @@ import com.solita.devnotary.feature_notes.domain.use_case.users_use_cases.GetUse
 import com.solita.devnotary.feature_notes.domain.use_case.users_use_cases.GetUsersWithAccess
 import com.solita.devnotary.feature_notes.domain.use_case.users_use_cases.UsersUseCases
 import com.solita.devnotary.feature_notes.presentation.NotesViewModel
+import com.solita.devnotary.feature_notes.presentation.notesList.NotesListViewModel
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.firestore.firestore
@@ -125,5 +126,6 @@ val di = DI {
 
     bindSingleton { AuthViewModel() }
 
+    bindSingleton { NotesListViewModel()}
 
 }

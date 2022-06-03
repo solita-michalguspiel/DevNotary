@@ -58,6 +58,7 @@ fun NoteScreen(
                             Screen.NotesListScreen.route,
                             false
                         )
+                        viewModel.isEditEnabled.value = false
                     }
                     is Operation.Delete ->{
                         navController.popBackStack(

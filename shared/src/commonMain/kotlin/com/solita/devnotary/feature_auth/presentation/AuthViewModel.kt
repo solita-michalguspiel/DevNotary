@@ -7,39 +7,38 @@ import com.solita.devnotary.di.di
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.domain.User
 import com.solita.devnotary.feature_auth.domain.use_case.AuthUseCases
-import com.solita.devnotary.utils.CommonFlow
-import com.solita.devnotary.utils.SharedViewModel
+import com.solita.devnotary.utils.CommonViewModel
 import com.solita.devnotary.utils.Timer
-import com.solita.devnotary.utils.asCommonFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.kodein.di.DI
 import org.kodein.di.instance
 
 class AuthViewModel(dependencyInjection: DI = di) :
-    SharedViewModel() {
+    CommonViewModel() {
 
     private val useCases: AuthUseCases by dependencyInjection.instance()
     private val settings: Settings by dependencyInjection.instance()
 
     private val _userAuthState: MutableStateFlow<Response<Boolean>> =
         MutableStateFlow(Response.Empty)
-    val userAuthState: CommonFlow<Response<Boolean>> = _userAuthState.asCommonFlow()
+    val userAuthState: StateFlow<Response<Boolean>> = _userAuthState
 
     private val _sendLinkState: MutableStateFlow<Response<Boolean>> =
         MutableStateFlow(Response.Empty)
-    val sendLinkState: CommonFlow<Response<Boolean>> = _sendLinkState.asCommonFlow()
+    val sendLinkState: StateFlow<Response<Boolean>> = _sendLinkState
 
     private val _userState: MutableStateFlow<Response<User>> = MutableStateFlow(Response.Empty)
-    val userState: CommonFlow<Response<User>> = _userState.asCommonFlow()
+    val userState: StateFlow<Response<User>> = _userState
 
     val isUserAuthenticated get() = useCases.isUserAuthenticated.invoke()
 
     private val _resendEmailTimer = MutableStateFlow(0)
-    val resendEmailTimer: CommonFlow<Int> = _resendEmailTimer.asCommonFlow()
+    val resendEmailTimer: StateFlow<Int> = _resendEmailTimer
 
     private val _emailAddressInput = MutableStateFlow("")
-    val emailAddressInput: CommonFlow<String> = _emailAddressInput.asCommonFlow()
+    val emailAddressInput: StateFlow<String> = _emailAddressInput
 
 
     fun changeEmailAddress(newEmailAddress: String) {

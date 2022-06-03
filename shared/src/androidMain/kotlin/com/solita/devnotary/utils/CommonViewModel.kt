@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 
 @Suppress("EmptyDefaultConstructor")
-actual open class SharedViewModel actual constructor() : ViewModel() {
+actual open class CommonViewModel actual constructor() : ViewModel() {
     protected actual val sharedScope: CoroutineScope = viewModelScope
 
     public actual override fun onCleared() {

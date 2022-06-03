@@ -26,11 +26,11 @@ class ProfileViewStateObject : ObservableObject{
     }
     
     func start(){
-        authViewModel.userState.watch{state in
+        authViewModel.watch(authViewModel.userState,block : {state in
               let response = state! as Any
               self.userState = watchResponse(response: response)
-        }
-        authViewModel.userAuthState.watch{state in
+        })
+        authViewModel.watch(authViewModel.userAuthState, block:{state in
             let response = state! as Any
             self.userAuthState = watchResponse(response: response)
             
@@ -44,7 +44,7 @@ class ProfileViewStateObject : ObservableObject{
                     self.shouldPopBackStack = true
                 }
             }
-        }
+        })
     }
     
 }

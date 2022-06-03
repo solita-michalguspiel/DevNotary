@@ -14,14 +14,8 @@ class LocaLNoteViewHelper : ObservableObject{
     
     var notesViewModel = iosDI().getNotesViewModel()
 
-    @Published var chosenColor = ""
-    
-    @Published var title = ""
-    
-    @Published var content = ""
-    
-    @Published var date = ""
-    
+    @Published var displayedNote = Note.init(noteId: "", ownerUserId: nil, title: "", content: "", dateTime: "", color: "")
+        
     @Published var shouldPopBackStack : Bool = false
 
     init(){
@@ -30,18 +24,11 @@ class LocaLNoteViewHelper : ObservableObject{
     
     func start(){
         
-        self.notesViewModel.noteColor.watch(block : { newColor in
-            self.chosenColor = newColor! as String
+        self.notesViewModel.watch(notesViewModel.displayedNote, block: { note in
+            self.displayedNote = note as! Note
         })
-        self.notesViewModel.titleInput.watch(block : {title in
-            self.title = title! as String
-        })
-        self.notesViewModel.contentInput.watch(block : {content in
-            self.content = content! as String
-        })
-        
-        self.notesViewModel.noteModificationStatus.watch(block : { response in
-            if(response is ResponseSuccess){
+        self.notesViewModel.watch(notesViewModel.noteModificationStatus, block: { response in
+            if(response is ResponseSuccess<AnyObject>){
                 let opResponse = response as! ResponseSuccess<shared.Operation>
                 print(opResponse.description())
                 switch (opResponse.data){
@@ -76,16 +63,16 @@ struct LocalNoteView: View {
             
             ZStack{
                 RoundedRectangle(cornerRadius: 20,style: .continuous)
-                    .fill(NoteColor.init(color: stateObject.chosenColor).getColor())
+                    .fill(NoteColor.init(color: stateObject.displayedNote.color).getColor())
                 
                 GeometryReader{ geo in
                     VStack{
-                        TextField("Note title",text: .constant(stateObject.title))
+                        TextField("Note title",text: .constant(stateObject.displayedNote.title))
                             .font(.title)
                             .padding(.horizontal)
                             .padding(.vertical,10)
                         Divider()
-                        TextEditor(text : .constant(stateObject.content))
+                        TextEditor(text : .constant(stateObject.displayedNote.content))
                             .background(.clear)
                             .frame(height: geo.size.height * 0.7)
                             .textFieldStyle(PlainTextFieldStyle())

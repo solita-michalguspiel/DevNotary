@@ -13,10 +13,11 @@ import Combine
 class AddNewNoteViewHelper : ObservableObject{
     
     var notesViewModel = iosDI().getNotesViewModel()
-
-    @Published var chosenColor = ""
     
     @Published var addedNote : Note? = nil
+    
+    @Published var displayedNote = Note.init(noteId: "", ownerUserId: nil, title: "", content: "", dateTime: "", color: "")
+
     
     @Published var shouldNavigate = false
     
@@ -25,11 +26,8 @@ class AddNewNoteViewHelper : ObservableObject{
     @Published var title = ""{
         didSet{
             if title.count > limit {
-                print("Condition satisfied")
-                print(title.count)
                 self.title = String(title.prefix(limit))
                 notesViewModel.changeTitleInput(newTitle: String(title.prefix(limit)))
-                print(notesViewModel.titleInput.value!)
             }
             else {
                 notesViewModel.changeTitleInput(newTitle: String(title.prefix(limit)))
@@ -43,13 +41,13 @@ class AddNewNoteViewHelper : ObservableObject{
     }
     
     func start(){
-        self.notesViewModel.noteColor.watch(block : { newColor in
-            self.chosenColor = newColor! as String
+        
+        self.notesViewModel.watch(notesViewModel.displayedNote, block: { note in
+            self.displayedNote = note as! Note
         })
         
-        
-        self.notesViewModel.noteModificationStatus.watch(block : { response in
-            if(response is ResponseSuccess){
+        self.notesViewModel.watch(notesViewModel.noteModificationStatus,block : { response in
+            if(response is ResponseSuccess<AnyObject>){
                 let opResponse = response as! ResponseSuccess<shared.Operation>
                 switch (opResponse.data){
                 case _ as shared.Operation.Add:
@@ -98,7 +96,7 @@ struct AddNewNoteView : View{
             }
             ZStack{
                 RoundedRectangle(cornerRadius: 20,style: .continuous)
-                    .fill(NoteColor.init(color: stateObject.chosenColor).getColor())
+                    .fill(NoteColor.init(color: stateObject.displayedNote.color).getColor())
                 
                 GeometryReader{ geo in
                     VStack{
@@ -115,7 +113,7 @@ struct AddNewNoteView : View{
                            
                         Divider()
                         BallsRow(
-                                    chosenColor: stateObject.chosenColor,
+                            chosenColor: stateObject.displayedNote.color,
                                     pickColor : { color in stateObject.notesViewModel.changeNoteColor(newColor: color)}
                         ).frame(height: geo.size.height * 0.15,alignment: .center)
                         Spacer()
