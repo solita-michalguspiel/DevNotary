@@ -1,8 +1,6 @@
 package com.solita.devnotary.feature_notes.presentation
 
 import com.solita.devnotary.Constants
-import com.solita.devnotary.Constants.BLANK_NOTE_ERROR
-import com.solita.devnotary.Constants.NO_TITLE_ERROR
 import com.solita.devnotary.di.di
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.domain.User
@@ -25,6 +23,7 @@ import org.kodein.di.instance
 
 class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
 
+    private val clearNote = Note("", null, "", "", "", Constants.WHITE_COLOR)
     private val auth: FirebaseAuth by dependencyInjection.instance()
     private val localUseCases: LocalNotesUseCases by dependencyInjection.instance()
     private val remoteUseCases: RemoteNotesUseCases by dependencyInjection.instance()
@@ -32,7 +31,8 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
 
     private val _noteModificationStatus: MutableStateFlow<Response<Operation>> =
         MutableStateFlow(Response.Empty)
-    val noteModificationStatus: CommonFlow<Response<Operation>> = _noteModificationStatus.asCommonFlow()
+    val noteModificationStatus: CommonFlow<Response<Operation>> =
+        _noteModificationStatus.asCommonFlow()
 
     private val _sharedNotesState: MutableStateFlow<Response<Boolean>> =
         MutableStateFlow(Response.Empty)
@@ -88,28 +88,20 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
     }
 
     var noteSearchPhrase = MutableStateFlow("")
-    var noteId = MutableStateFlow("")
-    var noteDateTime = MutableStateFlow("")
 
-    private var _titleInput = MutableStateFlow("")
-    val titleInput : CommonFlow<String> = _titleInput.asCommonFlow()
+    private var _displayedNote = MutableStateFlow(clearNote)
+    val displayedNote: CommonFlow<Note> = _displayedNote.asCommonFlow()
 
     fun changeTitleInput(newTitle: String) {
-        _titleInput.value = newTitle
+        _displayedNote.value = _displayedNote.value.copy(title = newTitle)
     }
-
-    private var _contentInput = MutableStateFlow("")
-    val contentInput : CommonFlow<String> = _contentInput.asCommonFlow()
 
     fun changeContentInput(newContent: String) {
-        _contentInput.value = newContent
+        _displayedNote.value = _displayedNote.value.copy(content = newContent)
     }
 
-    private var _noteColor = MutableStateFlow("")
-    val noteColor : CommonFlow<String> = _noteColor.asCommonFlow()
-
-    fun changeNoteColor(newColor : String){
-        _noteColor.value = newColor
+    fun changeNoteColor(newColor: String) {
+        _displayedNote.value = _displayedNote.value.copy(color = newColor)
     }
 
     var anotherUserEmailAddress = MutableStateFlow("")
@@ -122,16 +114,13 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
     var isEditEnabled = MutableStateFlow(false)
 
     fun addNote(providedId: String? = null) {
-        if (_titleInput.value.isBlank()) {
-            _noteModificationStatus.value = Response.Error(NO_TITLE_ERROR)
-            return
-        }
-        if (_contentInput.value.isBlank()) {
-            _noteModificationStatus.value = Response.Error(BLANK_NOTE_ERROR)
-            return
-        }
         val note =
-            createNewLocalNote(providedId, _titleInput.value, _contentInput.value, _noteColor.value)
+            createNewLocalNote(
+                providedId,
+                _displayedNote.value.title,
+                _displayedNote.value.content,
+                _displayedNote.value.color
+            )
         sharedScope.launch {
             localUseCases.addNote.invoke(note).collect { response ->
                 _noteModificationStatus.value = response
@@ -142,20 +131,15 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
     fun editNote() {
         sharedScope.launch {
             localUseCases.editNote.invoke(
-                _titleInput.value,
-                _contentInput.value,
-                _noteColor.value,
-                noteId.value
+                _displayedNote.value.title,
+                _displayedNote.value.content,
+                _displayedNote.value.color,
+                _displayedNote.value.noteId
             ).collect { response ->
                 _noteModificationStatus.value = response
                 if (response is Response.Success) {
                     isEditEnabled.value = false
-                    editSharedNote(
-                        noteId.value,
-                        _titleInput.value,
-                        _contentInput.value,
-                        _noteColor.value
-                    )
+                    editSharedNote()
                 }
             }
         }
@@ -168,9 +152,9 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
 
     fun deleteNote() {
         sharedScope.launch {
-            localUseCases.deleteNote.invoke(noteId.value).collect { response ->
+            localUseCases.deleteNote.invoke(_displayedNote.value.noteId).collect { response ->
                 _noteModificationStatus.value = response
-                if (response is Response.Success) deleteSharedNote(noteId.value)
+                if (response is Response.Success) deleteSharedNote(_displayedNote.value.noteId)
             }
         }
     }
@@ -203,15 +187,8 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
     }
 
     fun shareNote() {
-        val note = Note(
-            noteId = noteId.value,
-            title = _titleInput.value,
-            content = _contentInput.value,
-            dateTime = noteDateTime.value,
-            color = _noteColor.value
-        )
         sharedScope.launch {
-            remoteUseCases.shareNote.invoke(anotherUserEmailAddress.value, note)
+            remoteUseCases.shareNote.invoke(anotherUserEmailAddress.value, _displayedNote.value)
                 .collect { response ->
                     _noteSharingState.value = response
                     if (response is Response.Success) anotherUserEmailAddress.value = ""
@@ -228,29 +205,29 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
         }
     }
 
-    private fun editSharedNote(
-        noteId: String,
-        noteTitle: String,
-        noteContent: String,
-        noteColor: String
-    ) {
+    private fun editSharedNote() {
         sharedScope.launch {
-            remoteUseCases.editSharedNote.invoke(noteId, noteTitle, noteContent, noteColor)
-                .collect()
+            remoteUseCases.editSharedNote.invoke(
+                _displayedNote.value.noteId,
+                _displayedNote.value.title,
+                _displayedNote.value.content,
+                _displayedNote.value.color
+            ).collect()
         }
     }
 
     fun unShareNote(sharedUserId: String) {
         sharedScope.launch {
-            remoteUseCases.unshareNote.invoke(sharedUserId, noteId.value).collect { response ->
-                if (response is Response.Success) getUsersWithAccess()
-            }
+            remoteUseCases.unshareNote.invoke(sharedUserId, _displayedNote.value.noteId)
+                .collect { response ->
+                    if (response is Response.Success) getUsersWithAccess()
+                }
         }
     }
 
     fun deleteOwnAccessFromSharedNote() {
         sharedScope.launch {
-            remoteUseCases.unshareNote.invoke(auth.currentUser!!.uid, noteId.value)
+            remoteUseCases.unshareNote.invoke(auth.currentUser!!.uid, _displayedNote.value.noteId)
                 .collect { response ->
                     _noteSharingState.value = response
                 }
@@ -259,14 +236,19 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
 
     fun getUsersWithAccess() {
         sharedScope.launch {
-            usersUseCases.getUsersWithAccess.invoke(noteId.value).collect { response ->
-                _usersWithAccess.value = response
-            }
+            usersUseCases.getUsersWithAccess.invoke(_displayedNote.value.noteId)
+                .collect { response ->
+                    _usersWithAccess.value = response
+                }
         }
     }
 
     fun formatDateTime(date: String): String {
         return formatIso8601ToString(date)
+    }
+
+    fun setNoteModificationError(errorMessage: String) {
+        _noteModificationStatus.value = Response.Error(errorMessage)
     }
 
     fun resetNoteModificationStatus() {
@@ -306,15 +288,17 @@ class NotesViewModel(dependencyInjection: DI = di) : SharedViewModel() {
     }
 
     fun prepareNoteScreen(note: Note?) {
-        this.noteId.value = note?.noteId ?: ""
-        this._titleInput.value = note?.title ?: ""
-        this._contentInput.value = note?.content ?: ""
-        this.noteDateTime.value = note?.dateTime ?: ""
-        this._noteColor.value = note?.color ?: Constants.WHITE_COLOR
-        if ((note == null) || (note.ownerUserId == null)) return
-        if (note.ownerUserId == auth.currentUser?.uid) getUsersWithAccess()
-        else getNoteOwnerEmailAddress(note.ownerUserId)
+        if (note == null) {
+            this._displayedNote.value = clearNote
+            return
+        } else {
+            this._displayedNote.value = note
+            if (note.isOwnedByCurrentUser()) getUsersWithAccess()
+            else if(note.ownerUserId != null) getNoteOwnerEmailAddress(note.ownerUserId)
+        }
     }
+
+    private fun Note.isOwnedByCurrentUser() = this.ownerUserId == auth.currentUser?.uid
 
     fun closeShareDialog() {
         isShareDialogOpen.value = false

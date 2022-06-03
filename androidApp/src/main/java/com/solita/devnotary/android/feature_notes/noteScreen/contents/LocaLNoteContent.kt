@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment.Companion.TopEnd
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import com.solita.devnotary.Constants.CLEAR_NOTE
 import com.solita.devnotary.android.R
 import com.solita.devnotary.android.feature_notes._sharedComponents.LocalNoteButtons
 import com.solita.devnotary.android.feature_notes.domain.NoteColor
@@ -35,23 +36,21 @@ fun LocalNoteContent(
     navigateToNewNote: () -> Unit
 ) {
     val viewModel: NotesViewModel by di.instance()
-    val titleInputState = viewModel.titleInput.collectAsState("")
-    val contentInputState = viewModel.contentInput.collectAsState("")
-    val noteColorState = viewModel.noteColor.collectAsState("")
+    val displayedNoteState = viewModel.displayedNote.collectAsState(initial = CLEAR_NOTE)
 
     Column(Modifier.fillMaxSize()) {
         Card(
             modifier = Modifier
                 .padding(LocalSpacing.current.small)
                 .weight(1.0f),
-            backgroundColor = NoteColor(noteColorState.value).getColor(),
+            backgroundColor = NoteColor(displayedNoteState.value.color).getColor(),
             elevation = LocalElevation.current.medium
         ) {
             Column {
                 Box {
                     TitleTextField(
                         modifier = Modifier.padding(top = LocalSpacing.current.xSmall),
-                        titleInput = titleInputState.value,
+                        titleInput = displayedNoteState.value.title,
                         isEditEnabled = false
                     )
                     ShareRelatedButtonRow(
@@ -62,13 +61,13 @@ fun LocalNoteContent(
                     )
                 }
                 ContentTextField(
-                    contentInput = contentInputState.value,
+                    contentInput = displayedNoteState.value.content,
                     modifier = Modifier.weight(1.0f), isEditEnabled = false
                 )
                 Text(
                     text = stringResource(
                         R.string.note_time_date_stamp,
-                        viewModel.formatDateTime(viewModel.noteDateTime.value)
+                        viewModel.formatDateTime(displayedNoteState.value.dateTime)
                     ),
                     modifier = Modifier
                         .align(End)

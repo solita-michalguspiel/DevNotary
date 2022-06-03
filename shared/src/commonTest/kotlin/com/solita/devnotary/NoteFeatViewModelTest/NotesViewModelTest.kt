@@ -85,7 +85,7 @@ class NotesViewModelTest {
             launch {
                 viewModel.changeTitleInput(firstNote.title)
                 viewModel.changeContentInput(firstNote.content)
-                viewModel.noteColor.value = firstNote.color
+                viewModel.changeNoteColor(firstNote.color)
                 viewModel.addNote(firstNote.noteId)
             }
             advanceTimeBy(30)
@@ -179,7 +179,7 @@ class NotesViewModelTest {
             viewModel.changeTitleInput(firstNote.title)
             viewModel.changeContentInput(firstNote.content)
             viewModel.noteDateTime.value = firstNote.dateTime
-            viewModel.noteColor.value = firstNote.color
+            viewModel.changeNoteColor(firstNote.color)
         launch {
             viewModel.anotherUserEmailAddress.value = remoteNotesRepository.appUser1
             viewModel.shareNote()
@@ -197,7 +197,7 @@ class NotesViewModelTest {
     private fun setNote(note: Note){
         viewModel.changeTitleInput(note.title)
         viewModel.changeContentInput(note.content)
-        viewModel.noteColor.value = note.color
+        viewModel.changeNoteColor(note.color)
     }
 
 

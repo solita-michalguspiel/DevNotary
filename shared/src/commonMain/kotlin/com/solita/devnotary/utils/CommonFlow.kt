@@ -13,7 +13,7 @@ fun <T> MutableStateFlow<T>.asCommonFlow(): CommonFlow<T> = CommonFlow(this,this
 class CommonFlow<T>(private val origin: Flow<T>, private val initialValue : T) : Flow<T> by origin {
 
     private var _value : T = initialValue
-    val value : T = _value
+    val value : T get() =  _value
 
     init {
         keepValueUpdated()
@@ -21,7 +21,9 @@ class CommonFlow<T>(private val origin: Flow<T>, private val initialValue : T) :
 
     private fun keepValueUpdated() : Closeable{
         val job = Job()
-        onEach { _value = it }.launchIn(CoroutineScope(job + Dispatchers.Main))
+        onEach {
+            _value = it
+        }.launchIn(CoroutineScope(job + Dispatchers.Main))
 
         return object : Closeable {
             override fun close() {

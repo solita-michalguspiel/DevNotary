@@ -135,11 +135,11 @@ fun EditButton(modifier: Modifier) {
 
 
 @Composable
-fun AddButton(modifier: Modifier) {
+fun AddButton(modifier: Modifier,onClick : () -> Unit) {
     val viewModel: NotesViewModel by di.instance()
     Button(
         onClick = {
-            viewModel.addNote()
+            onClick()
         }, modifier = modifier.padding(LocalSpacing.current.small)
     ) {
         Text(text = stringResource(id = R.string.add_note))

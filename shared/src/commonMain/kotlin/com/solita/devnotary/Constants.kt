@@ -1,5 +1,7 @@
 package com.solita.devnotary
 
+import com.solita.devnotary.feature_notes.domain.model.Note
+
 object Constants {
 
     const val APP_URL = "https://dev-notary.web.app"
@@ -28,4 +30,6 @@ object Constants {
     const val WHITE_COLOR = "white"
     const val NO_TITLE_ERROR = "Can't add note without title"
     const val BLANK_NOTE_ERROR = "Can't add blank note"
+
+    val CLEAR_NOTE = Note("",null,"","","","")
 }
