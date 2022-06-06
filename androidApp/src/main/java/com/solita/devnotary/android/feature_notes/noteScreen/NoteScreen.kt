@@ -21,7 +21,7 @@ import com.solita.devnotary.di.di
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.feature_notes.domain.Operation
 import com.solita.devnotary.feature_notes.domain.model.Note
-import com.solita.devnotary.feature_notes.presentation.NotesViewModel
+import com.solita.devnotary.feature_notes.presentation.noteDetail.NoteDetailViewModel
 import kotlinx.coroutines.launch
 import org.kodein.di.instance
 
@@ -31,7 +31,7 @@ fun NoteScreen(
     navController: NavController,
     note: Note?
 ) {
-    val viewModel: NotesViewModel by di.instance()
+    val viewModel: NoteDetailViewModel by di.instance()
     val coroutineScope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
     val noteModification = viewModel.noteModificationStatus.collectAsState(Response.Empty).value

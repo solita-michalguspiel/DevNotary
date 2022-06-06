@@ -17,11 +17,15 @@ struct MainView : View{
         ProfileView().tabItem{
                 Image(systemName: "person.fill")
                 Text("Profile ")
-        }.tag(1)
+        }.tag(1).onAppear(perform: {
+            print("Selected tab : \(selectedTab)")
+        })
         NotesView().tabItem{
             Image(systemName: "house.fill")
             Text("Notes")
-        }.tag(2)
+        }.tag(2).onAppear(perform: {
+            print("Selected tab : \(selectedTab)")
+        })
     }
 }
 }

@@ -17,14 +17,14 @@ import com.solita.devnotary.android.feature_notes.noteScreen.components.TitleTex
 import com.solita.devnotary.android.theme.LocalElevation
 import com.solita.devnotary.android.theme.LocalSpacing
 import com.solita.devnotary.di.di
-import com.solita.devnotary.feature_notes.presentation.NotesViewModel
+import com.solita.devnotary.feature_notes.presentation.noteDetail.NoteDetailViewModel
 import org.kodein.di.instance
 
 @Composable
 fun LocalNoteEditContent(
     navigateToNewNote: () -> Unit
 ) {
-    val viewModel: NotesViewModel by di.instance()
+    val viewModel: NoteDetailViewModel by di.instance()
     val displayedNoteState = viewModel.displayedNote.collectAsState(initial = CLEAR_NOTE)
 
     Column(Modifier.fillMaxSize()) {

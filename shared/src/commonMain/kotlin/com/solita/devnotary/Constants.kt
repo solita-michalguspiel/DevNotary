@@ -27,7 +27,7 @@ object Constants {
     const val SHARED_USER_ID = "sharedUserId"
 
 
-    const val WHITE_COLOR = "white"
+    private const val WHITE_COLOR = "white"
     const val NO_TITLE_ERROR = "Can't add note without title"
     const val BLANK_NOTE_ERROR = "Can't add blank note"
 

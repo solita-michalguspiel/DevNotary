@@ -1,4 +1,4 @@
-package com.solita.devnotary.feature_notes.presentation
+package com.solita.devnotary.feature_notes.presentation.noteDetail
 
 import com.solita.devnotary.Constants.CLEAR_NOTE
 import com.solita.devnotary.di.di
@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import org.kodein.di.DI
 import org.kodein.di.instance
 
-class NotesViewModel(dependencyInjection: DI = di) : CommonViewModel() {
+class NoteDetailViewModel(dependencyInjection: DI = di) : CommonViewModel() {
 
     private val auth: FirebaseAuth by dependencyInjection.instance()
     private val localUseCases: LocalNotesUseCases by dependencyInjection.instance()
@@ -58,6 +58,11 @@ class NotesViewModel(dependencyInjection: DI = di) : CommonViewModel() {
     }
 
     var anotherUserEmailAddress = MutableStateFlow("")
+
+    fun changeAnotherUserEmailAddress(newEmailAddress : String){
+        anotherUserEmailAddress.value = newEmailAddress
+    }
+
     var isConfirmDeleteLocalNoteDialogOpen = MutableStateFlow(false)
     var isConfirmDeleteAccessFromSharedNoteDialogOpen = MutableStateFlow(false)
     var isShareDialogOpen = MutableStateFlow(false)
@@ -197,7 +202,7 @@ class NotesViewModel(dependencyInjection: DI = di) : CommonViewModel() {
         }
     }
 
-    private fun Note.isOwnedByCurrentUser() = this.ownerUserId == auth.currentUser?.uid
+    private fun Note.isOwnedByCurrentUser() = (this.ownerUserId == null) || (this.ownerUserId == auth.currentUser?.uid)
 
     fun closeShareDialog() {
         isShareDialogOpen.value = false

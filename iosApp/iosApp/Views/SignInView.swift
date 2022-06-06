@@ -33,10 +33,6 @@ class SignInViewStateObject : ObservableObject{
             let response = state! as Any
             self.sendLinkState = watchResponse(response: response)
         })
-        authViewModel.watch(authViewModel.sendLinkState,block: {  state in
-            let response = state! as Any
-            self.sendLinkState = watchResponse(response: response)
-        })
         
         authViewModel.watch(authViewModel.userState,block: {state in
               let response = state! as Any
@@ -65,7 +61,7 @@ class SignInViewStateObject : ObservableObject{
 
 struct SignInView: View {
     @StateObject var stateObject = SignInViewStateObject()
-    
+    @EnvironmentObject var appState: AppState
     @State var email = ""
     @State var signInState : AnyObject? = nil
    
@@ -80,7 +76,8 @@ struct SignInView: View {
         
         return NavigationView{
             VStack{
-                NavigationLink(destination: MainView(selectedTab : 1),isActive: $stateObject.shouldNavigate){
+                NavigationLink(destination: MainView(selectedTab : appState.selectedTab)
+                               ,isActive: $stateObject.shouldNavigate){
                     EmptyView()
                 }
                 Text("Dev notary")
@@ -111,6 +108,11 @@ struct SignInView: View {
                         ).padding(.bottom,3.0)
                 }
                 
+            }.onReceive(self.appState.$moveToDashboard){ moveToDashBoard in
+                if moveToDashBoard{
+                    print("Move to dashboard : \(moveToDashBoard)")
+                    self.appState.moveToDashboard = false
+                }
             }
         }.onAppear(){
             if(stateObject.authViewModel.isUserAuthenticated){

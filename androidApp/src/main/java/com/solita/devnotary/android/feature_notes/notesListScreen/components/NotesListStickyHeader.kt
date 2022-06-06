@@ -17,8 +17,8 @@ import com.solita.devnotary.android.R
 import com.solita.devnotary.android.theme.Colors
 import com.solita.devnotary.android.theme.LocalSpacing
 import com.solita.devnotary.di.di
-import com.solita.devnotary.feature_notes.presentation.Sort
-import com.solita.devnotary.feature_notes.presentation.SortOptions
+import com.solita.devnotary.feature_notes.presentation.notesList.Sort
+import com.solita.devnotary.feature_notes.presentation.notesList.SortOptions
 import com.solita.devnotary.feature_notes.presentation.notesList.NotesListViewModel
 import org.kodein.di.instance
 

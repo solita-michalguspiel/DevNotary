@@ -1,9 +1,10 @@
-package com.solita.devnotary.feature_notes.presentation
+package com.solita.devnotary.feature_notes.presentation.noteDetail
 
 import com.benasher44.uuid.Uuid
 import com.solita.devnotary.database.Local_note
 import com.solita.devnotary.feature_notes.domain.model.Note
 import com.solita.devnotary.feature_notes.domain.model.SharedNote
+import com.solita.devnotary.feature_notes.presentation.notesList.Sort
 import com.solita.devnotary.utils.Crypto
 import kotlinx.datetime.Clock
 import kotlin.random.Random

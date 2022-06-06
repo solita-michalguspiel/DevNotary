@@ -10,7 +10,7 @@ import shared
 
 class NotePreviewHelper : ObservableObject{
     
-    let notesViewModel = iosDI().getNotesViewModel()
+    let viewModel = iosDI().getNotesDetailViewModel()
     
 }
 
@@ -25,7 +25,7 @@ struct NotePreview: View {
         
         NavigationLink(destination : LocalNoteView(note: note), tag: note, selection : $selection){
             EmptyView()
-        }
+        }.isDetailLink(false)
     
         ZStack{
             RoundedRectangle(cornerRadius: 20, style: RoundedCornerStyle.continuous)
@@ -47,7 +47,7 @@ struct NotePreview: View {
                 .padding(.horizontal, 10)
             
                 HStack{
-                    Text(notePreviewHelper.notesViewModel.formatDateTime(date: note.dateTime)).font(.caption)
+                    Text(notePreviewHelper.viewModel.formatDateTime(date: note.dateTime)).font(.caption)
                     Spacer()
                     Button(action: {
                         selection = note

@@ -1,9 +1,9 @@
-package com.solita.devnotary.feature_notes.presentation
+package com.solita.devnotary.feature_notes.presentation.notesList
 
 import com.solita.devnotary.feature_notes.domain.model.Note
 
 
-enum class SortOptions(val sort: Sort,val sortName : String){
+enum class SortOptions(val sort: Sort, val sortName : String){
     BY_NAME_ASC(ByNameAscending,"By name ascending"),
     BY_NAME_DESC(ByNameDescending,"By name descending"),
     BY_DATE_ASC(ByDateAscending,"By date ascending"),

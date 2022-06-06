@@ -26,7 +26,7 @@ import com.solita.devnotary.android.theme.LocalElevation
 import com.solita.devnotary.android.theme.LocalSpacing
 import com.solita.devnotary.android.theme.Typography
 import com.solita.devnotary.di.di
-import com.solita.devnotary.feature_notes.presentation.NotesViewModel
+import com.solita.devnotary.feature_notes.presentation.noteDetail.NoteDetailViewModel
 import org.kodein.di.instance
 
 
@@ -35,7 +35,7 @@ fun LocalNoteContent(
     navigateToUsersWithAccessScreen: () -> Unit,
     navigateToNewNote: () -> Unit
 ) {
-    val viewModel: NotesViewModel by di.instance()
+    val viewModel: NoteDetailViewModel by di.instance()
     val displayedNoteState = viewModel.displayedNote.collectAsState(initial = CLEAR_NOTE)
 
     Column(Modifier.fillMaxSize()) {

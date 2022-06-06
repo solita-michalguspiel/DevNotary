@@ -23,13 +23,13 @@ import com.solita.devnotary.android.theme.LocalElevation
 import com.solita.devnotary.android.theme.LocalSpacing
 import com.solita.devnotary.android.theme.Typography
 import com.solita.devnotary.domain.Response
-import com.solita.devnotary.feature_notes.presentation.NotesViewModel
+import com.solita.devnotary.feature_notes.presentation.noteDetail.NoteDetailViewModel
 import org.kodein.di.instance
 
 @Composable
 fun SharedNoteContent(popBackStack : () -> Unit) {
 
-    val viewModel: NotesViewModel by com.solita.devnotary.di.di.instance()
+    val viewModel: NoteDetailViewModel by com.solita.devnotary.di.di.instance()
     val displayedNoteState = viewModel.displayedNote.collectAsState(initial = CLEAR_NOTE)
 
     val noteSharingState = viewModel.noteSharingState.collectAsState().value

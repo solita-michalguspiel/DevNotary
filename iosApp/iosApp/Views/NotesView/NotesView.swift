@@ -12,17 +12,17 @@ import shared
 
 class NotesViewHelper : ObservableObject{
     
-    let notesListViewModel = iosDI().getNotesListViewModel()
+    let viewModel = iosDI().getNotesListViewModel()
 
     @Published var notes : Array<Note> = Array()
     
     init(){
         start()
-        notesListViewModel.listenToNoteListChanges()
+        viewModel.listenToNoteListChanges()
     }
 
     func start() {
-        notesListViewModel.watch(notesListViewModel.notes, block: {newNotes in
+        viewModel.watch(viewModel.notes, block: {newNotes in
             let newNotesAsArray = newNotes as! Array<Note>
             self.notes = newNotesAsArray
         })
@@ -55,7 +55,7 @@ struct NotesView : View{
                Spacer()
                HStack{
                    Spacer()
-                   NavigationLink(destination: AddNewNoteView()){
+                   NavigationLink(destination: AddAndEditNoteView(editedNote: nil)){
                                           Image(systemName: "plus")
                                               .font(.largeTitle)
                                               .frame(width: 70, height: 70)
@@ -63,12 +63,17 @@ struct NotesView : View{
                                               .clipShape(Circle())
                                               .foregroundColor(.white)
                                               .padding()
-                    }
+                    }.isDetailLink(false)
                    }
                   
                }
        }.navigationBarBackButtonHidden(true)
-           
+            .onAppear{
+                stateObject.viewModel.getSharedNotes()
+            }
+            .onDisappear{
+                print("Notes view on disappear!")
+            }
         }
     }
 

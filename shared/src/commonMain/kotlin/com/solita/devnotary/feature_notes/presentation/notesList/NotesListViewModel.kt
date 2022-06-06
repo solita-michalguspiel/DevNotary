@@ -5,9 +5,7 @@ import com.solita.devnotary.domain.Response
 import com.solita.devnotary.feature_notes.domain.model.Note
 import com.solita.devnotary.feature_notes.domain.use_case.local_notes_use_cases.LocalNotesUseCases
 import com.solita.devnotary.feature_notes.domain.use_case.remote_notes_use_cases.RemoteNotesUseCases
-import com.solita.devnotary.feature_notes.presentation.Sort
-import com.solita.devnotary.feature_notes.presentation.SortOptions
-import com.solita.devnotary.feature_notes.presentation.changeToNote
+import com.solita.devnotary.feature_notes.presentation.noteDetail.changeToNote
 import com.solita.devnotary.utils.CommonViewModel
 import com.solita.devnotary.utils.formatIso8601ToString
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,15 +32,13 @@ class NotesListViewModel(dependencyInjection: DI = di) : CommonViewModel() {
         _selectedSort.value = sort
     }
 
+    private val _localNotes: MutableStateFlow<List<Note>> = MutableStateFlow(listOf())
     private val _notesSharedByOtherUsers: MutableStateFlow<List<Note>> =
         MutableStateFlow(listOf())
-    val notesSharedByOtherUsers: StateFlow<List<Note>> = _notesSharedByOtherUsers
 
     private val _notes: MutableStateFlow<List<Note>> =
         MutableStateFlow(listOf())
     val notes: StateFlow<List<Note>> = _notes
-
-    private val _localNotes: MutableStateFlow<List<Note>> = MutableStateFlow(listOf())
 
     private val _sharedNotesState: MutableStateFlow<Response<Boolean>> =
         MutableStateFlow(Response.Empty)
@@ -116,7 +112,7 @@ class NotesListViewModel(dependencyInjection: DI = di) : CommonViewModel() {
     }
 
     private fun prepareLists() {
-        _notes.value = com.solita.devnotary.feature_notes.presentation.prepareLists(
+        _notes.value = com.solita.devnotary.feature_notes.presentation.noteDetail.prepareLists(
             _localNotes.value,
             _notesSharedByOtherUsers.value,
             _selectedSort.value,

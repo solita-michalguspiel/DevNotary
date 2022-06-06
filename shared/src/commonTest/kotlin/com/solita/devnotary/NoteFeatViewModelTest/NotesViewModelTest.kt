@@ -6,7 +6,7 @@ import com.solita.devnotary.feature_notes.domain.Operation
 import com.solita.devnotary.feature_notes.domain.model.Note
 import com.solita.devnotary.feature_notes.domain.use_case.local_notes_use_cases.*
 import com.solita.devnotary.feature_notes.domain.use_case.remote_notes_use_cases.*
-import com.solita.devnotary.feature_notes.presentation.NotesViewModel
+import com.solita.devnotary.feature_notes.presentation.noteDetail.NoteDetailViewModel
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.beInstanceOf
@@ -25,7 +25,7 @@ import kotlin.test.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class NotesViewModelTest {
 
-    private lateinit var viewModel: NotesViewModel
+    private lateinit var viewModel: NoteDetailViewModel
     private val mainThreadSurrogate = newSingleThreadContext("UI thread")
     private val testDispatcher = StandardTestDispatcher()
 
@@ -69,7 +69,7 @@ class NotesViewModelTest {
     fun setup() {
 
         Dispatchers.setMain(testDispatcher)
-        viewModel = NotesViewModel(testDI)
+        viewModel = NoteDetailViewModel(testDI)
     }
 
     @AfterTest

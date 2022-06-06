@@ -5,7 +5,7 @@ import com.solita.devnotary.database.Local_note
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.feature_notes.domain.Operation
 import com.solita.devnotary.feature_notes.domain.repository.LocalNotesRepository
-import com.solita.devnotary.feature_notes.presentation.changeToNote
+import com.solita.devnotary.feature_notes.presentation.noteDetail.changeToNote
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
