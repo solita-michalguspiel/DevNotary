@@ -88,7 +88,10 @@ struct SignInView: View {
                 VStack{
                     Text("Sign in with email").font(.callout)
                     TextField("Enter email address", text: binding)
-                        .padding(.horizontal, 30.0).textFieldStyle(RoundedBorderTextFieldStyle())
+                        .textInputAutocapitalization(.never)
+                        .disableAutocorrection(true)
+                        .padding(.horizontal, 30.0)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
                 }
                 Spacer()
                 Button(action : {

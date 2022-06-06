@@ -46,7 +46,6 @@ class LocaLNoteViewHelper : ObservableObject{
         let noteSharingStateListener = self.viewModel.watch(viewModel.noteSharingState,block : { response in
             if(response is ResponseSuccess<AnyObject>){
                 self.shouldPopBackStack = true
-                self.viewModel.restartNoteSharingState()
             }
         })
         
@@ -82,7 +81,7 @@ struct LocalNoteView: View {
         
     @State var navigateToAddNewNote = false
     @State var navigateToEditNote = false
-    @State var shareDialog = false
+    @State var isShareSheetOpen = false
         
     let note: Note
     
@@ -114,7 +113,7 @@ struct LocalNoteView: View {
                             HStack{
                                 Spacer()
                                 Button(action:{
-                                    shareDialog = true
+                                    isShareSheetOpen = true
                                 }){
                                     Image(systemName: "arrowshape.turn.up.right.fill")
                                         .resizable()
@@ -170,7 +169,7 @@ struct LocalNoteView: View {
                 }
             }.padding()
         }
-        .sheet(isPresented: $shareDialog){
+        .sheet(isPresented: $isShareSheetOpen){
             ShareNoteSheet()
         }
         .onAppear{
@@ -196,41 +195,17 @@ struct LocalNoteView: View {
         }
         if stateObject.shouldPopBackStack {
             Text("").onAppear(){
-                self.appState.moveToDashboard = true
-                self.appState.selectedTab = 2
+                if(!isShareSheetOpen){
+                    self.appState.moveToDashboard = true
+                    self.appState.selectedTab = 2
+                }
                 stateObject.viewModel.resetNoteModificationStatus()
+                stateObject.shouldPopBackStack = false
                 }
             }
     }
     
     func isLocal() -> Bool{
         return note.ownerUserId == nil
-    }
-}
-
-class ShareNoteSheetObject : ObservableObject{
-  
-    let viewModel = iosDI().getNotesDetailViewModel()
-    
-    @Published var email = ""{
-        didSet{
-                viewModel.changeAnotherUserEmailAddress(newEmailAddress: String(email))
-        }
-    }
-}
-struct ShareNoteSheet : View{
-    @Environment(\.dismiss) var dismiss
-    @ObservedObject var stateObject = ShareNoteSheetObject()
-    var body: some View{
-        VStack{
-            Text("Share note").font(.title)
-            TextField("User e-mail address",text: $stateObject.email)
-                .padding(.horizontal, 30.0)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-            CustomBorderedButton(text: "Share"){
-                stateObject.viewModel.shareNote()
-            }
-        }
-        
     }
 }

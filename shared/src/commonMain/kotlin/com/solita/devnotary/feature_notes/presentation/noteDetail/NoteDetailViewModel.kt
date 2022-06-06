@@ -209,6 +209,7 @@ class NoteDetailViewModel(dependencyInjection: DI = di) : CommonViewModel() {
     }
 
     fun restartNoteSharingState() {
+        println("Resetting note sharing state from note detail view model!")
         _noteSharingState.value = Response.Empty
     }
 }
