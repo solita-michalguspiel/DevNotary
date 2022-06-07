@@ -15,6 +15,7 @@ class Timer(private val seconds: Int){
         coroutineScope {
             val coroutine = this.coroutineContext
             timerJob = coroutine.job
+            emit(timeLeft)
             for (i in 0 until seconds) {
                 delay(1000)
                 timeLeft -= 1

@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.solita.devnotary.android.R
 import com.solita.devnotary.android.theme.*
-import com.solita.devnotary.android.utils.NoteColor
+import com.solita.devnotary.android.feature_notes.domain.NoteColor
 import com.solita.devnotary.feature_notes.domain.model.Note
 
 

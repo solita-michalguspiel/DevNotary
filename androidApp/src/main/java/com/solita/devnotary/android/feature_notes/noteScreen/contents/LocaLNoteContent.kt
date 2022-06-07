@@ -15,17 +15,18 @@ import androidx.compose.ui.Alignment.Companion.TopEnd
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import com.solita.devnotary.Constants.CLEAR_NOTE
 import com.solita.devnotary.android.R
-import com.solita.devnotary.android.androidDi
 import com.solita.devnotary.android.feature_notes._sharedComponents.LocalNoteButtons
+import com.solita.devnotary.android.feature_notes.domain.NoteColor
 import com.solita.devnotary.android.feature_notes.noteScreen.components.ContentTextField
 import com.solita.devnotary.android.feature_notes.noteScreen.components.TitleTextField
 import com.solita.devnotary.android.theme.LocalColors
 import com.solita.devnotary.android.theme.LocalElevation
 import com.solita.devnotary.android.theme.LocalSpacing
 import com.solita.devnotary.android.theme.Typography
-import com.solita.devnotary.android.utils.NoteColor
-import com.solita.devnotary.feature_notes.presentation.NotesViewModel
+import com.solita.devnotary.di.di
+import com.solita.devnotary.feature_notes.presentation.noteDetail.NoteDetailViewModel
 import org.kodein.di.instance
 
 
@@ -34,41 +35,39 @@ fun LocalNoteContent(
     navigateToUsersWithAccessScreen: () -> Unit,
     navigateToNewNote: () -> Unit
 ) {
-    val viewModel: NotesViewModel by androidDi.instance()
-    val titleInputState = viewModel.titleInput.collectAsState()
-    val contentInputState = viewModel.contentInput.collectAsState()
-    val noteColorState = viewModel.noteColor.collectAsState()
+    val viewModel: NoteDetailViewModel by di.instance()
+    val displayedNoteState = viewModel.displayedNote.collectAsState(initial = CLEAR_NOTE)
 
     Column(Modifier.fillMaxSize()) {
         Card(
             modifier = Modifier
                 .padding(LocalSpacing.current.small)
                 .weight(1.0f),
-            backgroundColor = NoteColor(noteColorState.value).getColor(),
+            backgroundColor = NoteColor(displayedNoteState.value.color).getColor(),
             elevation = LocalElevation.current.medium
         ) {
             Column {
                 Box {
                     TitleTextField(
                         modifier = Modifier.padding(top = LocalSpacing.current.xSmall),
-                        titleInput = titleInputState.value,
+                        titleInput = displayedNoteState.value.title,
                         isEditEnabled = false
                     )
                     ShareRelatedButtonRow(
                         modifier = Modifier.align(TopEnd),
-                        navigateToUsersWithAccessScreen = navigateToUsersWithAccessScreen
-                    ) {
-                        viewModel.isShareDialogOpen.value = true
-                    }
+                        navigateToUsersWithAccessScreen = navigateToUsersWithAccessScreen,
+                        openSharingDialog = {viewModel.isShareDialogOpen.value = true},
+                        getUsersWithAccess = { viewModel.getUsersWithAccess() }
+                    )
                 }
                 ContentTextField(
-                    contentInput = contentInputState.value,
+                    contentInput = displayedNoteState.value.content,
                     modifier = Modifier.weight(1.0f), isEditEnabled = false
                 )
                 Text(
                     text = stringResource(
                         R.string.note_time_date_stamp,
-                        viewModel.formatDateTime(viewModel.noteDateTime.value)
+                        viewModel.formatDateTime(displayedNoteState.value.dateTime)
                     ),
                     modifier = Modifier
                         .align(End)
@@ -89,7 +88,8 @@ fun LocalNoteContent(
 fun ShareRelatedButtonRow(
     modifier: Modifier,
     navigateToUsersWithAccessScreen: () -> Unit,
-    openSharingDialog: () -> Unit
+    openSharingDialog: () -> Unit,
+    getUsersWithAccess: () -> Unit
 ) {
     Row(modifier) {
         IconButton(
@@ -105,7 +105,10 @@ fun ShareRelatedButtonRow(
             )
         }
         IconButton(
-            onClick = { navigateToUsersWithAccessScreen() },
+            onClick = {
+                getUsersWithAccess()
+                navigateToUsersWithAccessScreen()
+                      },
         ) {
             Icon(
                 imageVector = Icons.Default.People,

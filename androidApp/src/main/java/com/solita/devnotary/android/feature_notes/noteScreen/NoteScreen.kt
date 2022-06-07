@@ -9,7 +9,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavController
-import com.solita.devnotary.android.androidDi
 import com.solita.devnotary.android.feature_notes.noteScreen.components.ConfirmDeleteDialog
 import com.solita.devnotary.android.feature_notes.noteScreen.components.ShareNoteDialog
 import com.solita.devnotary.android.feature_notes.noteScreen.contents.LocalNoteContent
@@ -18,10 +17,11 @@ import com.solita.devnotary.android.feature_notes.noteScreen.contents.NewNoteCon
 import com.solita.devnotary.android.feature_notes.noteScreen.contents.SharedNoteContent
 import com.solita.devnotary.android.navigation.Screen
 import com.solita.devnotary.android.navigation.navigateToNoteScreen
+import com.solita.devnotary.di.di
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.feature_notes.domain.Operation
 import com.solita.devnotary.feature_notes.domain.model.Note
-import com.solita.devnotary.feature_notes.presentation.NotesViewModel
+import com.solita.devnotary.feature_notes.presentation.noteDetail.NoteDetailViewModel
 import kotlinx.coroutines.launch
 import org.kodein.di.instance
 
@@ -31,10 +31,10 @@ fun NoteScreen(
     navController: NavController,
     note: Note?
 ) {
-    val viewModel: NotesViewModel by androidDi.instance()
+    val viewModel: NoteDetailViewModel by di.instance()
     val coroutineScope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
-    val noteModification = viewModel.noteModificationStatus.collectAsState().value
+    val noteModification = viewModel.noteModificationStatus.collectAsState(Response.Empty).value
 
     LaunchedEffect(Unit) {
         viewModel.prepareNoteScreen(note)
@@ -58,11 +58,14 @@ fun NoteScreen(
                             Screen.NotesListScreen.route,
                             false
                         )
+                        viewModel.isEditEnabled.value = false
                     }
-                    is Operation.Delete -> navController.popBackStack(
+                    is Operation.Delete ->{
+                        navController.popBackStack(
                         Screen.NotesListScreen.route,
                         false
                     )
+                    }
                     is Operation.Add -> navController.navigateToNoteScreen(noteModification.data.note)
                     is Operation.Share -> {}
                 }

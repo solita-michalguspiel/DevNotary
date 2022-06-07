@@ -12,9 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.solita.devnotary.android.R
-import com.solita.devnotary.android.androidDi
 import com.solita.devnotary.android.theme.LocalSpacing
-import com.solita.devnotary.feature_notes.presentation.NotesViewModel
+import com.solita.devnotary.di.di
+import com.solita.devnotary.feature_notes.presentation.noteDetail.NoteDetailViewModel
 import org.kodein.di.instance
 
 @Preview
@@ -60,7 +60,7 @@ fun AddNewNoteButton(modifier: Modifier, navigateToNewNote: () -> Unit) {
 
 @Composable
 fun SaveButton(modifier: Modifier) {
-    val viewModel: NotesViewModel by androidDi.instance()
+    val viewModel: NoteDetailViewModel by di.instance()
     Button(
         onClick = {
             viewModel.editNote()
@@ -90,7 +90,7 @@ fun SharedNoteButtons(modifier: Modifier) {
 
 @Composable
 fun SaveNoteLocallyButton(modifier: Modifier) {
-    val viewModel: NotesViewModel by androidDi.instance()
+    val viewModel: NoteDetailViewModel by di.instance()
     Button(
         onClick = { viewModel.addNote() }, modifier = modifier
     ) {
@@ -100,7 +100,7 @@ fun SaveNoteLocallyButton(modifier: Modifier) {
 
 @Composable
 fun DeleteSharedNote(modifier: Modifier) {
-    val viewModel: NotesViewModel by androidDi.instance()
+    val viewModel: NoteDetailViewModel by di.instance()
     Button(
         onClick = { viewModel.isConfirmDeleteAccessFromSharedNoteDialogOpen.value = true }, modifier = modifier
     ) {
@@ -111,7 +111,7 @@ fun DeleteSharedNote(modifier: Modifier) {
 
 @Composable
 fun DeleteButton(modifier: Modifier) {
-    val viewModel: NotesViewModel by androidDi.instance()
+    val viewModel: NoteDetailViewModel by di.instance()
     Button(
         onClick = {
             viewModel.isConfirmDeleteLocalNoteDialogOpen.value = true
@@ -123,7 +123,7 @@ fun DeleteButton(modifier: Modifier) {
 
 @Composable
 fun EditButton(modifier: Modifier) {
-    val viewModel: NotesViewModel by androidDi.instance()
+    val viewModel: NoteDetailViewModel by di.instance()
     Button(
         onClick = {
             viewModel.isEditEnabled.value = true
@@ -135,11 +135,11 @@ fun EditButton(modifier: Modifier) {
 
 
 @Composable
-fun AddButton(modifier: Modifier) {
-    val viewModel: NotesViewModel by androidDi.instance()
+fun AddButton(modifier: Modifier,onClick : () -> Unit) {
+    val viewModel: NoteDetailViewModel by di.instance()
     Button(
         onClick = {
-            viewModel.addNote()
+            onClick()
         }, modifier = modifier.padding(LocalSpacing.current.small)
     ) {
         Text(text = stringResource(id = R.string.add_note))

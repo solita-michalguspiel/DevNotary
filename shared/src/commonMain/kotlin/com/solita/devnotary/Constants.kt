@@ -1,9 +1,12 @@
 package com.solita.devnotary
 
+import com.solita.devnotary.feature_notes.domain.model.Note
+
 object Constants {
 
     const val APP_URL = "https://dev-notary.web.app"
     const val ANDROID_PACKAGE_NAME = "com.solita.devnotary.android"
+    const val IOS_BUNDLE_ID = "com.michal.devAcademyNotary"
     const val CURRENT_EMAIL_KEY = "email_key"
 
     const val RESEND_EMAIL_TIME = 60
@@ -24,7 +27,9 @@ object Constants {
     const val SHARED_USER_ID = "sharedUserId"
 
 
-    const val WHITE_COLOR = "white"
+    private const val WHITE_COLOR = "white"
     const val NO_TITLE_ERROR = "Can't add note without title"
     const val BLANK_NOTE_ERROR = "Can't add blank note"
+
+    val CLEAR_NOTE = Note("",null,"","","",WHITE_COLOR)
 }

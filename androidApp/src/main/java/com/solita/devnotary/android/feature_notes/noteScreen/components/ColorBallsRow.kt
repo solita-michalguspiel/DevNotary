@@ -10,7 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.solita.devnotary.android.feature_notes.addNoteScreen.components.ColorBall
 import com.solita.devnotary.android.theme.LocalSpacing
-import com.solita.devnotary.android.utils.getAvailableColors
+import com.solita.devnotary.android.feature_notes.domain.getAvailableColors
 
 @Composable
 fun ColorBallsRow(

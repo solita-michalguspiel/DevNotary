@@ -6,5 +6,4 @@ class Greeting {
         return "Hello, ${Platform().platform}!"
     }
 
-
 }

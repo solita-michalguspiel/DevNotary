@@ -7,16 +7,16 @@ import com.solita.devnotary.di.di
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.domain.User
 import com.solita.devnotary.feature_auth.domain.use_case.AuthUseCases
+import com.solita.devnotary.utils.CommonViewModel
 import com.solita.devnotary.utils.Timer
-import dev.icerock.moko.mvvm.viewmodel.ViewModel
-import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import org.kodein.di.DI
 import org.kodein.di.instance
 
 class AuthViewModel(dependencyInjection: DI = di) :
-    ViewModel() {
+    CommonViewModel() {
 
     private val useCases: AuthUseCases by dependencyInjection.instance()
     private val settings: Settings by dependencyInjection.instance()
@@ -34,24 +34,33 @@ class AuthViewModel(dependencyInjection: DI = di) :
 
     val isUserAuthenticated get() = useCases.isUserAuthenticated.invoke()
 
-    val resendEmailTimer = MutableStateFlow(0)
+    private val _resendEmailTimer = MutableStateFlow(0)
+    val resendEmailTimer: StateFlow<Int> = _resendEmailTimer
 
-    val emailAddressInput = MutableStateFlow("")
+    private val _emailAddressInput = MutableStateFlow("")
+    val emailAddressInput: StateFlow<String> = _emailAddressInput
+
+
+    fun changeEmailAddress(newEmailAddress: String) {
+        _emailAddressInput.value = newEmailAddress
+    }
 
     fun getCurrentUserDocument() {
-        viewModelScope.launch {
+        sharedScope.launch {
             useCases.getCurrentUserDocument.invoke().collect { response ->
                 _userState.value = response
                 if (response is Response.Error) setError(response.message)
+                println(response)
             }
         }
     }
 
     fun sendEmailLink() {
         _userAuthState.value = Response.Empty
-        settings.putString(CURRENT_EMAIL_KEY, emailAddressInput.value)
-        viewModelScope.launch {
-            useCases.sendEmailLink.invoke(emailAddressInput.value).collect { response ->
+        settings.putString(CURRENT_EMAIL_KEY, _emailAddressInput.value)
+        println(settings.getString(CURRENT_EMAIL_KEY))
+        sharedScope.launch {
+            useCases.sendEmailLink.invoke(_emailAddressInput.value).collect { response ->
                 if (response == Response.Success(true)) startTimer()
                 _sendLinkState.value = response
             }
@@ -60,7 +69,7 @@ class AuthViewModel(dependencyInjection: DI = di) :
 
     fun signInWithLink(intent: String) {
         val email = settings.getString(CURRENT_EMAIL_KEY)
-        viewModelScope.launch {
+        sharedScope.launch {
             useCases.signInWithEmailLink(email = email, intent = intent).collect { response ->
                 _userAuthState.value = response
                 when (response) {
@@ -73,8 +82,9 @@ class AuthViewModel(dependencyInjection: DI = di) :
     }
 
     fun signOut() {
-        viewModelScope.launch {
+        sharedScope.launch {
             useCases.signOut.invoke().collect { response ->
+                println("setting response $response")
                 _userAuthState.value = response
                 getCurrentUserDocument()
                 if (response is Response.Error) setError(response.message)
@@ -97,17 +107,17 @@ class AuthViewModel(dependencyInjection: DI = di) :
 
     private val timer = Timer(RESEND_EMAIL_TIME)
 
-    private fun startTimer(){
-        viewModelScope.launch {
+    private fun startTimer() {
+        sharedScope.launch {
             timer.startTimer().collect {
-                resendEmailTimer.value = it
+                _resendEmailTimer.value = it
             }
         }
     }
 
-    private fun stopTimer(){
+    private fun stopTimer() {
         timer.stopTimer()
-        resendEmailTimer.value = 0
+        _resendEmailTimer.value = 0
         _sendLinkState.value = Response.Empty
     }
 

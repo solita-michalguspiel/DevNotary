@@ -6,7 +6,7 @@ import com.solita.devnotary.feature_notes.domain.Operation
 import com.solita.devnotary.feature_notes.domain.model.Note
 import com.solita.devnotary.feature_notes.domain.use_case.local_notes_use_cases.*
 import com.solita.devnotary.feature_notes.domain.use_case.remote_notes_use_cases.*
-import com.solita.devnotary.feature_notes.presentation.NotesViewModel
+import com.solita.devnotary.feature_notes.presentation.noteDetail.NoteDetailViewModel
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.beInstanceOf
@@ -25,7 +25,7 @@ import kotlin.test.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class NotesViewModelTest {
 
-    private lateinit var viewModel: NotesViewModel
+    private lateinit var viewModel: NoteDetailViewModel
     private val mainThreadSurrogate = newSingleThreadContext("UI thread")
     private val testDispatcher = StandardTestDispatcher()
 
@@ -69,7 +69,7 @@ class NotesViewModelTest {
     fun setup() {
 
         Dispatchers.setMain(testDispatcher)
-        viewModel = NotesViewModel(testDI)
+        viewModel = NoteDetailViewModel(testDI)
     }
 
     @AfterTest
@@ -83,9 +83,9 @@ class NotesViewModelTest {
     fun givenNoteWasAdded_StateOfNoteModShouldChangeToLoadingAndThenToSuccess(): TestResult =
         runTest {
             launch {
-                viewModel.titleInput.value = firstNote.title
-                viewModel.contentInput.value = firstNote.content
-                viewModel.noteColor.value = firstNote.color
+                viewModel.changeTitleInput(firstNote.title)
+                viewModel.changeContentInput(firstNote.content)
+                viewModel.changeNoteColor(firstNote.color)
                 viewModel.addNote(firstNote.noteId)
             }
             advanceTimeBy(30)
@@ -102,7 +102,7 @@ class NotesViewModelTest {
                 setNote(firstNote)
                 viewModel.addNote(firstNote.noteId)
                 viewModel.noteId.value = firstNote.noteId
-                viewModel.contentInput.value = "ChangedContent"
+                viewModel.changeContentInput("ChangedContent")
                 viewModel.editNote()
             }
             advanceTimeBy(50)
@@ -176,10 +176,10 @@ class NotesViewModelTest {
     @Test
     fun givenThereIsSharedNoteAndGetSharedNotesIsCalled_SharedNoteShouldAppearInSharedNotes() : TestResult = runTest {
             viewModel.noteId.value = firstNote.noteId
-            viewModel.titleInput.value = firstNote.title
-            viewModel.contentInput.value = firstNote.content
+            viewModel.changeTitleInput(firstNote.title)
+            viewModel.changeContentInput(firstNote.content)
             viewModel.noteDateTime.value = firstNote.dateTime
-            viewModel.noteColor.value = firstNote.color
+            viewModel.changeNoteColor(firstNote.color)
         launch {
             viewModel.anotherUserEmailAddress.value = remoteNotesRepository.appUser1
             viewModel.shareNote()
@@ -195,9 +195,9 @@ class NotesViewModelTest {
 
 
     private fun setNote(note: Note){
-        viewModel.titleInput.value = note.title
-        viewModel.contentInput.value = note.content
-        viewModel.noteColor.value = note.color
+        viewModel.changeTitleInput(note.title)
+        viewModel.changeContentInput(note.content)
+        viewModel.changeNoteColor(note.color)
     }
 
 

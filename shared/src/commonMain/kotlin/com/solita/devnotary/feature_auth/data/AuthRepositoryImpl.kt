@@ -3,6 +3,7 @@ package com.solita.devnotary.feature_auth.data
 import com.solita.devnotary.Constants.ANDROID_PACKAGE_NAME
 import com.solita.devnotary.Constants.APP_URL
 import com.solita.devnotary.Constants.ERROR_MESSAGE
+import com.solita.devnotary.Constants.IOS_BUNDLE_ID
 import com.solita.devnotary.Constants.USERS_FIREBASE
 import com.solita.devnotary.Constants.USER_ID
 import com.solita.devnotary.di.di
@@ -53,16 +54,18 @@ class AuthRepositoryImpl : AuthRepository {
         val actionCodeSettings = ActionCodeSettings(
             url = APP_URL,
             canHandleCodeInApp = true,
+            dynamicLinkDomain = "devnotary.page.link",
             androidPackageName = AndroidPackageName(
                 packageName = ANDROID_PACKAGE_NAME,
                 installIfNotAvailable = true
-            ),
+            ), iOSBundleId = IOS_BUNDLE_ID
         )
         try {
             emit(Response.Loading)
             auth.sendSignInLinkToEmail(email, actionCodeSettings)
             emit(Response.Success(true))
         } catch (e: Exception) {
+            println(e.message ?: ERROR_MESSAGE)
             emit(Response.Error(e.message ?: ERROR_MESSAGE))
         }
     }

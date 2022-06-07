@@ -13,26 +13,24 @@ import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import com.solita.devnotary.Constants.CLEAR_NOTE
 import com.solita.devnotary.android.R
-import com.solita.devnotary.android.androidDi
 import com.solita.devnotary.android.feature_notes._sharedComponents.SharedNoteButtons
+import com.solita.devnotary.android.feature_notes.domain.NoteColor
 import com.solita.devnotary.android.feature_notes.noteScreen.components.ContentTextField
 import com.solita.devnotary.android.feature_notes.noteScreen.components.TitleTextField
 import com.solita.devnotary.android.theme.LocalElevation
 import com.solita.devnotary.android.theme.LocalSpacing
 import com.solita.devnotary.android.theme.Typography
-import com.solita.devnotary.android.utils.NoteColor
 import com.solita.devnotary.domain.Response
-import com.solita.devnotary.feature_notes.presentation.NotesViewModel
+import com.solita.devnotary.feature_notes.presentation.noteDetail.NoteDetailViewModel
 import org.kodein.di.instance
 
 @Composable
 fun SharedNoteContent(popBackStack : () -> Unit) {
 
-    val viewModel: NotesViewModel by androidDi.instance()
-    val titleInputState = viewModel.titleInput.collectAsState()
-    val contentInputState = viewModel.contentInput.collectAsState()
-    val noteColorState = viewModel.noteColor.collectAsState()
+    val viewModel: NoteDetailViewModel by com.solita.devnotary.di.di.instance()
+    val displayedNoteState = viewModel.displayedNote.collectAsState(initial = CLEAR_NOTE)
 
     val noteSharingState = viewModel.noteSharingState.collectAsState().value
 
@@ -49,7 +47,7 @@ fun SharedNoteContent(popBackStack : () -> Unit) {
             modifier = Modifier
                 .padding(LocalSpacing.current.small)
                 .weight(1.0f),
-            backgroundColor = NoteColor(noteColorState.value).getColor(),
+            backgroundColor = NoteColor(displayedNoteState.value.color).getColor(),
             elevation = LocalElevation.current.medium
         ) {
             Column {
@@ -70,17 +68,17 @@ fun SharedNoteContent(popBackStack : () -> Unit) {
                     }
                     else -> {}
                 }
-                TitleTextField(titleInput = titleInputState.value, isEditEnabled = false)
+                TitleTextField(titleInput = displayedNoteState.value.title, isEditEnabled = false)
 
                 ContentTextField(
-                    contentInput = contentInputState.value,
+                    contentInput = displayedNoteState.value.content,
                     modifier = Modifier.weight(1.0f),
                     isEditEnabled = false
                 )
                 Text(
                     text = stringResource(
                         R.string.note_time_date_stamp,
-                        viewModel.formatDateTime(viewModel.noteDateTime.value)
+                        viewModel.formatDateTime(displayedNoteState.value.dateTime)
                     ),
                     modifier = Modifier
                         .align(End)

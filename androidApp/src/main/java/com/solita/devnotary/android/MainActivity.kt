@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.solita.devnotary.android.navigation.Navigation
 import com.solita.devnotary.android.theme.DevNotaryTheme
+import com.solita.devnotary.android.utils.signInIntent
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

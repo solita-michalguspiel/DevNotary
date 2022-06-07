@@ -4,4 +4,4 @@ import com.squareup.sqldelight.db.SqlDriver
 
 expect class DbArgs
 
-expect fun getSqlDriver(dbArgs: DbArgs) : SqlDriver
+expect fun getSqlDriver(dbArgs: DbArgs?) : SqlDriver

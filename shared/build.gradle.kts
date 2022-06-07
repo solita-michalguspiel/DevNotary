@@ -37,8 +37,7 @@ kotlin {
 
     sourceSets["commonMain"].dependencies {
         // Coroutines:
-        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
-
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1-native-mt")
         // DI with kodein:
         implementation("org.kodein.di:kodein-di:7.10.0")
         // Firebase auth and firestore:
@@ -76,6 +75,10 @@ kotlin {
         implementation("org.robolectric:robolectric:4.8")
     }
 
+    sourceSets["iosX64Main"].dependencies {
+        implementation(SqlDelight.native)
+    }
+
     sourceSets {
         val commonMain by getting
         val commonTest by getting {
@@ -93,6 +96,9 @@ kotlin {
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
         val iosMain by creating {
+            dependencies{
+                implementation(SqlDelight.native)
+            }
             dependsOn(commonMain)
             iosX64Main.dependsOn(this)
             iosArm64Main.dependsOn(this)
@@ -111,13 +117,7 @@ kotlin {
 }
 
 dependencies {
-    commonMainApi("dev.icerock.moko:mvvm-core:0.13.0") // only ViewModel, EventsDispatcher, Dispatchers.UI
-    commonMainApi("dev.icerock.moko:mvvm-flow:0.13.0") // api mvvm-core, CFlow for native and binding extensions
-    commonMainApi("dev.icerock.moko:mvvm-livedata:0.13.0") // api mvvm-core, LiveData and extensions
-    commonMainApi("dev.icerock.moko:mvvm-state:0.13.0") // api mvvm-livedata, ResourceState class and extensions
-    commonMainApi("dev.icerock.moko:mvvm-livedata-resources:0.13.0") // api mvvm-core, moko-resources, extensions for LiveData with moko-resources
     commonMainApi("dev.icerock.moko:parcelize:0.8.0")
-    commonTestImplementation("dev.icerock.moko:mvvm-test:0.13.0") // test utilities
 }
 
 android {
