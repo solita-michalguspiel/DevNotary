@@ -83,7 +83,6 @@ struct NoteInteractionView : View{
     
     @EnvironmentObject var appState: AppState
     @StateObject var noteData = NoteData()
-    
     init(editedNote: Note?){
             self.editedNote = editedNote
             UITextView.appearance().backgroundColor = .clear
@@ -91,7 +90,7 @@ struct NoteInteractionView : View{
     
     
     var body : some View{
-        
+        let navigationTitle = editedNote == nil ? "Add note" : "Edit note"
         VStack{
             if(noteData.addedNote != nil){
                     NavigationLink(destination : NoteDetailsView(note: noteData.addedNote!)
@@ -154,6 +153,7 @@ struct NoteInteractionView : View{
         })
         .onDisappear{noteData.stop()}
         .background(Color.background)
+            .navigationTitle(navigationTitle)
             .navigationBarBackButtonHidden(true)
             .toolbar(){
                 ToolbarItem(placement: .navigationBarLeading){

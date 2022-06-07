@@ -89,6 +89,8 @@ struct NoteDetailsView: View {
     }
     
     var body: some View {
+        let navigationTitle = isLocal() ? "Local note" : "Shared note"
+
         VStack{
             NavigationLink(destination: NoteInteractionView.init(editedNote: nil),isActive: $navigateToAddNewNote){
                 EmptyView()
@@ -185,6 +187,7 @@ struct NoteDetailsView: View {
             noteDetailsData.stop()
         }
         .background(Color.background)
+        .navigationTitle(navigationTitle)
         .navigationBarBackButtonHidden(true)
         .toolbar(){
             ToolbarItem(placement: .navigationBarLeading){
