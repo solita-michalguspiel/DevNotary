@@ -145,7 +145,6 @@ class NoteDetailViewModel(dependencyInjection: DI = di) : CommonViewModel() {
     }
 
     fun unShareNote(sharedUserId: String) {
-        println("Unsharing note $sharedUserId")
         sharedScope.launch {
             remoteUseCases.unshareNote.invoke(sharedUserId, _displayedNote.value.noteId)
                 .collect { response ->

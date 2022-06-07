@@ -33,7 +33,7 @@ class NotesData : ObservableObject{
 struct NotesListView : View{
     @State var isActive : Bool = false
     @StateObject var notesData = NotesData()
-    
+    @State private var searchText = ""
     var body : some View{
         
         return ZStack{
@@ -42,8 +42,12 @@ struct NotesListView : View{
             }
             ScrollView{
                 VStack{
+                    SearchBarView(text: $searchText).onChange(of: searchText){
+                        notesData.viewModel.noteSearchPhrase.setValue($0)
+                    }
+                        .padding(.horizontal,20).padding(.bottom,10)
                     ForEach(notesData.notes, id: \.self){ note in
-                        NotePreview(note: note)
+                        NotePreview(note: note).padding(.horizontal,20)
                     }
                 }
             }
@@ -63,10 +67,11 @@ struct NotesListView : View{
                         }.isDetailLink(false)
                 }
             }
-        }.navigationBarBackButtonHidden(true)
-            .onAppear{
-                notesData.viewModel.getSharedNotes()
-            }
+        }
+        .navigationBarBackButtonHidden(true)
+        .onAppear{
+            notesData.viewModel.getSharedNotes()
+        }
     }
 }
 

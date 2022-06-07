@@ -53,6 +53,8 @@ struct ProfileView : View{
     
     @StateObject var stateObject = ProfileViewStateObject()
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @EnvironmentObject var appState: AppState
+
 
     var body : some View {
         
@@ -75,6 +77,9 @@ struct ProfileView : View{
             Text("").onAppear(){ presentationMode.wrappedValue.dismiss()}
             }
         }.navigationBarBackButtonHidden(true)
+            .onAppear{
+                appState.selectedTab = 1
+            }
     }
 }
     

@@ -10,7 +10,8 @@ import SwiftUI
 
 struct MainView : View{
     @State var selectedTab : Int
-    
+    @State private var searchText = ""
+
     var body : some View{
         
         return TabView(selection: $selectedTab){
@@ -20,12 +21,14 @@ struct MainView : View{
             }.tag(1).onAppear(perform: {
                 print("Selected tab : \(selectedTab)")
             })
-            NotesListView().tabItem{
+            NotesListView()
+                .tabItem{
                 Image(systemName: "house.fill")
                 Text("Notes")
             }.tag(2).onAppear(perform: {
                 print("Selected tab : \(selectedTab)")
             })
         }
+       
     }
 }

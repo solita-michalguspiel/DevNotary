@@ -62,7 +62,6 @@ struct NotePreview: View {
             }.padding(10)
         }
         .padding(.vertical,5)
-        .padding(.horizontal)
         .frame(
               minWidth: 0,
               maxWidth: .infinity,

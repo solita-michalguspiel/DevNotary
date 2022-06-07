@@ -14,6 +14,7 @@
 		5F0EC23C283CF73F003B6CBB /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F0EC23B283CF73F003B6CBB /* SignInView.swift */; };
 		5F29DA31284F281A002FB2A5 /* AvailableNoteColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F29DA30284F281A002FB2A5 /* AvailableNoteColors.swift */; };
 		5F29DA33284F2CAC002FB2A5 /* SharedUsersListSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F29DA32284F2CAC002FB2A5 /* SharedUsersListSheet.swift */; };
+		5F29DA35284F5795002FB2A5 /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F29DA34284F5795002FB2A5 /* SearchBar.swift */; };
 		5F308342284640C900712FFE /* BallsRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F308341284640C900712FFE /* BallsRow.swift */; };
 		5F31CE3B2840AABE003720DB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5F31CE3A2840AABE003720DB /* GoogleService-Info.plist */; };
 		5F31CE402840B357003720DB /* FirebaseDynamicLinks in Frameworks */ = {isa = PBXBuildFile; productRef = 5F31CE3F2840B357003720DB /* FirebaseDynamicLinks */; };
@@ -61,6 +62,7 @@
 		5F0EC23B283CF73F003B6CBB /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		5F29DA30284F281A002FB2A5 /* AvailableNoteColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvailableNoteColors.swift; sourceTree = "<group>"; };
 		5F29DA32284F2CAC002FB2A5 /* SharedUsersListSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedUsersListSheet.swift; sourceTree = "<group>"; };
+		5F29DA34284F5795002FB2A5 /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
 		5F308341284640C900712FFE /* BallsRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BallsRow.swift; sourceTree = "<group>"; };
 		5F31CE3A2840AABE003720DB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5F31CE3C2840AB8C003720DB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -240,6 +242,7 @@
 			children = (
 				5FFE5E9B2844DEA6001B2E8A /* NotePreview.swift */,
 				5FFE5E942844DB6E001B2E8A /* NotesListView.swift */,
+				5F29DA34284F5795002FB2A5 /* SearchBar.swift */,
 			);
 			path = NotesListView;
 			sourceTree = "<group>";
@@ -470,6 +473,7 @@
 				5FFE5E9C2844DEA6001B2E8A /* NotePreview.swift in Sources */,
 				5F5E7F7B283B6EE900E14B4D /* AppDelegate.swift in Sources */,
 				5F0EC23C283CF73F003B6CBB /* SignInView.swift in Sources */,
+				5F29DA35284F5795002FB2A5 /* SearchBar.swift in Sources */,
 				5F089367284742B80006D02F /* NoteDetailsView.swift in Sources */,
 				5FFE5E972844DBAE001B2E8A /* MainView.swift in Sources */,
 				5FFE5EA02844EB2D001B2E8A /* NoteColor.swift in Sources */,
