@@ -37,10 +37,8 @@ struct BallsRow: View {
         else {
             return false
         }
-    }
-    
+    }    
 }
-
 
 struct Ball : View{
     let isChosen : Bool
@@ -63,4 +61,3 @@ struct Ball : View{
         }
     }
 }
-

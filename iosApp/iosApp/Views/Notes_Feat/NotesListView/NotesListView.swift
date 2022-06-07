@@ -27,7 +27,6 @@ class NotesData : ObservableObject{
             self.notes = newNotesAsArray
         })
     }
-    
 }
 
 struct NotesListView : View{
@@ -45,7 +44,7 @@ struct NotesListView : View{
                     SearchBarView(text: $searchText).onChange(of: searchText){
                         notesData.viewModel.noteSearchPhrase.setValue($0)
                     }
-                        .padding(.horizontal,20).padding(.bottom,10)
+                    .padding(.horizontal,20).padding(.bottom,10)
                     ForEach(notesData.notes, id: \.self){ note in
                         NotePreview(note: note).padding(.horizontal,20)
                     }

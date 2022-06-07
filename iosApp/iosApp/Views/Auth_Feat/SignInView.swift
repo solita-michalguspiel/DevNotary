@@ -15,13 +15,9 @@ class SignInViewStateObject : ObservableObject{
     var authViewModel = iosDI().getAuthViewModel()
     
     @Published var emailAddress : String = ""
-        
     @Published var sendLinkState : AnyObject = ResponseEmpty()
-    
     @Published var userAuthState : AnyObject = ResponseEmpty()
-    
     @Published var userState : AnyObject = ResponseEmpty()
-    
     @Published var shouldNavigate : Bool = false
     
     init(){
@@ -35,8 +31,8 @@ class SignInViewStateObject : ObservableObject{
         })
         
         authViewModel.watch(authViewModel.userState,block: {state in
-              let response = state! as Any
-              self.userState = watchResponse(response: response)
+            let response = state! as Any
+            self.userState = watchResponse(response: response)
         })
         
         authViewModel.watch(authViewModel.userAuthState,block: {state in
@@ -46,17 +42,11 @@ class SignInViewStateObject : ObservableObject{
             if(self.userAuthState.isKind(of: ResponseSuccess<AnyObject>.self)){
                 let userAuthState = self.userAuthState as! ResponseSuccess<KotlinBoolean>
                 if(userAuthState.data == true){
-                    print("True, let's log in")
                     self.shouldNavigate = true
-                }
-                else{
-                    print("False, means signed out!")
                 }
             }
         })
-        
     }
-    
 }
 
 struct SignInView: View {
@@ -64,7 +54,7 @@ struct SignInView: View {
     @EnvironmentObject var appState: AppState
     @State var email = ""
     @State var signInState : AnyObject? = nil
-   
+    
     var body: some View {
         let binding = Binding<String>(get: {
             self.email
@@ -72,7 +62,6 @@ struct SignInView: View {
             self.email = $0
             stateObject.authViewModel.changeEmailAddress(newEmailAddress: self.email)
         })
-        
         
         return NavigationView{
             VStack{
@@ -113,13 +102,11 @@ struct SignInView: View {
                 
             }.onReceive(self.appState.$moveToDashboard){ moveToDashBoard in
                 if moveToDashBoard{
-                    print("Move to dashboard : \(moveToDashBoard)")
                     self.appState.moveToDashboard = false
                 }
             }
         }.onAppear(){
             if(stateObject.authViewModel.isUserAuthenticated){
-                print("Already authenticated!")
                 stateObject.shouldNavigate = true
             }
         }

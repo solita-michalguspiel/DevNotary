@@ -11,21 +11,17 @@ import shared
 class NoteSharingData : ObservableObject{
     
     let viewModel = iosDI().getNotesDetailViewModel()
-    var listeners : [Closeable] = []
+    var listener : Closeable? = nil
     
     @Published var sharingResponse : Any = ResponseEmpty.self
     
     func start(){
-        let noteSharingStateListener = self.viewModel.watch(viewModel.noteSharingState,block : { response in
+        listener = self.viewModel.watch(viewModel.noteSharingState,block : { response in
             self.sharingResponse = response!
-            print(self.sharingResponse)
         })
-        listeners.append(noteSharingStateListener)
     }
     func stop(){
-        listeners.forEach{listener in
-            listener.close()
-        }
+        listener?.close()
     }
     
     @Published var email = ""{

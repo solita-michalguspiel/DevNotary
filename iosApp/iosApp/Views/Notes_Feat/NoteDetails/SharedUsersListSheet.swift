@@ -18,7 +18,6 @@ class NoteSharedUsersData : ObservableObject{
         viewModel.getUsersWithAccess()
         let noteSharingStateListener = self.viewModel.watch(viewModel.noteSharingState,block : { response in
             self.sharingResponse = response!
-            print(self.sharingResponse)
         })
         
         let usersWithAccessListener =
@@ -27,9 +26,6 @@ class NoteSharedUsersData : ObservableObject{
             if(response is ResponseSuccess<AnyObject>){
                 let responseWithUsers = response as! ResponseSuccess<AnyObject>
                 self.usersWithAccess = responseWithUsers.data as! Array<User>
-            }
-            else{
-                print("NOTE SHARED USERS DATA | Response different than success!!!")
             }
         })
         listeners.append(noteSharingStateListener)
@@ -63,14 +59,9 @@ struct SharedUsersListSheet: View {
                     }
                     Divider()
                 }
-                
             }
-        }.onAppear{
-            noteSharedUsersData.start()
-        }.onDisappear{
-            noteSharedUsersData.stop()
-        }
-        
+        }.onAppear{noteSharedUsersData.start()
+        }.onDisappear{noteSharedUsersData.stop()}
     }
 }
 
