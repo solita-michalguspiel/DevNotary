@@ -15,32 +15,27 @@ struct MainView : View{
     
     let sortOptions = [SortOptions.byNameAsc,SortOptions.byNameDesc,SortOptions.byDateAsc,SortOptions.byDateDesc]
     var viewModel = iosDI().getNotesListViewModel()
-
+    
     var body : some View{
-        
         let navigationTitle = selectedTab == 1 ? "Profile" : "Notes"
         return TabView(selection: $selectedTab){
             ProfileView().tabItem{
                 Image(systemName: "person.fill")
                 Text("Profile ")
-            }.tag(1).onAppear(perform: {
-                print("Selected tab : \(selectedTab)")
-            })
+            }.tag(1)
             NotesListView()
                 .tabItem{
-                Image(systemName: "house.fill")
-                Text("Notes")
-            }.tag(2).onAppear(perform: {
-                print("Selected tab : \(selectedTab)")
-            })
+                    Image(systemName: "house.fill")
+                    Text("Notes")
+                }.tag(2)
         }.navigationTitle(navigationTitle)
-        .toolbar(){
-            ToolbarItem(placement: .navigationBarTrailing){
-                if(selectedTab == 2){
-                    HStack{
-                        Text("Sort")
-                        Image(systemName: "arrow.up.arrow.down.square.fill")
-                    }
+            .toolbar(){
+                ToolbarItem(placement: .navigationBarTrailing){
+                    if(selectedTab == 2){
+                        HStack{
+                            Text("Sort")
+                            Image(systemName: "arrow.up.arrow.down.square.fill")
+                        }
                         .contextMenu{
                             ForEach(sortOptions,id: \.self){ eachSort in
                                 Button(action: {
@@ -49,10 +44,9 @@ struct MainView : View{
                                     Text(eachSort.sortName)
                                 }
                             }
-                    }
-                }else{EmptyView()}
+                        }
+                    }else{EmptyView()}
+                }
             }
-        }
-       
     }
 }

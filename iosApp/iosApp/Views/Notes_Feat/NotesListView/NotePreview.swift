@@ -8,17 +8,9 @@
 import SwiftUI
 import shared
 
-class NotePreviewHelper : ObservableObject{
-    
-    let viewModel = iosDI().getNotesDetailViewModel()
-    
-}
-
 struct NotePreview: View {
     let note: Note
-    let notePreviewHelper = NotePreviewHelper()
-    
-
+    let viewModel = iosDI().getNotesDetailViewModel()
     @State var selection : Note? = nil
     
     var body: some View {
@@ -26,7 +18,7 @@ struct NotePreview: View {
         NavigationLink(destination : NoteDetailsView(note: note), tag: note, selection : $selection){
             EmptyView()
         }.isDetailLink(false)
-    
+        
         ZStack{
             RoundedRectangle(cornerRadius: 20, style: RoundedCornerStyle.continuous)
                 .fill(NoteColor.init(color: note.color).getColor())
@@ -36,18 +28,18 @@ struct NotePreview: View {
                     Spacer()
                     if note.ownerUserId != nil {
                         Image(systemName : "folder.fill.badge.person.crop")
-                        }
+                    }
                 }
                 .padding(.horizontal, 10)
                 .padding(.vertical, 5)
                 Text(note.content)
                     .frame(maxWidth: .infinity, alignment : .leading)
-                .font(.body)
-                .lineLimit(1)
-                .padding(.horizontal, 10)
-            
+                    .font(.body)
+                    .lineLimit(1)
+                    .padding(.horizontal, 10)
+                
                 HStack{
-                    Text(notePreviewHelper.viewModel.formatDateTime(date: note.dateTime)).font(.caption)
+                    Text(viewModel.formatDateTime(date: note.dateTime)).font(.caption)
                     Spacer()
                     Button(action: {
                         selection = note
@@ -63,11 +55,11 @@ struct NotePreview: View {
         }
         .padding(.vertical,5)
         .frame(
-              minWidth: 0,
-              maxWidth: .infinity,
-              minHeight: 0,
-              maxHeight: .infinity,
-              alignment: .topLeading
-            )
+            minWidth: 0,
+            maxWidth: .infinity,
+            minHeight: 0,
+            maxHeight: .infinity,
+            alignment: .topLeading
+        )
     }
 }

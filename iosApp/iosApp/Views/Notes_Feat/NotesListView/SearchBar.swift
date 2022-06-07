@@ -44,7 +44,6 @@ struct SearchBarView: View {
                 .padding(.trailing, 10)
                 .transition(.move(edge: .trailing))
                 .animation(.easeOut, value: 0.1)
-
             }
         }
     }

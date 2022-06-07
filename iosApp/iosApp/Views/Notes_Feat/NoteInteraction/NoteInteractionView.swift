@@ -12,28 +12,17 @@ import Combine
 
 class NoteData : ObservableObject{
     
-    var viewModel = iosDI().getNotesDetailViewModel()
+    let viewModel = iosDI().getNotesDetailViewModel()
     
     @Published var addedNote : Note? = nil
-    
     @Published var displayedNote = Note.init(noteId: "", ownerUserId: nil, title: "", content: "", dateTime: "", color: "")
-
-    @Published var shouldNavigate = false
-    
-    @Published var shouldPopNavigation = false
+    @Published var navSelection : String? = nil
     
     var listeners : [Closeable] = []
     
-    let limit = 30
     @Published var title = ""{
         didSet{
-            if title.count > limit {
-                self.title = String(title.prefix(limit))
-                viewModel.changeTitleInput(newTitle: String(title.prefix(limit)))
-            }
-            else {
-                viewModel.changeTitleInput(newTitle: String(title.prefix(limit)))
-            }
+            viewModel.changeTitleInput(newTitle: self.title)
         }
     }
     
@@ -46,9 +35,8 @@ class NoteData : ObservableObject{
     func start(){
         let displayedNoteListener = self.viewModel.watch(viewModel.displayedNote, block: { note in
             self.displayedNote = note as! Note
-            self.title = self.displayedNote.title
             self.content = self.displayedNote.content
-            print("ADD NEW Received new note! : \(note.debugDescription)")
+            self.title = self.displayedNote.title
         })
         
         let noteModStatusListener = self.viewModel.watch(viewModel.noteModificationStatus,block : { response in
@@ -57,10 +45,9 @@ class NoteData : ObservableObject{
                 switch (opResponse.data){
                 case _ as shared.Operation.Add:
                     self.addedNote = opResponse.data?.note
-                    self.shouldNavigate = true
+                    self.navSelection = Constants.NOTE_DETAILS_VIEW
                 case _ as shared.Operation.Edit:
-                    self.shouldPopNavigation = true
-                    print("Edited!!! should pop navigation changed to true!")
+                    self.navSelection = Constants.POP_NAVIGATION
                 default :
                     print("Default")
                 }
@@ -80,32 +67,28 @@ class NoteData : ObservableObject{
 struct NoteInteractionView : View{
     
     let editedNote: Note?
-    
     @EnvironmentObject var appState: AppState
     @StateObject var noteData = NoteData()
-    init(editedNote: Note?){
-            self.editedNote = editedNote
-            UITextView.appearance().backgroundColor = .clear
-        }
     
+    init(editedNote: Note?){
+        self.editedNote = editedNote
+        UITextView.appearance().backgroundColor = .clear
+    }
     
     var body : some View{
+        
         let navigationTitle = editedNote == nil ? "Add note" : "Edit note"
         VStack{
             if(noteData.addedNote != nil){
-                    NavigationLink(destination : NoteDetailsView(note: noteData.addedNote!)
-                                   ,isActive: $noteData.shouldNavigate){
-                        Text("").onAppear{
-                            print("On appear, reset note modification status!!!")
-                            noteData.viewModel.resetNoteModificationStatus()
-                        }
+                NavigationLink(destination : NoteDetailsView(note: noteData.addedNote!),tag : Constants.NOTE_DETAILS_VIEW, selection: $noteData.navSelection){
+                    Text("").onAppear{
+                        noteData.viewModel.resetNoteModificationStatus()
                     }
                 }
-            
+            }
             ZStack{
                 RoundedRectangle(cornerRadius: 20,style: .continuous)
                     .fill(NoteColor.init(color: noteData.displayedNote.color).getColor())
-                
                 GeometryReader{ geo in
                     VStack{
                         TextField("Note title",text: $noteData.title)
@@ -118,14 +101,13 @@ struct NoteInteractionView : View{
                             .frame(height: geo.size.height * 0.7)
                             .textFieldStyle(PlainTextFieldStyle())
                             .padding(.horizontal,10)
-                           
                         Divider()
                         BallsRow(
                             chosenColor: noteData.displayedNote.color,
-                                    pickColor : { color in noteData.viewModel.changeNoteColor(newColor: color)}
+                            pickColor : { color in noteData.viewModel.changeNoteColor(newColor: color)}
                         ).frame(height: geo.size.height * 0.15,alignment: .center)
                         Spacer()
-                       
+                        
                     }
                 }
             }.padding()
@@ -145,25 +127,20 @@ struct NoteInteractionView : View{
         }.onAppear{
             noteData.viewModel.prepareNoteScreen(note: editedNote)
             noteData.start()
-        }.onReceive(noteData.$shouldPopNavigation, perform: { bool in
-            if(bool){
+        }.onReceive(noteData.$navSelection, perform: { selection in
+            if(selection == Constants.POP_NAVIGATION){
                 self.appState.popToRootAndShowNotesList()
                 noteData.viewModel.resetNoteModificationStatus()
             }
         })
         .onDisappear{noteData.stop()}
         .background(Color.background)
-            .navigationTitle(navigationTitle)
-            .navigationBarBackButtonHidden(true)
-            .toolbar(){
-                ToolbarItem(placement: .navigationBarLeading){
-                    Button(action:{
-                        self.appState.popToRootAndShowNotesList()
-                    }
-                    ){
-                    Image(systemName: "arrow.left")
-                }
+        .navigationTitle(navigationTitle)
+        .navigationBarBackButtonHidden(true)
+        .toolbar(){
+            ToolbarItem(placement: .navigationBarLeading){
+                CustomBackButton(appState: self.appState)
             }
-            }
+        }
     }
 }
