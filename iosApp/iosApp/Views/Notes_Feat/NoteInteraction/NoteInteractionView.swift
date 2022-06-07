@@ -10,7 +10,7 @@ import SwiftUI
 import shared
 import Combine
 
-class AddNewNoteViewHelper : ObservableObject{
+class NoteData : ObservableObject{
     
     var viewModel = iosDI().getNotesDetailViewModel()
     
@@ -44,7 +44,6 @@ class AddNewNoteViewHelper : ObservableObject{
     }
     
     func start(){
-        
         let displayedNoteListener = self.viewModel.watch(viewModel.displayedNote, block: { note in
             self.displayedNote = note as! Note
             self.title = self.displayedNote.title
@@ -67,7 +66,6 @@ class AddNewNoteViewHelper : ObservableObject{
                 }
             }
         })
-        
         listeners.append(displayedNoteListener)
         listeners.append(noteModStatusListener)
     }
@@ -77,18 +75,14 @@ class AddNewNoteViewHelper : ObservableObject{
             listener.close()
         }
     }
-    
-    
 }
 
-
-struct AddAndEditNoteView : View{
+struct NoteInteractionView : View{
     
     let editedNote: Note?
     
     @EnvironmentObject var appState: AppState
-    @State var content = ""
-    @StateObject var stateObject = AddNewNoteViewHelper()
+    @StateObject var noteData = NoteData()
     
     init(editedNote: Note?){
             self.editedNote = editedNote
@@ -99,28 +93,28 @@ struct AddAndEditNoteView : View{
     var body : some View{
         
         VStack{
-            if(stateObject.addedNote != nil){
-                    NavigationLink(destination : LocalNoteView(note: stateObject.addedNote!)
-                                   ,isActive: $stateObject.shouldNavigate){
+            if(noteData.addedNote != nil){
+                    NavigationLink(destination : NoteDetailsView(note: noteData.addedNote!)
+                                   ,isActive: $noteData.shouldNavigate){
                         Text("").onAppear{
                             print("On appear, reset note modification status!!!")
-                            stateObject.viewModel.resetNoteModificationStatus()
+                            noteData.viewModel.resetNoteModificationStatus()
                         }
                     }
                 }
             
             ZStack{
                 RoundedRectangle(cornerRadius: 20,style: .continuous)
-                    .fill(NoteColor.init(color: stateObject.displayedNote.color).getColor())
+                    .fill(NoteColor.init(color: noteData.displayedNote.color).getColor())
                 
                 GeometryReader{ geo in
                     VStack{
-                        TextField("Note title",text: $stateObject.title)
+                        TextField("Note title",text: $noteData.title)
                             .font(.title)
                             .padding(.horizontal)
                             .padding(.vertical,10)
                         Divider()
-                        TextEditor(text : $stateObject.content)
+                        TextEditor(text : $noteData.content)
                             .background(.clear)
                             .frame(height: geo.size.height * 0.7)
                             .textFieldStyle(PlainTextFieldStyle())
@@ -128,8 +122,8 @@ struct AddAndEditNoteView : View{
                            
                         Divider()
                         BallsRow(
-                            chosenColor: stateObject.displayedNote.color,
-                                    pickColor : { color in stateObject.viewModel.changeNoteColor(newColor: color)}
+                            chosenColor: noteData.displayedNote.color,
+                                    pickColor : { color in noteData.viewModel.changeNoteColor(newColor: color)}
                         ).frame(height: geo.size.height * 0.15,alignment: .center)
                         Spacer()
                        
@@ -140,33 +134,31 @@ struct AddAndEditNoteView : View{
                 Spacer()
                 if(editedNote == nil){
                     CustomBorderedButton(text  : "Add note"){
-                        stateObject.viewModel.addNote(providedId: nil)
+                        noteData.viewModel.addNote(providedId: nil)
                     }.padding()
                 }
                 else{
                     CustomBorderedButton(text  : "Save note"){
-                        stateObject.viewModel.editNote()
+                        noteData.viewModel.editNote()
                     }.padding()
                 }
             }
         }.onAppear{
-            stateObject.viewModel.prepareNoteScreen(note: editedNote)
-            stateObject.start()
-        }.onReceive(stateObject.$shouldPopNavigation, perform: { bool in
+            noteData.viewModel.prepareNoteScreen(note: editedNote)
+            noteData.start()
+        }.onReceive(noteData.$shouldPopNavigation, perform: { bool in
             if(bool){
-                self.appState.moveToDashboard = true
-                self.appState.selectedTab = 2
-                stateObject.viewModel.resetNoteModificationStatus()
+                self.appState.popToRootAndShowNotesList()
+                noteData.viewModel.resetNoteModificationStatus()
             }
         })
-        .onDisappear{stateObject.stop()}
+        .onDisappear{noteData.stop()}
         .background(Color.background)
             .navigationBarBackButtonHidden(true)
             .toolbar(){
                 ToolbarItem(placement: .navigationBarLeading){
                     Button(action:{
-                        self.appState.moveToDashboard = true
-                        self.appState.selectedTab = 2
+                        self.appState.popToRootAndShowNotesList()
                     }
                     ){
                     Image(systemName: "arrow.left")
@@ -174,5 +166,4 @@ struct AddAndEditNoteView : View{
             }
             }
     }
-    
 }

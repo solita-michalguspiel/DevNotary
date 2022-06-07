@@ -88,4 +88,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 class AppState: ObservableObject {
     @Published var moveToDashboard: Bool = false
     @Published var selectedTab : Int = 1
+    
+    func popToRootAndShowNotesList(){
+        self.moveToDashboard = true
+        self.selectedTab = 2
+    }
 }

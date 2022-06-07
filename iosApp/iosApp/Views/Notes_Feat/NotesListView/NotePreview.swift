@@ -23,7 +23,7 @@ struct NotePreview: View {
     
     var body: some View {
         
-        NavigationLink(destination : LocalNoteView(note: note), tag: note, selection : $selection){
+        NavigationLink(destination : NoteDetailsView(note: note), tag: note, selection : $selection){
             EmptyView()
         }.isDetailLink(false)
     

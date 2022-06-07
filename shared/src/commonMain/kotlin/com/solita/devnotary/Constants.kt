@@ -31,5 +31,5 @@ object Constants {
     const val NO_TITLE_ERROR = "Can't add note without title"
     const val BLANK_NOTE_ERROR = "Can't add blank note"
 
-    val CLEAR_NOTE = Note("",null,"","","","")
+    val CLEAR_NOTE = Note("",null,"","","",WHITE_COLOR)
 }

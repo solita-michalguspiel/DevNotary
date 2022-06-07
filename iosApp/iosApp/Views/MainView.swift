@@ -12,20 +12,20 @@ struct MainView : View{
     @State var selectedTab : Int
     
     var body : some View{
-    
+        
         return TabView(selection: $selectedTab){
-        ProfileView().tabItem{
+            ProfileView().tabItem{
                 Image(systemName: "person.fill")
                 Text("Profile ")
-        }.tag(1).onAppear(perform: {
-            print("Selected tab : \(selectedTab)")
-        })
-        NotesView().tabItem{
-            Image(systemName: "house.fill")
-            Text("Notes")
-        }.tag(2).onAppear(perform: {
-            print("Selected tab : \(selectedTab)")
-        })
+            }.tag(1).onAppear(perform: {
+                print("Selected tab : \(selectedTab)")
+            })
+            NotesListView().tabItem{
+                Image(systemName: "house.fill")
+                Text("Notes")
+            }.tag(2).onAppear(perform: {
+                print("Selected tab : \(selectedTab)")
+            })
+        }
     }
-}
 }

@@ -8,20 +8,18 @@
 import SwiftUI
 import shared
 
-class ShareNoteSheetObject : ObservableObject{
-  
-    let viewModel = iosDI().getNotesDetailViewModel()
+class NoteSharingData : ObservableObject{
     
+    let viewModel = iosDI().getNotesDetailViewModel()
     var listeners : [Closeable] = []
     
     @Published var sharingResponse : Any = ResponseEmpty.self
     
-    
     func start(){
-    let noteSharingStateListener = self.viewModel.watch(viewModel.noteSharingState,block : { response in
-        self.sharingResponse = response!
-        print(self.sharingResponse)
-    })
+        let noteSharingStateListener = self.viewModel.watch(viewModel.noteSharingState,block : { response in
+            self.sharingResponse = response!
+            print(self.sharingResponse)
+        })
         listeners.append(noteSharingStateListener)
     }
     func stop(){
@@ -38,44 +36,39 @@ class ShareNoteSheetObject : ObservableObject{
 }
 struct ShareNoteSheet : View{
     @Environment(\.dismiss) var dismiss
-    @StateObject var stateObject = ShareNoteSheetObject()
+    @StateObject var noteSharingData = NoteSharingData()
     
     var body: some View{
         VStack{
             Text("Share note").font(.title)
-            TextField("User e-mail address",text: $stateObject.email)
+            TextField("User e-mail address",text: $noteSharingData.email)
                 .textInputAutocapitalization(.never)
                 .disableAutocorrection(true)
                 .padding(.horizontal, 30.0)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
             
-            
-            switch(stateObject.sharingResponse as Any){
+            switch(noteSharingData.sharingResponse as Any){
             case _ as ResponseLoading:
                 ProgressView()
             case _ as ResponseError:
-                let error = stateObject.sharingResponse as! ResponseError
+                let error = noteSharingData.sharingResponse as! ResponseError
                 Text(error.message)
                     .foregroundColor(.red)
                     .font(.caption)
             case _ as ResponseSuccess<AnyObject>:
                 Text("Note shared successfully!")
-                    .onAppear{
-                        print("Success!!!!")
-                    }
             default:
                 Text("").onAppear{
-                    print("Empty text appeared because of : \(stateObject.sharingResponse)")
                 }
             }
             
             CustomBorderedButton(text: "Share"){
-                stateObject.viewModel.shareNote()
+                noteSharingData.viewModel.shareNote()
             }
-        }.onAppear{stateObject.start()}
+        }.onAppear{noteSharingData.start()}
             .onDisappear{
-                stateObject.stop()
-                stateObject.viewModel.restartNoteSharingState()
+                noteSharingData.stop()
+                noteSharingData.viewModel.restartNoteSharingState()
             }
     }
 }
