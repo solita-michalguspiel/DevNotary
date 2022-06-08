@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import shared
 
 
 extension Color{
@@ -22,4 +23,10 @@ extension Color{
     static let pink = Color("Pink")
     static let yellow = Color("Yellow")
     static let white = Color("White")
+}
+
+extension Closeable{
+    func addToListenerList(list: inout Array<Closeable>){
+        list.append(self)
+    }
 }

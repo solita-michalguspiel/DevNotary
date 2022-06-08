@@ -26,7 +26,7 @@ class NoteSharingData : ObservableObject{
     
     @Published var email = ""{
         didSet{
-            viewModel.changeAnotherUserEmailAddress(newEmailAddress: String(email))
+            viewModel.anotherUserEmailAddress.setValue(String(email))
         }
     }
 }

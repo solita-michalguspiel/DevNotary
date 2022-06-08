@@ -16,20 +16,17 @@ class NoteSharedUsersData : ObservableObject{
     
     func start(){
         viewModel.getUsersWithAccess()
-        let noteSharingStateListener = self.viewModel.watch(viewModel.noteSharingState,block : { response in
+        viewModel.watch(viewModel.noteSharingState,block : { response in
             self.sharingResponse = response!
-        })
+        }).addToListenerList(list: &listeners)
         
-        let usersWithAccessListener =
-        self.viewModel.watch(viewModel.usersWithAccess,block : {
+        viewModel.watch(viewModel.usersWithAccess,block : {
             response in
             if(response is ResponseSuccess<AnyObject>){
                 let responseWithUsers = response as! ResponseSuccess<AnyObject>
                 self.usersWithAccess = responseWithUsers.data as! Array<User>
             }
-        })
-        listeners.append(noteSharingStateListener)
-        listeners.append(usersWithAccessListener)
+        }).addToListenerList(list: &listeners)
     }
     func stop(){
         listeners.forEach{listener in
