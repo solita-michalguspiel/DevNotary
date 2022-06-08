@@ -9,7 +9,6 @@ import Foundation
 import FirebaseDynamicLinks
 import shared
 
-
 func handleIncomingDynamicLink(_ dynamicLink : DynamicLink){
     let authViewModel = iosDI().getAuthViewModel()
     print("Handling incoming dynamic link!")
@@ -20,21 +19,3 @@ func handleIncomingDynamicLink(_ dynamicLink : DynamicLink){
     authViewModel.signInWithLink(intent: url.absoluteString)
     print("Your incoming link has a parameter \(url.absoluteString)")
 }
-
-
-
-func watchResponse(response : Any) -> AnyObject{
-    switch response{
-    case _ as ResponseEmpty :
-        return ResponseEmpty()
-    case _ as ResponseError :
-        return ResponseError.self
-    case _ as ResponseLoading :
-        return ResponseLoading()
-    case _ as ResponseSuccess<AnyObject> :
-        return (response as! ResponseSuccess<AnyObject>)
-    default : return ResponseEmpty()
-    }
-}
-
-

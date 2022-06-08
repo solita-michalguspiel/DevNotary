@@ -15,10 +15,11 @@ class SignInViewStateObject : ObservableObject{
     var authViewModel = iosDI().getAuthViewModel()
     
     @Published var emailAddress : String = ""
-    @Published var sendLinkState : AnyObject = ResponseEmpty()
-    @Published var userAuthState : AnyObject = ResponseEmpty()
-    @Published var userState : AnyObject = ResponseEmpty()
+    @Published var sendLinkState : Any = ResponseEmpty.self
+    @Published var userAuthState : Any = ResponseEmpty.self
+    @Published var userState : Any = ResponseEmpty()
     @Published var shouldNavigate : Bool = false
+    @Published var timerCount : Int = 0
     
     init(){
         start()
@@ -26,26 +27,29 @@ class SignInViewStateObject : ObservableObject{
     
     func start(){
         authViewModel.watch(authViewModel.sendLinkState,block: {  state in
-            let response = state! as Any
-            self.sendLinkState = watchResponse(response: response)
+            self.sendLinkState = state!
         })
         
         authViewModel.watch(authViewModel.userState,block: {state in
-            let response = state! as Any
-            self.userState = watchResponse(response: response)
+            self.userState = state!
+               })
+        
+        authViewModel.watch(authViewModel.resendEmailTimer,block:{ timer in
+            self.timerCount = ( timer.map({KotlinInt.init(int: Int32(truncating: $0 as! NSNumber))}) ) as! Int
         })
         
         authViewModel.watch(authViewModel.userAuthState,block: {state in
-            let response = state! as Any
-            self.userAuthState = watchResponse(response: response)
-            
-            if(self.userAuthState.isKind(of: ResponseSuccess<AnyObject>.self)){
+            self.userAuthState = state!
+            if(self.userAuthState is ResponseSuccess<AnyObject>){
                 let userAuthState = self.userAuthState as! ResponseSuccess<KotlinBoolean>
                 if(userAuthState.data == true){
                     self.shouldNavigate = true
                 }
             }
         })
+    }
+    func isSendLinkButtonDisabled() -> Bool{
+        return (!(timerCount == 0) || sendLinkState is ResponseLoading)
     }
 }
 
@@ -64,8 +68,9 @@ struct SignInView: View {
         })
         
         return NavigationView{
+            let buttonColor = stateObject.isSendLinkButtonDisabled() ? Color.gray : Color.buttons
             VStack{
-                NavigationLink(destination: MainView(selectedTab : appState.selectedTab)
+                NavigationLink(destination: MainView(selection : appState.selectedTab)
                                ,isActive: $stateObject.shouldNavigate){
                     EmptyView()
                 }
@@ -82,6 +87,19 @@ struct SignInView: View {
                         .padding(.horizontal, 30.0)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                 }
+                switch(stateObject.sendLinkState as Any){
+                case _ as ResponseLoading:
+                    ProgressView()
+                case _ as ResponseError:
+                    Text("Incorrect e-mail address.")
+                        .foregroundColor(.red)
+                        .font(.caption)
+                case _ as ResponseSuccess<AnyObject>:
+                    Text("Link sent!").font(.caption)
+                default:
+                    EmptyView()
+                }
+                
                 Spacer()
                 Button(action : {
                     stateObject.authViewModel.sendEmailLink()
@@ -90,14 +108,22 @@ struct SignInView: View {
                         .fontWeight(.bold)
                         .font(.body)
                         .padding(10)
-                        .background(Color.buttons)
+                        .background(buttonColor)
                         .cornerRadius(20)
                         .foregroundColor(.white)
                         .padding(5)
                         .overlay(
                             RoundedRectangle(cornerRadius: 25)
-                                .stroke(Color.buttons, lineWidth: 3)
+                                .stroke(buttonColor, lineWidth: 3)
                         ).padding(.bottom,3.0)
+                }.disabled(stateObject.isSendLinkButtonDisabled())
+                
+                
+                if stateObject.timerCount != 0{
+                    Text("Send again in: " + String(stateObject.timerCount) + " seconds.")
+                        .font(.callout)
+                        .foregroundColor(.gray)
+                        .padding(.bottom)
                 }
                 
             }.onReceive(self.appState.$moveToDashboard){ moveToDashBoard in

@@ -36,7 +36,7 @@ struct NotesListView : View{
     var body : some View{
         
         return ZStack{
-            NavigationLink(destination: MainView(selectedTab : 2),isActive: self.$isActive){
+            NavigationLink(destination: MainView(selection: 2),isActive: self.$isActive){
                 EmptyView()
             }
             ScrollView{
@@ -51,6 +51,7 @@ struct NotesListView : View{
                 }
             }
             VStack{
+                
                 Spacer()
                 HStack{
                     Spacer()
@@ -66,11 +67,10 @@ struct NotesListView : View{
                         }.isDetailLink(false)
                 }
             }
-        }
-        .navigationBarBackButtonHidden(true)
-        .onAppear{
-            notesData.viewModel.getSharedNotes()
-        }
+        }.navigationBarBackButtonHidden(true)
+            .onAppear{
+                notesData.viewModel.getSharedNotes()
+            }
     }
 }
 

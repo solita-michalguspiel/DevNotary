@@ -14,8 +14,8 @@ class ProfileViewStateObject : ObservableObject{
     
     var authViewModel = iosDI().getAuthViewModel()
     
-    @Published var userState : AnyObject = ResponseEmpty()
-    @Published var userAuthState : AnyObject = ResponseEmpty()
+    @Published var userState : Any = ResponseEmpty.self
+    @Published var userAuthState : Any = ResponseEmpty.self
     @Published var shouldPopBackStack : Bool = false
     
     init(){
@@ -24,14 +24,12 @@ class ProfileViewStateObject : ObservableObject{
     
     func start(){
         authViewModel.watch(authViewModel.userState,block : {state in
-            let response = state! as Any
-            self.userState = watchResponse(response: response)
+            self.userState = state!
         })
         authViewModel.watch(authViewModel.userAuthState, block:{state in
-            let response = state! as Any
-            self.userAuthState = watchResponse(response: response)
+            self.userAuthState = state!
             
-            if(self.userAuthState.isKind(of: ResponseSuccess<AnyObject>.self)){
+            if(self.userAuthState is ResponseSuccess<AnyObject>){
                 let userAuthState = self.userAuthState as! ResponseSuccess<KotlinBoolean>
                 if(userAuthState.data == false){
                     self.shouldPopBackStack = true
@@ -50,7 +48,7 @@ struct ProfileView : View{
     var body : some View {
         
         return ZStack{
-            if(stateObject.userState.isKind!(of: ResponseSuccess<User>.self)){
+            if(stateObject.userState is ResponseSuccess<User>){
                 let user = (stateObject.userState as! ResponseSuccess<User>)
                 VStack(spacing : 30){
                     Text("Hello " + user.data!.userEmail)
@@ -67,11 +65,10 @@ struct ProfileView : View{
             if stateObject.shouldPopBackStack {
                 Text("").onAppear(){ presentationMode.wrappedValue.dismiss()}
             }
-        }.navigationBarBackButtonHidden(true)
+        }
+        .navigationBarBackButtonHidden(true)
             .onAppear{
                 appState.selectedTab = 1
             }
     }
 }
-
-

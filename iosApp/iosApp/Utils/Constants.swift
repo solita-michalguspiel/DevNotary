@@ -11,6 +11,8 @@ struct Constants {
     static let NOTE_DETAILS_VIEW = "notesdetailsview"
     static let ADD_NEW_NOTE_VIEW = "addnewnoteview"
     static let EDIT_NOTE_VIEW = "editnoteview"
+    static let PROFILE_VIEW = "profileView"
+    static let NOTES_LIST_VIEW = "noteslist"
 
     static let POP_NAVIGATION = "popnavigation"
 }
