@@ -33,13 +33,13 @@ class NoteData : ObservableObject{
     }
     
     func start(){
-        let displayedNoteListener = self.viewModel.watch(viewModel.displayedNote, block: { note in
+        viewModel.watch(viewModel.displayedNote, block: { note in
             self.displayedNote = note as! Note
             self.content = self.displayedNote.content
             self.title = self.displayedNote.title
-        })
+        }).addToListenerList(list: &listeners)
         
-        let noteModStatusListener = self.viewModel.watch(viewModel.noteModificationStatus,block : { response in
+        viewModel.watch(viewModel.noteModificationStatus,block : { response in
             if(response is ResponseSuccess<AnyObject>){
                 let opResponse = response as! ResponseSuccess<shared.Operation>
                 switch (opResponse.data){
@@ -52,9 +52,7 @@ class NoteData : ObservableObject{
                     print("Default")
                 }
             }
-        })
-        listeners.append(displayedNoteListener)
-        listeners.append(noteModStatusListener)
+        }).addToListenerList(list: &listeners)
     }
     
     func stop(){

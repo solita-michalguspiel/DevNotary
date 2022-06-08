@@ -23,8 +23,7 @@ class NotesData : ObservableObject{
     
     func start() {
         viewModel.watch(viewModel.notes, block: {newNotes in
-            let newNotesAsArray = newNotes as! Array<Note>
-            self.notes = newNotesAsArray
+            self.notes =  newNotes as! Array<Note>
         })
     }
 }

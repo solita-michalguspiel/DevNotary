@@ -19,11 +19,11 @@ class NoteDetailsData : ObservableObject{
     var listeners : [Closeable] = []
     
     func start(){
-        
-        let displayedNoteListener = self.viewModel.watch(viewModel.displayedNote, block: { note in
+        viewModel.watch(viewModel.displayedNote, block: { note in
             self.displayedNote = note as! Note
-        })
-        let noteModificationStatusListner = self.viewModel.watch(viewModel.noteModificationStatus, block: { response in
+        }).addToListenerList(list: &listeners)
+        
+        viewModel.watch(viewModel.noteModificationStatus, block: { response in
             if(response is ResponseSuccess<AnyObject>){
                 let opResponse = response as! ResponseSuccess<shared.Operation>
                 switch (opResponse.data){
@@ -35,15 +35,15 @@ class NoteDetailsData : ObservableObject{
                     print("Default")
                 }
             }
-        })
+        }).addToListenerList(list: &listeners)
         
-        let noteSharingStateListener = self.viewModel.watch(viewModel.noteSharingState,block : { response in
+        viewModel.watch(viewModel.noteSharingState,block : { response in
             if(response is ResponseSuccess<AnyObject>){
                 self.navSelection = Constants.POP_NAVIGATION
             }
-        })
+        }).addToListenerList(list: &listeners)
         
-        let noteOwnerUserListener = self.viewModel.watch(viewModel.noteOwnerUser,block : {response in
+        viewModel.watch(viewModel.noteOwnerUser,block : {response in
             print(response.debugDescription)
             if(response is ResponseSuccess<AnyObject>){
                 let userResponse = response as! ResponseSuccess<User>
@@ -52,12 +52,7 @@ class NoteDetailsData : ObservableObject{
             else {
                 self.sharedOwnerUser = User.init(userId: "",userEmail: "")
             }
-        })
-        
-        listeners.append(displayedNoteListener)
-        listeners.append(noteModificationStatusListner)
-        listeners.append(noteSharingStateListener)
-        listeners.append(noteOwnerUserListener)
+        }).addToListenerList(list: &listeners)
     }
     
     func stop(){
