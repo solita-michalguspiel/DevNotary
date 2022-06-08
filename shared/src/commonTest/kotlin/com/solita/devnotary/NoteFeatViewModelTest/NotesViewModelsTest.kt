@@ -7,6 +7,8 @@ import com.solita.devnotary.feature_notes.domain.model.Note
 import com.solita.devnotary.feature_notes.domain.use_case.local_notes_use_cases.*
 import com.solita.devnotary.feature_notes.domain.use_case.remote_notes_use_cases.*
 import com.solita.devnotary.feature_notes.presentation.noteDetail.NoteDetailViewModel
+import com.solita.devnotary.feature_notes.presentation.notesList.NotesListViewModel
+import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.beInstanceOf
@@ -23,9 +25,10 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class NotesViewModelTest {
+class NotesViewModelsTest {
 
-    private lateinit var viewModel: NoteDetailViewModel
+    private lateinit var noteDetailViewModel: NoteDetailViewModel
+    private lateinit var notesListsViewModel: NotesListViewModel
     private val mainThreadSurrogate = newSingleThreadContext("UI thread")
     private val testDispatcher = StandardTestDispatcher()
 
@@ -69,7 +72,8 @@ class NotesViewModelTest {
     fun setup() {
 
         Dispatchers.setMain(testDispatcher)
-        viewModel = NoteDetailViewModel(testDI)
+        noteDetailViewModel = NoteDetailViewModel(testDI)
+        notesListsViewModel = NotesListViewModel(testDI)
     }
 
     @AfterTest
@@ -83,16 +87,16 @@ class NotesViewModelTest {
     fun givenNoteWasAdded_StateOfNoteModShouldChangeToLoadingAndThenToSuccess(): TestResult =
         runTest {
             launch {
-                viewModel.changeTitleInput(firstNote.title)
-                viewModel.changeContentInput(firstNote.content)
-                viewModel.changeNoteColor(firstNote.color)
-                viewModel.addNote(firstNote.noteId)
+                noteDetailViewModel.changeTitleInput(firstNote.title)
+                noteDetailViewModel.changeContentInput(firstNote.content)
+                noteDetailViewModel.changeNoteColor(firstNote.color)
+                noteDetailViewModel.addNote(firstNote.noteId)
             }
             advanceTimeBy(30)
-            viewModel.noteModificationStatus.value shouldBe Response.Loading
+            noteDetailViewModel.noteModificationStatus.value shouldBe Response.Loading
             advanceUntilIdle()
-            viewModel.noteModificationStatus.value should beInstanceOf(Response.Success::class)
-            (viewModel.noteModificationStatus.value as Response.Success).data should beInstanceOf(Operation.Add::class)
+            noteDetailViewModel.noteModificationStatus.value should beInstanceOf(Response.Success::class)
+            (noteDetailViewModel.noteModificationStatus.value as Response.Success).data should beInstanceOf(Operation.Add::class)
         }
 
     @Test
@@ -100,104 +104,103 @@ class NotesViewModelTest {
         runTest {
             launch {
                 setNote(firstNote)
-                viewModel.addNote(firstNote.noteId)
-                viewModel.noteId.value = firstNote.noteId
-                viewModel.changeContentInput("ChangedContent")
-                viewModel.editNote()
+                noteDetailViewModel.addNote(firstNote.noteId)
+                noteDetailViewModel.changeNoteId(noteId = firstNote.noteId)
+                noteDetailViewModel.changeContentInput("ChangedContent")
+                noteDetailViewModel.editNote()
             }
             advanceTimeBy(50)
-            viewModel.noteModificationStatus.value shouldBe Response.Loading
+            noteDetailViewModel.noteModificationStatus.value shouldBe Response.Loading
             advanceUntilIdle()
-            viewModel.noteModificationStatus.value should beInstanceOf(Response.Success::class)
-            (viewModel.noteModificationStatus.value as Response.Success).data should beInstanceOf(Operation.Edit::class)        }
+            noteDetailViewModel.noteModificationStatus.value should beInstanceOf(Response.Success::class)
+            (noteDetailViewModel.noteModificationStatus.value as Response.Success).data should beInstanceOf(Operation.Edit::class)        }
 
 
     @Test
     fun givenNoteIsDeleted_NoteModStateShouldChangeToLoadingThenSuccess(): TestResult = runTest {
         launch {
             setNote(thirdNote)
-            viewModel.addNote(thirdNote.noteId)
+            noteDetailViewModel.addNote(thirdNote.noteId)
             setNote(secondNote)
-            viewModel.addNote(secondNote.noteId)
+            noteDetailViewModel.addNote(secondNote.noteId)
         }
         advanceUntilIdle()
         launch {
-            viewModel.noteId.value = secondNote.noteId
-            viewModel.deleteNote()
+            noteDetailViewModel.changeNoteId(noteId = secondNote.noteId)
+            noteDetailViewModel.deleteNote()
         }
         advanceTimeBy(50)
-        viewModel.noteModificationStatus.value shouldBe Response.Loading
+        noteDetailViewModel.noteModificationStatus.value shouldBe Response.Loading
         advanceUntilIdle()
-        viewModel.noteModificationStatus.value should beInstanceOf(Response.Success::class)
-        (viewModel.noteModificationStatus.value as Response.Success).data should beInstanceOf(Operation.Delete::class)
+        noteDetailViewModel.noteModificationStatus.value should beInstanceOf(Response.Success::class)
+        (noteDetailViewModel.noteModificationStatus.value as Response.Success).data should beInstanceOf(Operation.Delete::class)
     }
 
     @Test
     fun removingNoteIdThatNotExists_ShouldChangeNoteModStateToError(): TestResult = runTest {
         launch {
             setNote(firstNote)
-            viewModel.addNote(firstNote.noteId)
+            noteDetailViewModel.addNote(firstNote.noteId)
             setNote(secondNote)
-            viewModel.addNote(secondNote.noteId)
+            noteDetailViewModel.addNote(secondNote.noteId)
         }
         advanceUntilIdle()
         launch {
-            viewModel.noteId.value = thirdNote.noteId
-            viewModel.deleteNote()
+            noteDetailViewModel.changeNoteId(noteId = thirdNote.noteId)
+            noteDetailViewModel.deleteNote()
         }
         advanceUntilIdle()
-        viewModel.noteModificationStatus.value shouldBe Response.Error(ERROR_MESSAGE)
+        noteDetailViewModel.noteModificationStatus.value shouldBe Response.Error(ERROR_MESSAGE)
     }
 
     @Test
     fun editingNoteIdThatNotExists_ShouldChangeNoteModStateToError(): TestResult = runTest {
         launch {
-            viewModel.addNote(firstNote.noteId)
-            viewModel.addNote(secondNote.noteId)
+            noteDetailViewModel.addNote(firstNote.noteId)
+            noteDetailViewModel.addNote(secondNote.noteId)
         }
         advanceUntilIdle()
         launch {
-            viewModel.noteId.value = "Some uuid that does not exists"
-            viewModel.noteDateTime.value = "Some date"
-            viewModel.editNote()
+            noteDetailViewModel.changeNoteId(noteId = "Some uuid that does not exists")
+            noteDetailViewModel.editNote()
         }
         advanceUntilIdle()
-        viewModel.noteModificationStatus.value shouldBe Response.Error(ERROR_MESSAGE)
+        noteDetailViewModel.noteModificationStatus.value shouldBe Response.Error(ERROR_MESSAGE)
     }
 
     @Test
     fun givenUserIdIsNull_AndGetSharedNotesIsCalled_SharedNotesStateShouldBeError() : TestResult = runTest{
         remoteNotesRepository.currentUserId = null
-        launch {   viewModel.getSharedNotes() }
+        launch {   notesListsViewModel.getSharedNotes() }
         advanceUntilIdle()
-        viewModel.sharedNotesState.value shouldBe Response.Error("User is not logged in")
+        notesListsViewModel.sharedNotesState.value shouldBe Response.Error("User is not logged in")
     }
 
     @Test
-    fun givenThereIsSharedNoteAndGetSharedNotesIsCalled_SharedNoteShouldAppearInSharedNotes() : TestResult = runTest {
-            viewModel.noteId.value = firstNote.noteId
-            viewModel.changeTitleInput(firstNote.title)
-            viewModel.changeContentInput(firstNote.content)
-            viewModel.noteDateTime.value = firstNote.dateTime
-            viewModel.changeNoteColor(firstNote.color)
+    fun givenThereIsSharedNoteAndGetSharedNotesIsCalled_SharedNoteShouldAppearInNotes() : TestResult = runTest {
+            notesListsViewModel.listenToNoteListChanges()
+            noteDetailViewModel.changeNoteId(firstNote.noteId)
+            noteDetailViewModel.changeTitleInput(firstNote.title)
+            noteDetailViewModel.changeContentInput(firstNote.content)
+            noteDetailViewModel.changeNoteColor(firstNote.color)
         launch {
-            viewModel.anotherUserEmailAddress.value = remoteNotesRepository.appUser1
-            viewModel.shareNote()
+            noteDetailViewModel.anotherUserEmailAddress.value = remoteNotesRepository.appUser1
+            noteDetailViewModel.shareNote()
         }
         advanceUntilIdle()
         remoteNotesRepository.currentUserId = remoteNotesRepository.appUser1 // SIMULATING THAT USER 1 IS USING APP
-        launch { viewModel.getSharedNotes() }
+        launch { notesListsViewModel.getSharedNotes() }
         advanceUntilIdle()
-        viewModel.sharedNotesState.value shouldBe Response.Success(true)
-        viewModel.notesSharedByOtherUsers.value shouldBe listOf(Note(firstNote.noteId,remoteNotesRepository.appUser3,
-            firstNote.title,firstNote.content,"TODAY",firstNote.color))
+        notesListsViewModel.sharedNotesState.value shouldBe Response.Success(true)
+        notesListsViewModel.notes.value shouldContain Note(firstNote.noteId,remoteNotesRepository.appUser3,
+            firstNote.title,firstNote.content,"TODAY",firstNote.color)
     }
 
 
     private fun setNote(note: Note){
-        viewModel.changeTitleInput(note.title)
-        viewModel.changeContentInput(note.content)
-        viewModel.changeNoteColor(note.color)
+        noteDetailViewModel.changeTitleInput(note.title)
+        noteDetailViewModel.changeContentInput(note.content)
+        noteDetailViewModel.changeNoteColor(note.color)
     }
 
 
