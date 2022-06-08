@@ -15,8 +15,8 @@ struct NotePreview: View {
     
     var body: some View {
         
-        NavigationLink(destination : NoteDetailsView(note: note), tag: note, selection : $selection){
-            EmptyView()
+     NavigationLink(destination : NoteDetailsView(note: note), tag: note, selection : $selection){
+          EmptyView()
         }.isDetailLink(false)
         
         ZStack{

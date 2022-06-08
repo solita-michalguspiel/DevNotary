@@ -168,6 +168,7 @@ struct NoteDetailsView: View {
                     self.appState.popToRootAndShowNotesList()
                 }
                 noteDetailsData.viewModel.resetNoteModificationStatus()
+                noteDetailsData.viewModel.restartNoteSharingState()
                 noteDetailsData.navSelection = ""
             }
         }
@@ -185,18 +186,18 @@ struct ButtonsRow : View{
         HStack{
             Spacer()
             if(isLocal){
-                CustomBorderedButton(text : "New note"){
+                CustomBorderedButton(text : "New"){
                     noteDetailsData.navSelection = Constants.ADD_NEW_NOTE_VIEW
                 }.padding(.horizontal,3)
-                CustomBorderedButton(text : "Delete note"){
+                CustomBorderedButton(text : "Delete"){
                     noteDetailsData.viewModel.deleteNote()
                 }.padding(.horizontal,3)
-                CustomBorderedButton(text  : "Edit note"){
+                CustomBorderedButton(text  : "Edit"){
                     noteDetailsData.navSelection = Constants.EDIT_NOTE_VIEW
                 }.padding(.horizontal,3)
             }
             else{
-                CustomBorderedButton(text : "Delete note"){
+                CustomBorderedButton(text : "Delete"){
                     noteDetailsData.viewModel.deleteOwnAccessFromSharedNote()
                 }.padding(.horizontal,3)
                 CustomBorderedButton(text : "Save note locally"){

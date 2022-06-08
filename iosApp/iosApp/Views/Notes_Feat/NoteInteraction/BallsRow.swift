@@ -20,15 +20,19 @@ struct BallsRow: View {
     }
     
     var body: some View {
-        HStack{
-            ForEach(AvailableNoteColors().getAvailableColors()){ color in
-                let isChosen = isChosen(ballColorName: color.colorName, chosenColorName: chosenColor)
-                Ball.init(color: color,isChosen: isChosen)
-                    .onTapGesture {
-                    pickColor(color.colorName)}
+        GeometryReader{ geo in
+            HStack{
+                Spacer()
+                ForEach(AvailableNoteColors().getAvailableColors()){ color in
+                    let isChosen = isChosen(ballColorName: color.colorName, chosenColorName: chosenColor)
+                    Ball.init(color: color,isChosen: isChosen,geo: geo)
+                        .onTapGesture {
+                            pickColor(color.colorName)}
                 }
+                Spacer()
             }
         }
+    }
     
     func isChosen(ballColorName: String, chosenColorName : String) -> Bool{
         if ballColorName == chosenColorName {
@@ -37,27 +41,29 @@ struct BallsRow: View {
         else {
             return false
         }
-    }    
+    }
 }
 
 struct Ball : View{
     let isChosen : Bool
     let color : AvailableNoteColor
+    let geo : GeometryProxy
     var strokeColor : Color
-    var ringSize : CGFloat
+    let ballWidthPercent = 0.12
     
-    init(color: AvailableNoteColor ,isChosen: Bool){
+    init(color: AvailableNoteColor ,isChosen: Bool,geo : GeometryProxy){
         self.color = color
         self.isChosen = isChosen
+        self.geo = geo
         strokeColor = isChosen ? Color.black : Color.gray
-        ringSize = isChosen ? 60 : 55
     }
     var body : some View{
+        let ringSize = isChosen ? geo.size.width * ballWidthPercent + 10 : geo.size.width * ballWidthPercent + 5
         ZStack{
-        Circle().fill(strokeColor)
+            Circle().fill(strokeColor)
                 .frame(width: ringSize,height: ringSize)
             Circle().fill(self.color.color)
-            .frame(width: 50, height: 50)
+                .frame(width: geo.size.width * ballWidthPercent, height: geo.size.width * ballWidthPercent)
         }
     }
 }
