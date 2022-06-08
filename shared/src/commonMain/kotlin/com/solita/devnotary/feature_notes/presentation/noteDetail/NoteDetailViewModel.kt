@@ -57,11 +57,11 @@ class NoteDetailViewModel(dependencyInjection: DI = di) : CommonViewModel() {
         _displayedNote.value = _displayedNote.value.copy(color = newColor)
     }
 
-    var anotherUserEmailAddress = MutableStateFlow("")
-
-    fun changeAnotherUserEmailAddress(newEmailAddress : String){
-        anotherUserEmailAddress.value = newEmailAddress
+    fun changeNoteId(noteId : String){ // FOR TESTING PURPOSES ONLY
+        _displayedNote.value = _displayedNote.value.copy(noteId = noteId)
     }
+
+    var anotherUserEmailAddress = MutableStateFlow("")
 
     var isConfirmDeleteLocalNoteDialogOpen = MutableStateFlow(false)
     var isConfirmDeleteAccessFromSharedNoteDialogOpen = MutableStateFlow(false)
