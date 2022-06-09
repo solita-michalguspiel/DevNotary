@@ -14,11 +14,7 @@ class SignInViewStateObject : ObservableObject{
     
     var authViewModel = iosDI().getAuthViewModel()
     
-    @Published var emailAddress : String = ""
     @Published var sendLinkState : Any = ResponseEmpty.self
-    @Published var userAuthState : Any = ResponseEmpty.self
-    @Published var userState : Any = ResponseEmpty()
-    @Published var shouldNavigate : Bool = false
     @Published var timerCount : Int = 0
     
     init(){
@@ -30,23 +26,10 @@ class SignInViewStateObject : ObservableObject{
             self.sendLinkState = state!
         })
         
-        authViewModel.watch(authViewModel.userState,block: {state in
-            self.userState = state!
-               })
-        
         authViewModel.watch(authViewModel.resendEmailTimer,block:{ timer in
             self.timerCount = ( timer.map({KotlinInt.init(int: Int32(truncating: $0 as! NSNumber))}) ) as! Int
         })
         
-        authViewModel.watch(authViewModel.userAuthState,block: {state in
-            self.userAuthState = state!
-            if(self.userAuthState is ResponseSuccess<AnyObject>){
-                let userAuthState = self.userAuthState as! ResponseSuccess<KotlinBoolean>
-                if(userAuthState.data == true){
-                    self.shouldNavigate = true
-                }
-            }
-        })
     }
     func isSendLinkButtonDisabled() -> Bool{
         return (!(timerCount == 0) || sendLinkState is ResponseLoading)
@@ -55,9 +38,7 @@ class SignInViewStateObject : ObservableObject{
 
 struct SignInView: View {
     @StateObject var stateObject = SignInViewStateObject()
-    @EnvironmentObject var appState: AppState
     @State var email = ""
-    @State var signInState : AnyObject? = nil
     
     var body: some View {
         let binding = Binding<String>(get: {
@@ -70,10 +51,7 @@ struct SignInView: View {
         return NavigationView{
             let buttonColor = stateObject.isSendLinkButtonDisabled() ? Color.gray : Color.buttons
             VStack{
-                NavigationLink(destination: MainView(selection : appState.selectedTab)
-                               ,isActive: $stateObject.shouldNavigate){
-                    EmptyView()
-                }
+             
                 Text("Dev notary")
                     .font(/*@START_MENU_TOKEN@*/.largeTitle/*@END_MENU_TOKEN@*/)
                     .fontWeight(.bold)
@@ -118,22 +96,12 @@ struct SignInView: View {
                         ).padding(.bottom,3.0)
                 }.disabled(stateObject.isSendLinkButtonDisabled())
                 
-                
                 if stateObject.timerCount != 0{
                     Text("Send again in: " + String(stateObject.timerCount) + " seconds.")
                         .font(.callout)
                         .foregroundColor(.gray)
                         .padding(.bottom)
                 }
-                
-            }.onReceive(self.appState.$moveToDashboard){ moveToDashBoard in
-                if moveToDashBoard{
-                    self.appState.moveToDashboard = false
-                }
-            }
-        }.onAppear(){
-            if(stateObject.authViewModel.isUserAuthenticated){
-                stateObject.shouldNavigate = true
             }
         }
     }

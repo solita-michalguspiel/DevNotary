@@ -17,20 +17,18 @@ class NoteData : ObservableObject{
     @Published var addedNote : Note? = nil
     @Published var displayedNote = Note.init(noteId: "", ownerUserId: nil, title: "", content: "", dateTime: "", color: "")
     @Published var navSelection : String? = nil
-    
-    var listeners : [Closeable] = []
-    
     @Published var title = ""{
         didSet{
             viewModel.changeTitleInput(newTitle: self.title)
         }
     }
-    
     @Published var content = ""{
         didSet{
             viewModel.changeContentInput(newContent: self.content)
         }
     }
+    
+    var listeners : [Closeable] = []
     
     func start(){
         viewModel.watch(viewModel.displayedNote, block: { note in
@@ -63,7 +61,6 @@ class NoteData : ObservableObject{
 }
 
 struct NoteInteractionView : View{
-    
     let editedNote: Note?
     @EnvironmentObject var appState: AppState
     @StateObject var noteData = NoteData()
@@ -104,8 +101,6 @@ struct NoteInteractionView : View{
                             chosenColor: noteData.displayedNote.color,
                             pickColor : { color in noteData.viewModel.changeNoteColor(newColor: color)}
                         ).frame(height: geo.size.height * 0.15,alignment: .center)
-                        Spacer()
-                        
                     }
                 }
             }.padding()
@@ -137,7 +132,12 @@ struct NoteInteractionView : View{
         .navigationBarBackButtonHidden(true)
         .toolbar(){
             ToolbarItem(placement: .navigationBarLeading){
-                CustomBackButton(appState: self.appState)
+                Button(action:{
+                    self.appState.popToRootAndShowNotesList()
+                }
+                ){
+                    Image(systemName: "arrow.left")
+                }
             }
         }
     }

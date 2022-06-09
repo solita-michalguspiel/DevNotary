@@ -17,7 +17,7 @@ struct NotePreview: View {
         
      NavigationLink(destination : NoteDetailsView(note: note), tag: note, selection : $selection){
           EmptyView()
-        }.isDetailLink(false)
+        }
         
         ZStack{
             RoundedRectangle(cornerRadius: 20, style: RoundedCornerStyle.continuous)
