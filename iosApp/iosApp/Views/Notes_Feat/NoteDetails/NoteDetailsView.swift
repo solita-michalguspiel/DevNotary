@@ -63,8 +63,7 @@ class NoteDetailsData : ObservableObject{
 }
 
 struct NoteDetailsView: View {
-    
-    @ObservedObject var noteDetailsData : NoteDetailsData = NoteDetailsData()
+    @StateObject var noteDetailsData : NoteDetailsData = NoteDetailsData()
     @EnvironmentObject var appState: AppState
     @State var isShareSheetOpen = false
     @State var isSharedUserListSheetOpen = false
@@ -152,11 +151,16 @@ struct NoteDetailsView: View {
         .background(Color.background)
         .navigationTitle(navigationTitle)
         .navigationBarBackButtonHidden(true)
-        .toolbar(){
-            ToolbarItem(placement: .navigationBarLeading){
-                CustomBackButton(appState: self.appState)
-            }
-        }
+              .toolbar(){
+                  ToolbarItem(placement: .navigationBarLeading){
+                      Button(action:{
+                          self.appState.popToRootAndShowNotesList()
+                      }
+                      ){
+                      Image(systemName: "arrow.left")
+                  }
+              }
+              }
         if noteDetailsData.navSelection == Constants.POP_NAVIGATION {
             Text("").onAppear(){
                 if(!isShareSheetOpen){

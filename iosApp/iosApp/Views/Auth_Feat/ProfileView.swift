@@ -15,8 +15,6 @@ class ProfileViewStateObject : ObservableObject{
     var authViewModel = iosDI().getAuthViewModel()
     
     @Published var userState : Any = ResponseEmpty.self
-    @Published var userAuthState : Any = ResponseEmpty.self
-    @Published var shouldPopBackStack : Bool = false
     
     init(){
         start()
@@ -25,16 +23,6 @@ class ProfileViewStateObject : ObservableObject{
     func start(){
         authViewModel.watch(authViewModel.userState,block : {state in
             self.userState = state!
-        })
-        authViewModel.watch(authViewModel.userAuthState, block:{state in
-            self.userAuthState = state!
-            
-            if(self.userAuthState is ResponseSuccess<AnyObject>){
-                let userAuthState = self.userAuthState as! ResponseSuccess<KotlinBoolean>
-                if(userAuthState.data == false){
-                    self.shouldPopBackStack = true
-                }
-            }
         })
     }
 }
@@ -62,13 +50,10 @@ struct ProfileView : View{
                     stateObject.authViewModel.getCurrentUserDocument()
                 }
             }
-            if stateObject.shouldPopBackStack {
-                Text("").onAppear(){ presentationMode.wrappedValue.dismiss()}
-            }
         }
         .navigationBarBackButtonHidden(true)
-            .onAppear{
-                appState.selectedTab = 1
-            }
+        .onAppear{
+            appState.selectedTab = 1
+        }
     }
 }

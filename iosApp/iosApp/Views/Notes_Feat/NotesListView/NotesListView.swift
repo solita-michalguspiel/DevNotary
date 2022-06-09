@@ -28,16 +28,16 @@ class NotesData : ObservableObject{
     }
 }
 
+class AllowNavStacking : ObservableObject{
+    @Published var allow = true
+}
+
 struct NotesListView : View{
-    @State var isActive : Bool = false
     @StateObject var notesData = NotesData()
     @State private var searchText = ""
     var body : some View{
         
         return ZStack{
-            NavigationLink(destination: MainView(selection: 2),isActive: self.$isActive){
-                EmptyView()
-            }
             ScrollView{
                 VStack{
                     SearchBarView(text: $searchText).onChange(of: searchText){
@@ -50,7 +50,6 @@ struct NotesListView : View{
                 }
             }
             VStack{
-                
                 Spacer()
                 HStack{
                     Spacer()
