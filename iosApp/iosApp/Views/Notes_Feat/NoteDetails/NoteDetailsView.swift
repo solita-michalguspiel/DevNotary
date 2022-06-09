@@ -30,7 +30,8 @@ class NoteDetailsData : ObservableObject{
                 case _ as shared.Operation.Delete:
                     self.navSelection = Constants.POP_NAVIGATION
                 case _ as shared.Operation.Add:
-                    self.navSelection = Constants.POP_NAVIGATION
+                    self.viewModel.prepareNoteScreen(note: opResponse.data?.note)
+                    self.viewModel.resetNoteModificationStatus()
                 default :
                     print("Default")
                 }
@@ -68,8 +69,7 @@ struct NoteDetailsView: View {
     @State var isShareSheetOpen = false
     @State var isSharedUserListSheetOpen = false
     
-    let note: Note
-    
+    @State var note: Note
     init(note: Note){
         self.note = note
     }
@@ -80,15 +80,13 @@ struct NoteDetailsView: View {
             NavigationLink(destination: NoteInteractionView.init(editedNote: nil),tag : Constants.ADD_NEW_NOTE_VIEW,selection: $noteDetailsData.navSelection){
                 EmptyView()
             }
-            NavigationLink(destination: NoteInteractionView.init(editedNote: note),tag: Constants.EDIT_NOTE_VIEW,selection: $noteDetailsData.navSelection){
+            NavigationLink(destination: NoteInteractionView.init(editedNote: self.noteDetailsData.displayedNote),tag: Constants.EDIT_NOTE_VIEW,selection: $noteDetailsData.navSelection){
                 EmptyView()
             }
             
             ZStack{
                 RoundedRectangle(cornerRadius: 20,style: .continuous)
                     .fill(NoteColor.init(color: noteDetailsData.displayedNote.color).getColor())
-                
-                GeometryReader{ geo in
                     VStack{
                         if(noteDetailsData.sharedOwnerUser.userEmail != "" && !isLocal()){
                             Text("Shared by \(noteDetailsData.sharedOwnerUser.userEmail)")
@@ -127,12 +125,17 @@ struct NoteDetailsView: View {
                         TextEditor(text : .constant(noteDetailsData.displayedNote.content))
                             .disabled(true)
                             .background(.clear)
-                            .frame(height: geo.size.height * 0.7)
+                            .frame(maxHeight: .infinity)
                             .textFieldStyle(PlainTextFieldStyle())
                             .padding(.horizontal,10)
+                        Spacer()
+                        HStack{
+                            Text("Note created: \(noteDetailsData.displayedNote.dateTime)")
+                                .font(.caption).padding(.leading,20).padding(.bottom,5)
+                            Spacer()
+                        }
                     }
-                }
-            }.padding()
+            }.padding(.horizontal)
             ButtonsRow(isLocal: isLocal(),noteDetailsData: noteDetailsData)
                 .padding()
         }
@@ -147,34 +150,37 @@ struct NoteDetailsView: View {
             noteDetailsData.viewModel.prepareNoteScreen(note: note)
         }.onDisappear{
             noteDetailsData.stop()
+        }.onChange(of: noteDetailsData.displayedNote){ newNote in
+            note = newNote
         }
+        
         .background(Color.background)
         .navigationTitle(navigationTitle)
         .navigationBarBackButtonHidden(true)
-              .toolbar(){
-                  ToolbarItem(placement: .navigationBarLeading){
-                      Button(action:{
-                          self.appState.popToRootAndShowNotesList()
-                      }
-                      ){
-                      Image(systemName: "arrow.left")
-                  }
-              }
-              }
+        .toolbar(){
+            ToolbarItem(placement: .navigationBarLeading){
+                Button(action:{
+                    self.appState.popToRootAndShowNotesList()
+                }
+                ){
+                    Image(systemName: "arrow.left")
+                }
+            }
+        }
         if noteDetailsData.navSelection == Constants.POP_NAVIGATION {
             Text("").onAppear(){
                 if(!isShareSheetOpen){
                     self.appState.popToRootAndShowNotesList()
+                    noteDetailsData.viewModel.resetNoteModificationStatus()
+                    noteDetailsData.viewModel.restartNoteSharingState()
+                    noteDetailsData.navSelection = ""
                 }
-                noteDetailsData.viewModel.resetNoteModificationStatus()
-                noteDetailsData.viewModel.restartNoteSharingState()
-                noteDetailsData.navSelection = ""
             }
         }
     }
     
     func isLocal() -> Bool{
-        return note.ownerUserId == nil
+        return self.note.ownerUserId == nil
     }
 }
 

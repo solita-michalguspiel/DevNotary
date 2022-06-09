@@ -33,29 +33,30 @@ struct MainView : View{
     @EnvironmentObject var appState: AppState
     @ObservedObject var viewModel = MainViewModel()
     @State private var notesListViewUUID = UUID()
-
+    
     var body : some View{
-        if(viewModel.isUserSignedIn){
-            TabView(){
-                ProfileView().tabItem{
-                    Image(systemName: "person.fill")
-                    Text("Profile ")
-                }.tag(1)
-                NavigationView{
-                    NotesListView()
-                        .id(notesListViewUUID)
-                        .navigationTitle("Notes")
-                        .onChange(of: appState.moveToDashboard) { _ in
-                            notesListViewUUID = UUID()
-                    }
-                }.navigationViewStyle(.stack)
-                .tabItem{
-                    Image(systemName: "house.fill")
-                    Text("Notes")
-                }.tag(2)
+            if(viewModel.isUserSignedIn){
+                TabView(){
+                    ProfileView()
+                        .tabItem{
+                            Image(systemName: "person.fill")
+                            Text("Profile ")
+                        }
+                    NavigationView{
+                        NotesListView().background(Color.background)
+                            .id(notesListViewUUID)
+                            .navigationTitle("Notes")
+                            .onChange(of: appState.moveToDashboard) { _ in
+                                notesListViewUUID = UUID()
+                            }
+                    }.navigationViewStyle(.stack)
+                        .tabItem{
+                            Image(systemName: "house.fill")
+                            Text("Notes")
+                        }
+                }
+            }else{
+                SignInView()
             }
-        }else{
-            SignInView()
-        }
     }
 }

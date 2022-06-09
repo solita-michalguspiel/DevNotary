@@ -126,8 +126,8 @@ struct NoteInteractionView : View{
                 noteData.viewModel.resetNoteModificationStatus()
             }
         })
-        .onDisappear{noteData.stop()}
         .background(Color.background)
+        .onDisappear{noteData.stop()}
         .navigationTitle(navigationTitle)
         .navigationBarBackButtonHidden(true)
         .toolbar(){
