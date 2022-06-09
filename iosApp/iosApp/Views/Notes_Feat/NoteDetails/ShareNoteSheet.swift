@@ -17,6 +17,7 @@ class NoteSharingData : ObservableObject{
     
     func start(){
         listener = self.viewModel.watch(viewModel.noteSharingState,block : { response in
+            print("New response \(response.debugDescription)")
             self.sharingResponse = response!
         })
     }
@@ -52,10 +53,9 @@ struct ShareNoteSheet : View{
                     .foregroundColor(.red)
                     .font(.caption)
             case _ as ResponseSuccess<AnyObject>:
-                Text("Note shared successfully!")
+                Text("Note shared successfully!").font(.caption)
             default:
-                Text("").onAppear{
-                }
+                Text("")
             }
             
             CustomBorderedButton(text: "Share"){

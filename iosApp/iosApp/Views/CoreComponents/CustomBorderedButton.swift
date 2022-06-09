@@ -21,6 +21,7 @@ struct CustomBorderedButton: View {
         Button(action : onClick){
             Text(text)
                 .fontWeight(.semibold)
+                .frame(minWidth : 50)
                 .padding(.horizontal,15)
                 .padding(.vertical,10)
                 .background(Color.buttons)

@@ -52,8 +52,5 @@ struct ProfileView : View{
             }
         }
         .navigationBarBackButtonHidden(true)
-        .onAppear{
-            appState.selectedTab = 1
-        }
     }
 }
