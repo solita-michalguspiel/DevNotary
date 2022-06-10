@@ -20,17 +20,15 @@ import org.kodein.di.instance
 @Preview
 @Composable
 fun PreviewLocalNoteButtons() {
-    LocalNoteButtons(modifier = Modifier, isEditEnabled = true, {})
+    LocalNoteButtons(modifier = Modifier, {},{})
 }
-
 @Preview
 @Composable
 fun PreviewSharedNoteButtons() {
-    SharedNoteButtons(modifier = Modifier)
+    SharedNoteButtons(modifier = Modifier,false)
 }
-
 @Composable
-fun LocalNoteButtons(modifier: Modifier, isEditEnabled: Boolean, navigateToNewNote: () -> Unit) {
+fun LocalNoteButtons(modifier: Modifier, navigateToNewNote: () -> Unit,navigateToEditNote: () -> Unit) {
     val buttonModifier = Modifier.padding(LocalSpacing.current.xSmall)
     Row(
         modifier = modifier
@@ -40,14 +38,13 @@ fun LocalNoteButtons(modifier: Modifier, isEditEnabled: Boolean, navigateToNewNo
     ) {
         AddNewNoteButton(buttonModifier.weight(1f), navigateToNewNote = navigateToNewNote)
         DeleteButton(buttonModifier.weight(1f))
-        if (isEditEnabled) SaveButton(buttonModifier.weight(1f)) else EditButton(
+        EditButton(
             buttonModifier.weight(
                 1f
             )
-        )
+        ){navigateToEditNote()}
     }
 }
-
 @Composable
 fun AddNewNoteButton(modifier: Modifier, navigateToNewNote: () -> Unit) {
     Button(onClick = {
@@ -56,59 +53,6 @@ fun AddNewNoteButton(modifier: Modifier, navigateToNewNote: () -> Unit) {
         Text(text = stringResource(id = R.string.new_note))
     }
 }
-
-
-@Composable
-fun SaveButton(modifier: Modifier) {
-    val viewModel: NoteDetailViewModel by di.instance()
-    Button(
-        onClick = {
-            viewModel.editNote()
-        }, modifier = modifier
-    ) {
-        Text(text = stringResource(id = R.string.save_note))
-    }
-}
-
-@Composable
-fun SharedNoteButtons(modifier: Modifier) {
-    val buttonModifier = Modifier.padding(LocalSpacing.current.xSmall)
-    Row(
-        modifier = modifier
-            .padding(LocalSpacing.current.small)
-            .fillMaxWidth(0.9f),
-        verticalAlignment = Alignment.Bottom,
-        horizontalArrangement = Arrangement.End
-    ) {
-        DeleteSharedNote(buttonModifier)
-        SaveNoteLocallyButton(buttonModifier)
-
-    }
-
-}
-
-
-@Composable
-fun SaveNoteLocallyButton(modifier: Modifier) {
-    val viewModel: NoteDetailViewModel by di.instance()
-    Button(
-        onClick = { viewModel.addNote() }, modifier = modifier
-    ) {
-        Text(text = stringResource(R.string.save_note_locally))
-    }
-}
-
-@Composable
-fun DeleteSharedNote(modifier: Modifier) {
-    val viewModel: NoteDetailViewModel by di.instance()
-    Button(
-        onClick = { viewModel.isConfirmDeleteAccessFromSharedNoteDialogOpen.value = true }, modifier = modifier
-    ) {
-        Text(text = stringResource(R.string.delete_note))
-    }
-}
-
-
 @Composable
 fun DeleteButton(modifier: Modifier) {
     val viewModel: NoteDetailViewModel by di.instance()
@@ -120,28 +64,46 @@ fun DeleteButton(modifier: Modifier) {
         Text(text = stringResource(id = R.string.delete_note))
     }
 }
-
 @Composable
-fun EditButton(modifier: Modifier) {
-    val viewModel: NoteDetailViewModel by di.instance()
+fun EditButton(modifier: Modifier,navigateToEditNote: () -> Unit) {
     Button(
         onClick = {
-            viewModel.isEditEnabled.value = true
+            navigateToEditNote()
         }, modifier = modifier
     ) {
         Text(text = stringResource(id = R.string.edit_note))
     }
 }
 
-
 @Composable
-fun AddButton(modifier: Modifier,onClick : () -> Unit) {
+fun SharedNoteButtons(modifier: Modifier,isLoading: Boolean) {
+    val buttonModifier = Modifier.padding(LocalSpacing.current.xSmall)
+    Row(
+        modifier = modifier
+            .padding(LocalSpacing.current.small)
+            .fillMaxWidth(0.9f),
+        verticalAlignment = Alignment.Bottom,
+        horizontalArrangement = Arrangement.End
+    ) {
+        DeleteSharedNote(buttonModifier,isLoading)
+        SaveNoteLocallyButton(buttonModifier,isLoading)
+    }
+}
+@Composable
+fun SaveNoteLocallyButton(modifier: Modifier,isLoading: Boolean) {
     val viewModel: NoteDetailViewModel by di.instance()
     Button(
-        onClick = {
-            onClick()
-        }, modifier = modifier.padding(LocalSpacing.current.small)
+        onClick = { viewModel.addNote() }, modifier = modifier, enabled = !isLoading
     ) {
-        Text(text = stringResource(id = R.string.add_note))
+        Text(text = stringResource(R.string.save_note_locally))
+    }
+}
+@Composable
+fun DeleteSharedNote(modifier: Modifier,isLoading: Boolean) {
+    val viewModel: NoteDetailViewModel by di.instance()
+    Button(
+        onClick = { viewModel.isConfirmDeleteAccessFromSharedNoteDialogOpen.value = true }, modifier = modifier, enabled = !isLoading
+    ) {
+        Text(text = stringResource(R.string.delete_note))
     }
 }

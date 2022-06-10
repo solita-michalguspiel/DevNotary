@@ -75,7 +75,7 @@ struct NoteDetailsView: View {
     }
     
     var body: some View {
-        let navigationTitle = isLocal() ? "Local note" : "Shared note"
+        let navigationTitle = note.isLocal() ? "Local note" : "Shared note"
         VStack{
             NavigationLink(destination: NoteInteractionView.init(editedNote: nil),tag : Constants.ADD_NEW_NOTE_VIEW,selection: $noteDetailsData.navSelection){
                 EmptyView()
@@ -88,11 +88,11 @@ struct NoteDetailsView: View {
                 RoundedRectangle(cornerRadius: 20,style: .continuous)
                     .fill(NoteColor.init(color: noteDetailsData.displayedNote.color).getColor())
                     VStack{
-                        if(noteDetailsData.sharedOwnerUser.userEmail != "" && !isLocal()){
+                        if(noteDetailsData.sharedOwnerUser.userEmail != "" && !note.isLocal()){
                             Text("Shared by \(noteDetailsData.sharedOwnerUser.userEmail)")
                                 .font(.caption)
                         }
-                        if(isLocal()){
+                        if(note.isLocal()){
                             HStack{
                                 Spacer()
                                 Button(action:{
@@ -136,7 +136,7 @@ struct NoteDetailsView: View {
                         }
                     }
             }.padding(.horizontal)
-            ButtonsRow(isLocal: isLocal(),noteDetailsData: noteDetailsData)
+            ButtonsRow(isLocal: note.isLocal(),noteDetailsData: noteDetailsData)
                 .padding()
         }
         .sheet(isPresented: $isShareSheetOpen){
@@ -177,10 +177,6 @@ struct NoteDetailsView: View {
                 }
             }
         }
-    }
-    
-    func isLocal() -> Bool{
-        return self.note.ownerUserId == nil
     }
 }
 

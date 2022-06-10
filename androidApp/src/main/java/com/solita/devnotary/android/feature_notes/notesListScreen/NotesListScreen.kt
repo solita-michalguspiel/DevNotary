@@ -14,7 +14,7 @@ import androidx.navigation.NavController
 import com.solita.devnotary.android.composables.MyFloatingActionButton
 import com.solita.devnotary.android.feature_notes.notesListScreen.components.NotesListContent
 import com.solita.devnotary.android.navigation.MyBottomNavigationDrawer
-import com.solita.devnotary.android.navigation.Screen
+import com.solita.devnotary.android.navigation.navigateToNoteInteractionScreen
 import com.solita.devnotary.di.di
 import com.solita.devnotary.feature_notes.presentation.notesList.NotesListViewModel
 import org.kodein.di.instance
@@ -29,7 +29,6 @@ fun NotesListScreen(navController: NavController) {
     LaunchedEffect(Unit) {
         notesListViewModel.getSharedNotes()
     }
-
     Scaffold(
         bottomBar = { MyBottomNavigationDrawer(navController = navController) },
         floatingActionButton = {
@@ -40,7 +39,7 @@ fun NotesListScreen(navController: NavController) {
             ) {
                 MyFloatingActionButton(
                     onClick = {
-                        navController.navigate(Screen.NoteScreen.route)
+                        navController.navigateToNoteInteractionScreen()
                     })
             }
         },

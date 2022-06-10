@@ -28,7 +28,7 @@
     <string name="new_note">New</string>
     <string name="edit_note">Edit</string>
     <string name="delete_note">Delete</string>
-    <string name="save_note">Save</string>
+    <string name="save_note">Save note</string>
     <string name="save_note_locally">Save note locally</string>
     <string name="cancel_access">Cancel access</string>
     <string name="share_note">Share note</string>
