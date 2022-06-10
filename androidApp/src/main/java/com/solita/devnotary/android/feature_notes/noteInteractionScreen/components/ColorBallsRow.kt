@@ -9,8 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.solita.devnotary.android.feature_notes.addNoteScreen.components.ColorBall
-import com.solita.devnotary.android.theme.LocalSpacing
 import com.solita.devnotary.android.feature_notes.domain.getAvailableColors
+import com.solita.devnotary.android.theme.LocalSpacing
 
 @Composable
 fun ColorBallsRow(

@@ -62,11 +62,9 @@ class NoteDetailViewModel(dependencyInjection: DI = di) : CommonViewModel() {
     }
 
     var anotherUserEmailAddress = MutableStateFlow("")
-
     var isConfirmDeleteLocalNoteDialogOpen = MutableStateFlow(false)
     var isConfirmDeleteAccessFromSharedNoteDialogOpen = MutableStateFlow(false)
     var isShareDialogOpen = MutableStateFlow(false)
-    var isEditEnabled = MutableStateFlow(false)
 
     fun addNote(providedId: String? = null) {
         val note =
@@ -93,7 +91,6 @@ class NoteDetailViewModel(dependencyInjection: DI = di) : CommonViewModel() {
             ).collect { response ->
                 _noteModificationStatus.value = response
                 if (response is Response.Success) {
-                    isEditEnabled.value = false
                     editSharedNote()
                 }
             }

@@ -11,4 +11,6 @@ data class Note(
      val content: String,
      val dateTime: String,
      val color: String,
-) : Parcelable
+) : Parcelable{
+     fun isLocal() = ownerUserId == null
+}

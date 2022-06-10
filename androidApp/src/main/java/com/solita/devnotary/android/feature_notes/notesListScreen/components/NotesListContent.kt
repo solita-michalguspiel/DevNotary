@@ -15,7 +15,7 @@ import androidx.navigation.NavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.solita.devnotary.android.navigation.navigateToNoteScreen
+import com.solita.devnotary.android.navigation.navigateToNoteDetailsScreen
 import com.solita.devnotary.di.di
 import com.solita.devnotary.feature_notes.presentation.notesList.NotesListViewModel
 import org.kodein.di.instance
@@ -75,7 +75,7 @@ fun NotesListContent(paddingValues: PaddingValues, navController: NavController)
                             formattedDateTime = notesListViewModel.formatDateTime(it.dateTime),
                             isFirst = notesState.value.first() == it
                         ) {
-                            navController.navigateToNoteScreen(it)
+                            navController.navigateToNoteDetailsScreen(it)
                         }
                     }
                 }

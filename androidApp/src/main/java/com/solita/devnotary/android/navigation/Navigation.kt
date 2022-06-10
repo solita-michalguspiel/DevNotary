@@ -17,8 +17,9 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.gson.Gson
 import com.solita.devnotary.android.feature_auth.ProfileScreen
 import com.solita.devnotary.android.feature_auth.SignInScreen
-import com.solita.devnotary.android.feature_notes.NoteScreen
+import com.solita.devnotary.android.feature_notes.NoteDetailsScreen
 import com.solita.devnotary.android.feature_notes.NotesListScreen
+import com.solita.devnotary.android.feature_notes.noteScreen.NoteInteractionScreen
 import com.solita.devnotary.android.feature_notes.usersWithAccessScreen.UsersWithAccessScreen
 import com.solita.devnotary.android.utils.Constants.NOTE
 import com.solita.devnotary.feature_notes.domain.model.Note
@@ -87,7 +88,7 @@ fun Navigation() {
             UsersWithAccessScreen()
         }
         composable(
-            route = Screen.NoteScreen.route + "/{note}",
+            route = Screen.NoteDetailsScreen.route + "/{note}",
             arguments =
             listOf(
                 navArgument(NOTE) {
@@ -96,25 +97,44 @@ fun Navigation() {
             )
         ) {
             val note = it.arguments?.getParcelable<Note>(NOTE)
-            NoteScreen(navController = navController, note)
+            NoteDetailsScreen(navController = navController, note!!)
         }
-        composable(route = Screen.NoteScreen.route) {
-            NoteScreen(navController = navController, null)
+
+        composable(
+            route = Screen.NoteInteractionScreen.route + "/{note}",
+            arguments =
+            listOf(
+                navArgument(NOTE) {
+                    type = NoteType()
+                }
+            )
+        ) {
+            val note = it.arguments?.getParcelable<Note>(NOTE)
+            NoteInteractionScreen(navController = navController, note)
+        }
+        composable(route = Screen.NoteInteractionScreen.route) {
+            NoteInteractionScreen(navController = navController, null)
         }
     }
 }
 
-fun NavController.navigateToNoteScreen(note: Note? = null) {
+fun NavController.navigateToNoteInteractionScreen(note: Note? = null){
     if (note != null) {
         val noteJson = Uri.encode(Gson().toJson(note))
-        this.navigate(Screen.NoteScreen.route + "/${noteJson}") {
+        this.navigate(Screen.NoteInteractionScreen.route + "/${noteJson}") {
             popUpTo(Screen.NotesListScreen.route)
         }
-    } else this.navigate(Screen.NoteScreen.route) {
+    } else this.navigate(Screen.NoteInteractionScreen.route) {
         popUpTo(Screen.NotesListScreen.route)
     }
 }
 
+fun NavController.navigateToNoteDetailsScreen(note: Note) {
+        val noteJson = Uri.encode(Gson().toJson(note))
+        this.navigate(Screen.NoteDetailsScreen.route + "/${noteJson}") {
+            popUpTo(Screen.NotesListScreen.route)
+        }
+    }
 
 class NoteType : NavType<Note>(isNullableAllowed = false) {
     override fun get(bundle: Bundle, key: String): Note? {
