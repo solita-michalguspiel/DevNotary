@@ -16,6 +16,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.solita.devnotary.android.navigation.navigateToNoteDetailsScreen
+import com.solita.devnotary.android.theme.LocalSpacing
 import com.solita.devnotary.di.di
 import com.solita.devnotary.feature_notes.presentation.notesList.NotesListViewModel
 import org.kodein.di.instance
@@ -56,7 +57,7 @@ fun NotesListContent(paddingValues: PaddingValues, navController: NavController)
             {
                 LazyColumn(
                     Modifier
-                        .fillMaxSize(), state = lazyListState
+                        .fillMaxSize().padding(horizontal = LocalSpacing.current.default), state = lazyListState
                 ) {
                     stickyHeader {
                             androidx.compose.animation.AnimatedVisibility(

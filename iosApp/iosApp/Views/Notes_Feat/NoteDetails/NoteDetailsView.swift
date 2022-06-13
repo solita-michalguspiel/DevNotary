@@ -130,7 +130,7 @@ struct NoteDetailsView: View {
                             .padding(.horizontal,10)
                         Spacer()
                         HStack{
-                            Text("Note created: \(noteDetailsData.displayedNote.dateTime)")
+                            Text("Note created: \(noteDetailsData.viewModel.formatDateTime(date: noteDetailsData.displayedNote.dateTime))")
                                 .font(.caption).padding(.leading,20).padding(.bottom,5)
                             Spacer()
                         }
