@@ -20,6 +20,6 @@ sealed class Screen(
     object NoteInteractionScreen : Screen("note_interaction_screen")
 
     object BottomNavItems {
-        val bottomNavItems = listOf(NotesListScreen, ProfileScreen)
+        val bottomNavItems = listOf(ProfileScreen,NotesListScreen)
     }
 }

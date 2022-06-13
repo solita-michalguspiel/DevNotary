@@ -1,8 +1,6 @@
 package com.solita.devnotary.android.feature_notes
 
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -23,53 +21,52 @@ import org.kodein.di.instance
 @Composable
 fun NoteDetailsScreen(
     navController: NavController,
-    note: Note
+    note: Note,
+    paddingValues: PaddingValues,
 ) {
     val viewModel: NoteDetailViewModel by di.instance()
-    val scaffoldState = rememberScaffoldState()
     val noteModification = viewModel.noteModificationStatus.collectAsState(Response.Empty).value
 
     LaunchedEffect(Unit) {
         viewModel.prepareNoteScreen(note)
     }
 
-    Scaffold(scaffoldState = scaffoldState, contentColor = MaterialTheme.colors.primary) {
-        it.toString()
-        when (noteModification) {
-            is Response.Success<Operation> -> {
-                when (noteModification.data) {
-                    is Operation.Delete -> {
-                        navController.popBackStack(
-                            Screen.NotesListScreen.route,
-                            false
-                        )
-                    }
-                    is Operation.Add -> navController.navigateToNoteDetailsScreen(noteModification.data.note!!)
-                    else -> {}
+    when (noteModification) {
+        is Response.Success<Operation> -> {
+            when (noteModification.data) {
+                is Operation.Delete -> {
+                    navController.popBackStack(
+                        Screen.NotesListScreen.route,
+                        false
+                    )
                 }
-                viewModel.resetNoteModificationStatus()
+                is Operation.Add -> navController.navigateToNoteDetailsScreen(noteModification.data.note!!)
+                else -> {}
             }
-            else -> {}
+            viewModel.resetNoteModificationStatus()
         }
-
-        if (viewModel.isConfirmDeleteLocalNoteDialogOpen.collectAsState().value) {
-            ConfirmDeleteDialog({ viewModel.deleteNoteAndCloseDialog() },
-                { viewModel.isConfirmDeleteLocalNoteDialogOpen.value = false })
-        }
-
-        if (viewModel.isConfirmDeleteAccessFromSharedNoteDialogOpen.collectAsState().value) {
-            ConfirmDeleteDialog(deleteNote = { viewModel.deleteOwnAccessFromSharedNote() }) {
-                viewModel.isConfirmDeleteAccessFromSharedNoteDialogOpen.value = false
-            }
-        }
-        if (viewModel.isShareDialogOpen.collectAsState().value) {
-            ShareNoteDialog()
-        }
-            NoteDetailsContent(
-                note,
-                { navController.navigate(Screen.UsersWithAccessScreen.route) },
-                { navController.navigateToNoteInteractionScreen() },
-                { navController.navigateToNoteInteractionScreen(note) },
-                { navController.popBackStack() })
+        else -> {}
     }
+
+    if (viewModel.isConfirmDeleteLocalNoteDialogOpen.collectAsState().value) {
+        ConfirmDeleteDialog({ viewModel.deleteNoteAndCloseDialog() },
+            { viewModel.isConfirmDeleteLocalNoteDialogOpen.value = false })
+    }
+
+    if (viewModel.isConfirmDeleteAccessFromSharedNoteDialogOpen.collectAsState().value) {
+        ConfirmDeleteDialog(deleteNote = { viewModel.deleteOwnAccessFromSharedNote() }) {
+            viewModel.isConfirmDeleteAccessFromSharedNoteDialogOpen.value = false
+        }
+    }
+    if (viewModel.isShareDialogOpen.collectAsState().value) {
+        ShareNoteDialog()
+    }
+    NoteDetailsContent(
+        note,
+        { navController.navigate(Screen.UsersWithAccessScreen.route) },
+        { navController.navigateToNoteInteractionScreen() },
+        { navController.navigateToNoteInteractionScreen(note) },
+        { navController.popBackStack() },
+        paddingValues
+    )
 }

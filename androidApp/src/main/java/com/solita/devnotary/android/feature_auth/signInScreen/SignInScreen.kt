@@ -13,11 +13,9 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import com.solita.devnotary.android.R
 import com.solita.devnotary.android.composables.ProgressIndicator
 import com.solita.devnotary.android.feature_auth.signInScreen.SignInScreenContent
-import com.solita.devnotary.android.navigation.Screen
 import com.solita.devnotary.android.utils.Constants
 import com.solita.devnotary.android.utils.signInIntent
 import com.solita.devnotary.di.di
@@ -29,7 +27,7 @@ import org.kodein.di.instance
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun SignInScreen(navController: NavController) {
+fun SignInScreen() {
 
     val localContext = LocalContext.current
     BackHandler {
@@ -40,7 +38,7 @@ fun SignInScreen(navController: NavController) {
 
     val authViewModel: AuthViewModel by di.instance()
 
-    val userAuthState = authViewModel.userAuthState.collectAsState(Response.Empty)
+    val userAuthState = authViewModel.userAuthState.collectAsState()
     val sendEmailLinkState = authViewModel.sendLinkState.collectAsState(Response.Empty)
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
@@ -51,10 +49,6 @@ fun SignInScreen(navController: NavController) {
     ) {
         authViewModel.signInWithLink(signInIntent.data.toString())
         signInIntent = Intent(Constants.NULL)
-    }
-
-    LaunchedEffect(Unit) {
-        if (authViewModel.isUserAuthenticated) navController.navigateToProfileScreen()
     }
 
     LaunchedEffect(sendEmailLinkState.value) {
@@ -73,20 +67,13 @@ fun SignInScreen(navController: NavController) {
         }
         Scaffold(scaffoldState = scaffoldState) {
             if (sendEmailLinkState.value == Response.Loading) ProgressIndicator()
-            if (userAuthState.value == Response.Success(true)) navController.navigateToProfileScreen()
             SignInScreenContent()
         }
     }
 }
 
-fun NavController.navigateToProfileScreen() {
-    this.navigate(Screen.ProfileScreen.route) {
-        popUpTo(Screen.ProfileScreen.route)
-    }
-}
-
 @Composable
-fun ShowErrorDialog(authViewModel: AuthViewModel){
+fun ShowErrorDialog(authViewModel: AuthViewModel) {
     AlertDialog(
         onDismissRequest = { authViewModel.openDialogState.value = false },
         title = { Text(text = stringResource(id = R.string.error)) },

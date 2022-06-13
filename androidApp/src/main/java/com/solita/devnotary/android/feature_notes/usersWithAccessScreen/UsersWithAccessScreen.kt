@@ -3,13 +3,13 @@ package com.solita.devnotary.android.feature_notes.usersWithAccessScreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -27,11 +27,9 @@ import com.solita.devnotary.feature_notes.presentation.noteDetail.NoteDetailView
 import org.kodein.di.instance
 
 @Composable
-fun UsersWithAccessScreen() {
+fun UsersWithAccessScreen(paddingValues: PaddingValues) {
     val viewModel: NoteDetailViewModel by di.instance()
 
-
-    Scaffold { paddingValues ->
         Column(Modifier.fillMaxWidth().padding(paddingValues)) {
             Text(
                 text = stringResource(id = R.string.users_with_access),
@@ -41,7 +39,6 @@ fun UsersWithAccessScreen() {
                     .fillMaxWidth()
                     .padding(vertical = LocalSpacing.current.default)
             )
-
 
             when (val response = viewModel.usersWithAccess.collectAsState().value) {
                 is Response.Loading -> ProgressIndicator()
@@ -77,4 +74,3 @@ fun UsersWithAccessScreen() {
             }
         }
     }
-}

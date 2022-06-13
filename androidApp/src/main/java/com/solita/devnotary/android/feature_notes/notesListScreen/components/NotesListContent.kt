@@ -3,7 +3,10 @@ package com.solita.devnotary.android.feature_notes.notesListScreen.components
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
@@ -23,7 +26,7 @@ import org.kodein.di.instance
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun NotesListContent(paddingValues: PaddingValues, navController: NavController) {
+fun NotesListContent(navController: NavController) {
 
     val notesListViewModel: NotesListViewModel by di.instance()
     val notesState = notesListViewModel.notes.collectAsState(listOf())
@@ -39,7 +42,6 @@ fun NotesListContent(paddingValues: PaddingValues, navController: NavController)
         Box(
             Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
         ) {
             SwipeRefresh(state = rememberSwipeRefreshState(isRefreshing = notesListViewModel.isRefreshing.collectAsState().value),
                 onRefresh = {
@@ -57,7 +59,7 @@ fun NotesListContent(paddingValues: PaddingValues, navController: NavController)
             {
                 LazyColumn(
                     Modifier
-                        .fillMaxSize().padding(horizontal = LocalSpacing.current.default), state = lazyListState
+                        .fillMaxSize(), state = lazyListState
                 ) {
                     stickyHeader {
                             androidx.compose.animation.AnimatedVisibility(
@@ -72,6 +74,7 @@ fun NotesListContent(paddingValues: PaddingValues, navController: NavController)
                     items(notesState.value)
                     {
                         NotePreview(
+                            modifier = Modifier.padding(horizontal = LocalSpacing.current.default),
                             note = it,
                             formattedDateTime = notesListViewModel.formatDateTime(it.dateTime),
                             isFirst = notesState.value.first() == it

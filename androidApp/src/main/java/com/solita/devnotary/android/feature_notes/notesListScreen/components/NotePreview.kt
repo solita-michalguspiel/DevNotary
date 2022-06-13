@@ -15,13 +15,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.solita.devnotary.android.R
-import com.solita.devnotary.android.theme.*
 import com.solita.devnotary.android.feature_notes.domain.NoteColor
+import com.solita.devnotary.android.theme.*
 import com.solita.devnotary.feature_notes.domain.model.Note
 
 
 @Composable
 fun NotePreview(
+    modifier : Modifier = Modifier,
     note: Note,
     formattedDateTime: String,
     isFirst: Boolean = false,
@@ -31,7 +32,7 @@ fun NotePreview(
         shape = LocalShapes.current.mediumRoundedCornerShape,
         backgroundColor = NoteColor(note.color).getColor(),
         elevation = LocalElevation.current.medium,
-        modifier = Modifier.padding(
+        modifier = modifier.padding(
             start = LocalSpacing.current.xxSmall,
             end = LocalSpacing.current.xxSmall,
             bottom = LocalSpacing.current.small,
@@ -123,7 +124,7 @@ fun PreviewNotePreview() {
         color = "red",
     )
 
-    NotePreview(note = testNote, "2015.12.31 16:55") {}
+    NotePreview(note = testNote, formattedDateTime = "2015.12.31 16:55") {}
 }
 
 @Preview
@@ -138,5 +139,5 @@ fun PreviewSharedNotePreview() {
         color = "red",
     )
 
-    NotePreview(note = testNote, "2015.12.31 16:55") {}
+    NotePreview(note = testNote, formattedDateTime = "2015.12.31 16:55") {}
 }

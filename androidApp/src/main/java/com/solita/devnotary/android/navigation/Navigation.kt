@@ -7,16 +7,17 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material.ScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.gson.Gson
 import com.solita.devnotary.android.feature_auth.ProfileScreen
-import com.solita.devnotary.android.feature_auth.SignInScreen
 import com.solita.devnotary.android.feature_notes.NoteDetailsScreen
 import com.solita.devnotary.android.feature_notes.NotesListScreen
 import com.solita.devnotary.android.feature_notes.noteScreen.NoteInteractionScreen
@@ -26,50 +27,46 @@ import com.solita.devnotary.feature_notes.domain.model.Note
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun Navigation() {
-    val navController = rememberAnimatedNavController()
-    AnimatedNavHost(navController = navController, startDestination = Screen.SignInScreen.route,
+fun Navigation(paddingValues : PaddingValues,navController: NavHostController,scaffoldState: ScaffoldState) {
+    AnimatedNavHost(navController = navController, startDestination = Screen.ProfileScreen.route,
         enterTransition = { fadeIn(animationSpec = tween(400)) },
         exitTransition = { fadeOut(animationSpec = tween(400)) }) {
 
-        composable(Screen.SignInScreen.route) {
-            SignInScreen(navController)
-        }
         composable(Screen.ProfileScreen.route,
             enterTransition = {
                 if (initialState.destination.route == Screen.NotesListScreen.route)
                     slideIntoContainer(
-                        AnimatedContentScope.SlideDirection.Left,
+                        AnimatedContentScope.SlideDirection.Right,
                         animationSpec = tween(250)
                     )
                 else null
             }, exitTransition = {
                 if (targetState.destination.route == Screen.NotesListScreen.route) {
                     slideOutOfContainer(
-                        AnimatedContentScope.SlideDirection.Right,
+                        AnimatedContentScope.SlideDirection.Left,
                         animationSpec = tween(250)
                     )
                 } else null
             }
         ) {
-            ProfileScreen(navController = navController)
+            ProfileScreen(paddingValues)
         }
         composable(Screen.NotesListScreen.route, enterTransition = {
             if (initialState.destination.route == Screen.ProfileScreen.route)
                 slideIntoContainer(
-                    AnimatedContentScope.SlideDirection.Right,
+                    AnimatedContentScope.SlideDirection.Left,
                     animationSpec = tween(250)
                 )
             else null
         }, exitTransition = {
             if (targetState.destination.route == Screen.ProfileScreen.route) {
                 slideOutOfContainer(
-                    AnimatedContentScope.SlideDirection.Left,
+                    AnimatedContentScope.SlideDirection.Right,
                     animationSpec = tween(250)
                 )
             } else null
         }) {
-            NotesListScreen(navController)
+            NotesListScreen(navController,paddingValues)
         }
         composable(route = Screen.UsersWithAccessScreen.route,
             enterTransition = {
@@ -85,7 +82,7 @@ fun Navigation() {
                 )
             }
         ) {
-            UsersWithAccessScreen()
+            UsersWithAccessScreen(paddingValues)
         }
         composable(
             route = Screen.NoteDetailsScreen.route + "/{note}",
@@ -97,7 +94,7 @@ fun Navigation() {
             )
         ) {
             val note = it.arguments?.getParcelable<Note>(NOTE)
-            NoteDetailsScreen(navController = navController, note!!)
+            NoteDetailsScreen(navController = navController, note!!,paddingValues)
         }
 
         composable(
@@ -110,10 +107,10 @@ fun Navigation() {
             )
         ) {
             val note = it.arguments?.getParcelable<Note>(NOTE)
-            NoteInteractionScreen(navController = navController, note)
+            NoteInteractionScreen(navController = navController, note,paddingValues,scaffoldState)
         }
         composable(route = Screen.NoteInteractionScreen.route) {
-            NoteInteractionScreen(navController = navController, null)
+            NoteInteractionScreen(navController = navController, null,paddingValues,scaffoldState)
         }
     }
 }

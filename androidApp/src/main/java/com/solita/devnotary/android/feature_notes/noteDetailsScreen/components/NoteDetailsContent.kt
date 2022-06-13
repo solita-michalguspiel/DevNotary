@@ -38,7 +38,8 @@ fun NoteDetailsContent(
     navigateToUsersWithAccessScreen: () -> Unit,
     navigateToNewNote: () -> Unit,
     navigateToEditNote : () -> Unit,
-    popBackStack : () -> Unit
+    popBackStack : () -> Unit,
+    paddingValues: PaddingValues
 ) {
     val viewModel: NoteDetailViewModel by di.instance()
     val displayedNoteState = viewModel.displayedNote.collectAsState()
@@ -58,7 +59,7 @@ fun NoteDetailsContent(
 
         viewModel.isConfirmDeleteAccessFromSharedNoteDialogOpen.value = false
     }
-    Box {
+    Box(modifier = Modifier.padding(paddingValues)) {
         Column(Modifier.fillMaxSize()) {
             Card(
                 modifier = Modifier
