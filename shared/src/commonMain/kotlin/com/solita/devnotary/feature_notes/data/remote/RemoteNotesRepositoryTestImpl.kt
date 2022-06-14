@@ -1,4 +1,4 @@
-package com.solita.devnotary.NoteFeatViewModelTest
+package com.solita.devnotary.feature_notes.data.remote
 
 import com.solita.devnotary.Constants.ERROR_MESSAGE
 import com.solita.devnotary.domain.Response
@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
 
-class RemoteNotesRepoTestImpl : RemoteNotesRepository {
+class RemoteNotesRepositoryTestImpl : RemoteNotesRepository {
     private val crypto = Crypto()
 
 

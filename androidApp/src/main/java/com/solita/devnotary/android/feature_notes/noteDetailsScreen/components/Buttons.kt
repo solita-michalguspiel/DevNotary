@@ -9,10 +9,12 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.solita.devnotary.android.R
 import com.solita.devnotary.android.theme.LocalSpacing
+import com.solita.devnotary.android.utils.TestTags
 import com.solita.devnotary.di.di
 import com.solita.devnotary.feature_notes.presentation.noteDetail.NoteDetailViewModel
 import org.kodein.di.instance
@@ -36,12 +38,12 @@ fun LocalNoteButtons(modifier: Modifier, navigateToNewNote: () -> Unit,navigateT
             .fillMaxWidth(0.9f),
         verticalAlignment = Alignment.Bottom,
     ) {
-        AddNewNoteButton(buttonModifier.weight(1f), navigateToNewNote = navigateToNewNote)
-        DeleteButton(buttonModifier.weight(1f))
+        AddNewNoteButton(buttonModifier.weight(1f).testTag(TestTags.NEW_NOTE_BUTTON_TAG), navigateToNewNote = navigateToNewNote)
+        DeleteButton(buttonModifier.weight(1f).testTag(TestTags.DELETE_NOTE_BUTTON_TAG))
         EditButton(
             buttonModifier.weight(
                 1f
-            )
+            ).testTag(TestTags.EDIT_NOTE_BUTTON_TAG)
         ){navigateToEditNote()}
     }
 }

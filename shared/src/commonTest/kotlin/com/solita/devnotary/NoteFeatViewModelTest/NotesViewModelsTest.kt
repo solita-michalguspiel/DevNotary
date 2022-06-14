@@ -2,6 +2,8 @@ package com.solita.devnotary.NoteFeatViewModelTest
 
 import com.solita.devnotary.Constants.ERROR_MESSAGE
 import com.solita.devnotary.domain.Response
+import com.solita.devnotary.feature_notes.data.local.LocalNotesRepositoryTestImpl
+import com.solita.devnotary.feature_notes.data.remote.RemoteNotesRepositoryTestImpl
 import com.solita.devnotary.feature_notes.domain.Operation
 import com.solita.devnotary.feature_notes.domain.model.Note
 import com.solita.devnotary.feature_notes.domain.use_case.local_notes_use_cases.*
@@ -53,11 +55,11 @@ class NotesViewModelsTest {
             )
         }
 
-        bindSingleton { LocalNotesRepoTestImpl() }
-        bindSingleton { RemoteNotesRepoTestImpl() }
+        bindSingleton { LocalNotesRepositoryTestImpl() }
+        bindSingleton { RemoteNotesRepositoryTestImpl() }
 
     }
-    private val remoteNotesRepository : RemoteNotesRepoTestImpl by testDI.instance()
+    private val remoteNotesRepository : RemoteNotesRepositoryTestImpl by testDI.instance()
 
     private val firstNote = Note(
         noteId = "fidhsbagoipngöklsagagew",
@@ -130,7 +132,7 @@ class NotesViewModelsTest {
             noteDetailViewModel.changeNoteId(noteId = secondNote.noteId)
             noteDetailViewModel.deleteNote()
         }
-        advanceTimeBy(50)
+        advanceTimeBy(10)
         noteDetailViewModel.noteModificationStatus.value shouldBe Response.Loading
         advanceUntilIdle()
         noteDetailViewModel.noteModificationStatus.value should beInstanceOf(Response.Success::class)

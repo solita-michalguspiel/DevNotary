@@ -35,6 +35,7 @@ fun NoteDetailsScreen(
         is Response.Success<Operation> -> {
             when (noteModification.data) {
                 is Operation.Delete -> {
+                    println("Operation delete received, popping backstack!")
                     navController.popBackStack(
                         Screen.NotesListScreen.route,
                         false

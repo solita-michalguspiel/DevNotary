@@ -12,10 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.navigation.NavController
 import com.solita.devnotary.android.composables.MyFloatingActionButton
 import com.solita.devnotary.android.feature_notes.notesListScreen.components.NotesListContent
 import com.solita.devnotary.android.navigation.navigateToNoteInteractionScreen
+import com.solita.devnotary.android.utils.TestTags
 import com.solita.devnotary.di.di
 import com.solita.devnotary.feature_notes.presentation.notesList.NotesListViewModel
 import org.kodein.di.instance
@@ -37,6 +39,7 @@ fun NotesListScreen(navController: NavController,paddingValues: PaddingValues) {
                 exit = fadeOut(spring(stiffness = Spring.StiffnessLow))
             ) {
                 MyFloatingActionButton(
+                    modifier = Modifier.testTag(TestTags.ADD_NOTE_FAB_TAG),
                     onClick = {
                         navController.navigateToNoteInteractionScreen()
                     })
@@ -44,7 +47,7 @@ fun NotesListScreen(navController: NavController,paddingValues: PaddingValues) {
         },
     )
     { it.toString()
-        NotesListContent(navController)
+        NotesListContent(modifier = Modifier.testTag(TestTags.NOTES_LIST_SCREEN),navController)
     }
 }
 

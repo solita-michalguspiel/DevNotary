@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.flow
 val fakeUser = User("vbdsnojgshnls21412","testEmail@example.com")
 
 class AuthRepositoryTestImpl : AuthRepository {
-    private var _testIsUserAuthenticated = false
+    var _testIsUserAuthenticated = false
 
     override fun isUserAuthenticated(): Boolean {
         return _testIsUserAuthenticated

@@ -14,19 +14,21 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.TopCenter
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.navigation.NavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.solita.devnotary.android.navigation.navigateToNoteDetailsScreen
 import com.solita.devnotary.android.theme.LocalSpacing
+import com.solita.devnotary.android.utils.TestTags
 import com.solita.devnotary.di.di
 import com.solita.devnotary.feature_notes.presentation.notesList.NotesListViewModel
 import org.kodein.di.instance
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun NotesListContent(navController: NavController) {
+fun NotesListContent(modifier: Modifier = Modifier,navController: NavController) {
 
     val notesListViewModel: NotesListViewModel by di.instance()
     val notesState = notesListViewModel.notes.collectAsState(listOf())
@@ -34,13 +36,9 @@ fun NotesListContent(navController: NavController) {
     val lazyListState = rememberLazyListState()
     notesListViewModel.isScrollingUp.value = lazyListState.isScrollingUp()
 
-    LaunchedEffect(Unit) {
-        notesListViewModel.listenToNoteListChanges()
-    }
-
     Column {
         Box(
-            Modifier
+            modifier
                 .fillMaxSize()
         ) {
             SwipeRefresh(state = rememberSwipeRefreshState(isRefreshing = notesListViewModel.isRefreshing.collectAsState().value),
@@ -68,7 +66,7 @@ fun NotesListContent(navController: NavController) {
                                 exit = slideOutVertically(targetOffsetY = { -it }),
                                 modifier = Modifier.align(TopCenter)
                             ) {
-                                NotesListStickyHeader()
+                                NotesListStickyHeader(modifier = Modifier.testTag(TestTags.SEARCH_TEXT_FIELD_TAG))
                             }
                         }
                     items(notesState.value)

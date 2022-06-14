@@ -6,7 +6,9 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.solita.devnotary.android.theme.LocalColors
@@ -18,6 +20,7 @@ fun MyBottomNavigationDrawer(navController: NavController) {
         val currentDestination = navBackStackEntry?.destination?.route
         Screen.BottomNavItems.bottomNavItems.forEach { screen ->
             BottomNavigationItem(
+                modifier = Modifier.testTag(screen.testTag),
                 selected = currentDestination == screen.route,
                 label ={ Text(text = screen.title)},
                 selectedContentColor = LocalColors.current.White,

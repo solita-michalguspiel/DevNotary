@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.FolderShared
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -17,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import com.solita.devnotary.android.R
 import com.solita.devnotary.android.feature_notes.domain.NoteColor
 import com.solita.devnotary.android.theme.*
+import com.solita.devnotary.android.utils.TestTags
 import com.solita.devnotary.feature_notes.domain.model.Note
 
 
@@ -37,7 +39,7 @@ fun NotePreview(
             end = LocalSpacing.current.xxSmall,
             bottom = LocalSpacing.current.small,
             top = if (!isFirst) LocalSpacing.current.small else LocalSpacing.current.xSmall
-        )
+        ).testTag(TestTags.NOTE_PREVIEW_TAG)
     ) {
         Column {
             Row(
@@ -99,7 +101,7 @@ fun NotePreview(
                     onClick = {
                         navigateToNoteScreen()
                     },
-                    modifier = Modifier
+                    modifier = Modifier.testTag(TestTags.NOTE_PREVIEW_VIEW_NOTE_DETAILS_BUTTON_TAG)
                 ) {
                     Text(
                         text = stringResource(id = R.string.view_details),

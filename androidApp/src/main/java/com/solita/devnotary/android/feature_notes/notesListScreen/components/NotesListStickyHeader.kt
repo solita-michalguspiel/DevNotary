@@ -17,22 +17,23 @@ import com.solita.devnotary.android.R
 import com.solita.devnotary.android.theme.Colors
 import com.solita.devnotary.android.theme.LocalSpacing
 import com.solita.devnotary.di.di
+import com.solita.devnotary.feature_notes.presentation.notesList.NotesListViewModel
 import com.solita.devnotary.feature_notes.presentation.notesList.Sort
 import com.solita.devnotary.feature_notes.presentation.notesList.SortOptions
-import com.solita.devnotary.feature_notes.presentation.notesList.NotesListViewModel
 import org.kodein.di.instance
 
 @Composable
-fun NotesListStickyHeader() {
+fun NotesListStickyHeader(modifier: Modifier = Modifier) {
 
     val viewModel: NotesListViewModel by di.instance()
     val notesSearchPhrase = viewModel.noteSearchPhrase.collectAsState()
 
     Row(
-        Modifier
+        modifier
             .fillMaxWidth()
             .background(MaterialTheme.colors.background)
-            .padding(vertical = LocalSpacing.current.xSmall),
+            .padding(vertical = LocalSpacing.current.xSmall)
+            ,
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {

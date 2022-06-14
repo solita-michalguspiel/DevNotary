@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import com.solita.devnotary.Constants
 import com.solita.devnotary.android.feature_notes._sharedComponents.ColorBallsRow
 import com.solita.devnotary.android.feature_notes.domain.NoteColor
@@ -16,6 +17,7 @@ import com.solita.devnotary.android.feature_notes.noteScreen.components.ContentT
 import com.solita.devnotary.android.feature_notes.noteScreen.components.TitleTextField
 import com.solita.devnotary.android.theme.LocalElevation
 import com.solita.devnotary.android.theme.LocalSpacing
+import com.solita.devnotary.android.utils.TestTags
 import com.solita.devnotary.feature_notes.domain.model.Note
 import com.solita.devnotary.feature_notes.presentation.noteDetail.NoteDetailViewModel
 
@@ -41,7 +43,7 @@ fun NoteInteractionContent(
     Column(
         Modifier
             .fillMaxSize()
-            .padding(paddingValues)) {
+            .padding(paddingValues).testTag(TestTags.NOTE_INTERACTION_SCREEN)) {
         Card(
             modifier = Modifier
                 .padding(LocalSpacing.current.medium)
@@ -50,12 +52,14 @@ fun NoteInteractionContent(
             elevation = LocalElevation.current.medium
         ) {
             Column {
-                TitleTextField(titleInput = displayedNoteState.value.title,
+                TitleTextField(
+                    modifier = Modifier.testTag(TestTags.TITLE_TEXT_FIELD_TAG),
+                    titleInput = displayedNoteState.value.title,
                     isEditEnabled = true,
                     onValueChange = { if (it.length <= 30) viewModel.changeTitleInput(it) })
                 ContentTextField(
                     contentInput = displayedNoteState.value.content,
-                    modifier = Modifier.weight(1.0f),
+                    modifier = Modifier.weight(1.0f).testTag(TestTags.CONTENT_TEXT_FIELD_TAG),
                     isEditEnabled = true,
                     onValueChange = { viewModel.changeContentInput(it) }
                 )
@@ -65,11 +69,11 @@ fun NoteInteractionContent(
             }
         }
         if (note == null) {
-            AddButton(modifier = Modifier.align(Alignment.End)) {
+            AddButton(modifier = Modifier.align(Alignment.End).testTag(TestTags.ADD_NOTE_BUTTON_TAG)) {
                 if (isNoteValid()) viewModel.addNote()
             }
         } else {
-            SaveButton(modifier = Modifier.align(Alignment.End)) {
+            SaveButton(modifier = Modifier.align(Alignment.End).testTag(TestTags.SAVE_NOTE_BUTTON_TAG)) {
                 if (isNoteValid()) viewModel.editNote()
             }
         }

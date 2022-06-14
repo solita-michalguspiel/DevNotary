@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Alignment.Companion.TopEnd
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import com.solita.devnotary.android.R
 import com.solita.devnotary.android.composables.ProgressIndicator
@@ -25,6 +26,7 @@ import com.solita.devnotary.android.theme.LocalColors
 import com.solita.devnotary.android.theme.LocalElevation
 import com.solita.devnotary.android.theme.LocalSpacing
 import com.solita.devnotary.android.theme.Typography
+import com.solita.devnotary.android.utils.TestTags
 import com.solita.devnotary.di.di
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.feature_notes.domain.model.Note
@@ -59,7 +61,7 @@ fun NoteDetailsContent(
 
         viewModel.isConfirmDeleteAccessFromSharedNoteDialogOpen.value = false
     }
-    Box(modifier = Modifier.padding(paddingValues)) {
+    Box(modifier = Modifier.padding(paddingValues).testTag(TestTags.NOTE_DETAILS_SCREEN)) {
         Column(Modifier.fillMaxSize()) {
             Card(
                 modifier = Modifier
@@ -88,7 +90,7 @@ fun NoteDetailsContent(
 
                     Box {
                         TitleTextField(
-                            modifier = Modifier.padding(top = LocalSpacing.current.xSmall),
+                            modifier = Modifier.padding(top = LocalSpacing.current.xSmall).testTag(TestTags.NOTE_DETAIL_TITLE_TEXT_FIELD_TAG),
                             titleInput = displayedNoteState.value.title,
                             isEditEnabled = false
                         )
@@ -101,7 +103,7 @@ fun NoteDetailsContent(
                     }
                     ContentTextField(
                         contentInput = displayedNoteState.value.content,
-                        modifier = Modifier.weight(1.0f), isEditEnabled = false
+                        modifier = Modifier.weight(1.0f).testTag(TestTags.NOTE_DETAIL_CONTENT_TEXT_FIELD_TAG), isEditEnabled = false
                     )
                     Text(
                         text = stringResource(

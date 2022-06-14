@@ -130,9 +130,6 @@ var di = DI {
 }
 
 val diCommonModule = DI.Module("di_common_module"){
-    repeat(100) {
-        println("DI COMMON MODULE INITIALIZED !!!")
-    }
     val firebaseFirestore = Firebase.firestore
     bindConstant(USERS_FIREBASE) { firebaseFirestore.collection("users") }
     bindConstant(SHARED_NOTES_FIREBASE){firebaseFirestore.collection("shared_notes")}

@@ -51,6 +51,7 @@ class NotesListViewModel(dependencyInjection: DI = di) : CommonViewModel() {
 
     init {
         getNotes()
+        listenToNoteListChanges()
     }
 
     private fun getLocalNotes() {
