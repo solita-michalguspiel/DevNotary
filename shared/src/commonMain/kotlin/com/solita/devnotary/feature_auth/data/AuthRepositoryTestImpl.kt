@@ -1,14 +1,14 @@
-package com.solita.devnotary.AuthViewModelTest
+package com.solita.devnotary.feature_auth.data
 
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.domain.User
 import com.solita.devnotary.feature_auth.domain.repository.AuthRepository
-import com.solita.devnotary.randomUser
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class AuthRepoTestImpl : AuthRepository {
+val fakeUser = User("vbdsnojgshnls21412","testEmail@example.com")
 
+class AuthRepositoryTestImpl : AuthRepository {
     private var _testIsUserAuthenticated = false
 
     override fun isUserAuthenticated(): Boolean {
@@ -16,24 +16,25 @@ class AuthRepoTestImpl : AuthRepository {
     }
 
     override fun getCurrentUserId(): String? {
-        return if (isUserAuthenticated()) randomUser.userId else null
+        return if (isUserAuthenticated()) fakeUser.userId else null
     }
 
     override suspend fun getCurrentUserDocument(): Flow<Response<User>> = flow {
-        if (isUserAuthenticated()) emit(Response.Success(randomUser))
+        if (isUserAuthenticated()) emit(Response.Success(fakeUser))
         else emit(Response.Empty)
     }
 
     override suspend fun sendEmailLink(email: String): Flow<Response<Boolean>> = flow {
-        emit(Response.Success(true))
+        if(email.isBlank()) emit(Response.Error("Given string is empty or null"))
+        else emit(Response.Success(true))
     }
 
     override suspend fun signInWithEmailLink(
         email: String,
         emailLink: String
-    ): Flow<Response<Boolean>> =flow {
+    ): Flow<Response<Boolean>> = flow {
         _testIsUserAuthenticated = true
-       emit(Response.Success(true))
+        emit(Response.Success(true))
     }
 
     override suspend fun createUserDocumentIfNotExist(

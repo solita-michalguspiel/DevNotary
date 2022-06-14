@@ -62,7 +62,8 @@ fun NotePreview(
                         imageVector = Icons.Default.FolderShared,
                         contentDescription = stringResource(R.string.shared),
                         Modifier
-                            .padding(horizontal = LocalSpacing.current.xSmall)
+                            .padding(horizontal = LocalSpacing.current.xSmall),
+                        tint = LocalColors.current.LightBlack
                     )
                 }
             }

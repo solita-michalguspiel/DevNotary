@@ -8,6 +8,7 @@ import com.solita.devnotary.feature_notes.domain.use_case.local_notes_use_cases.
 import com.solita.devnotary.feature_notes.domain.use_case.remote_notes_use_cases.*
 import com.solita.devnotary.feature_notes.presentation.noteDetail.NoteDetailViewModel
 import com.solita.devnotary.feature_notes.presentation.notesList.NotesListViewModel
+import com.solita.devnotary.feature_notes.presentation.notesList.SortOptions
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
@@ -195,6 +196,98 @@ class NotesViewModelsTest {
         notesListsViewModel.notes.value shouldContain Note(firstNote.noteId,remoteNotesRepository.appUser3,
             firstNote.title,firstNote.content,"TODAY",firstNote.color)
     }
+
+    @Test
+    fun givenTheSearchPhraseIsUsed_OnlyTheCorrectNoteShouldBeInNotes() : TestResult = runTest{
+        setNote(firstNote)
+        launch {
+            notesListsViewModel.listenToNoteListChanges()
+            noteDetailViewModel.addNote("first_note")
+            setNote(secondNote.copy(title = "another title"))
+            noteDetailViewModel.addNote("second_note")
+            setNote(thirdNote.copy(title = "and another title"))
+            noteDetailViewModel.addNote("third_note")
+        }
+        advanceUntilIdle()
+        notesListsViewModel.getNotes()
+        advanceUntilIdle()
+        notesListsViewModel.notes.value.size shouldBe 3
+        notesListsViewModel.noteSearchPhrase.value = "fresh"
+        advanceUntilIdle()
+        notesListsViewModel.notes.value.size shouldBe 1
+        notesListsViewModel.notes.value.first().noteId shouldBe "first_note"
+    }
+
+    private fun addABC_TitledNotes(){
+        setNote(firstNote.copy(title = "a"))
+        noteDetailViewModel.addNote()
+        setNote(firstNote.copy(title = "b"))
+        noteDetailViewModel.addNote()
+        setNote(firstNote.copy(title = "c"))
+        noteDetailViewModel.addNote()
+    }
+
+    @Test
+    fun givenTheSelectedSortIsByNameInDescendingOrder_NotesShouldBeSortedAccordingly() : TestResult = runTest{
+        launch{
+            notesListsViewModel.listenToNoteListChanges()
+            addABC_TitledNotes()
+            notesListsViewModel.getNotes()
+            notesListsViewModel.changeSortSelection(SortOptions.BY_NAME_DESC.sort)
+        }
+        advanceUntilIdle()
+        notesListsViewModel.notes.value.size shouldBe 3
+        notesListsViewModel.notes.value[0].title shouldBe "c"
+        notesListsViewModel.notes.value[1].title shouldBe "b"
+        notesListsViewModel.notes.value[2].title shouldBe "a"
+    }
+
+    @Test
+    fun givenTheSelectedSortIsByNameInAscendingOrder_NotesShouldBeSortedAccordingly() : TestResult = runTest{
+        launch{
+            notesListsViewModel.listenToNoteListChanges()
+            addABC_TitledNotes()
+            notesListsViewModel.getNotes()
+            notesListsViewModel.changeSortSelection(SortOptions.BY_NAME_ASC.sort)
+        }
+        advanceUntilIdle()
+        notesListsViewModel.notes.value.size shouldBe 3
+        notesListsViewModel.notes.value[0].title shouldBe "a"
+        notesListsViewModel.notes.value[1].title shouldBe "b"
+        notesListsViewModel.notes.value[2].title shouldBe "c"
+    }
+
+    @Test
+    fun givenTheSelectedSortIsByDateInAscendingOrder_NotesShouldBeSortedAccordingly() : TestResult = runTest{
+        launch{
+            notesListsViewModel.listenToNoteListChanges()
+            addABC_TitledNotes()
+            notesListsViewModel.getNotes()
+            notesListsViewModel.changeSortSelection(SortOptions.BY_DATE_ASC.sort)
+        }
+        advanceUntilIdle()
+        notesListsViewModel.notes.value.size shouldBe 3
+        notesListsViewModel.notes.value[0].title shouldBe "a"
+        notesListsViewModel.notes.value[1].title shouldBe "b"
+        notesListsViewModel.notes.value[2].title shouldBe "c"
+    }
+
+    @Test
+    fun givenTheSelectedSortIsByDateInDescendingOrder_NotesShouldBeSortedAccordingly() : TestResult = runTest{
+        launch{
+            notesListsViewModel.listenToNoteListChanges()
+            addABC_TitledNotes()
+            notesListsViewModel.getNotes()
+            notesListsViewModel.changeSortSelection(SortOptions.BY_DATE_DESC.sort)
+        }
+        advanceUntilIdle()
+        notesListsViewModel.notes.value.size shouldBe 3
+        notesListsViewModel.notes.value[0].title shouldBe "c"
+        notesListsViewModel.notes.value[1].title shouldBe "b"
+        notesListsViewModel.notes.value[2].title shouldBe "a"
+    }
+
+
 
 
     private fun setNote(note: Note){

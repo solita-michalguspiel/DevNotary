@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,6 +21,8 @@ import com.solita.devnotary.android.composables.TextIndicatingError
 import com.solita.devnotary.android.theme.LocalColors
 import com.solita.devnotary.android.theme.LocalSpacing
 import com.solita.devnotary.android.theme.Typography
+import com.solita.devnotary.android.utils.TestTags
+import com.solita.devnotary.android.utils.TestTags.TIMER_TAG
 import com.solita.devnotary.di.di
 import com.solita.devnotary.domain.Response
 import com.solita.devnotary.feature_auth.presentation.AuthViewModel
@@ -63,11 +66,13 @@ fun SignInScreenContent() {
             Text(
                 text = stringResource(id = R.string.resend_email_prompt, emailResendTimer),
                 style = Typography.caption,
-                color = LocalColors.current.LightBlack
+                color = LocalColors.current.LightBlack,
+                modifier = Modifier.testTag(TIMER_TAG)
             )
         }
         DefaultSpacer()
         Button(
+            modifier = Modifier.testTag(TestTags.SEND_LINK_BUTTON_TAG),
             onClick = { authViewModel.sendEmailLink() },
             enabled = emailResendTimer == 0 && sendLinkState !is Response.Loading
         ) {

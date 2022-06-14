@@ -52,6 +52,6 @@ class LocalNotesRepoTestImpl : LocalNotesRepository {
     }
 
     override  fun getNotes(): Flow<List<Local_note>> = flow {
-    emit(tempList)
+        emit(tempList)
     }
 }

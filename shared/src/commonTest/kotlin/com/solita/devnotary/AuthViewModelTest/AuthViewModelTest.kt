@@ -2,9 +2,10 @@ package com.solita.devnotary.AuthViewModelTest
 
 import com.russhwolf.settings.MockSettings
 import com.solita.devnotary.domain.Response
+import com.solita.devnotary.feature_auth.data.AuthRepositoryTestImpl
+import com.solita.devnotary.feature_auth.data.fakeUser
 import com.solita.devnotary.feature_auth.domain.use_case.*
 import com.solita.devnotary.feature_auth.presentation.AuthViewModel
-import com.solita.devnotary.randomUser
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -29,7 +30,7 @@ class AuthViewModelTest {
     val intentData = "someRandomLinkData"
 
     private val testDI = DI {
-        bindSingleton { AuthRepoTestImpl() }
+        bindSingleton { AuthRepositoryTestImpl() }
         bindSingleton {
             AuthUseCases(
                 getCurrentUserDocument = GetCurrentUserDocument(instance()),
@@ -117,7 +118,7 @@ class AuthViewModelTest {
             viewModel.getCurrentUserDocument()
         }
         advanceUntilIdle()
-        viewModel.userState.value shouldBe  Response.Success(randomUser)
+        viewModel.userState.value shouldBe  Response.Success(fakeUser)
     }
 
     @Test
@@ -149,7 +150,7 @@ class AuthViewModelTest {
         }
         advanceUntilIdle()
         viewModel.userAuthState.value shouldBe Response.Success(true)
-        viewModel.userState.value shouldBe Response.Success(randomUser)
+        viewModel.userState.value shouldBe Response.Success(fakeUser)
         launch {
             viewModel.signOut()
         }

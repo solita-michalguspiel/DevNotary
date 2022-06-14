@@ -14,6 +14,7 @@ android {
         targetSdk = 32
         versionCode = 1
         versionName = "1.0"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         getByName("release") {
@@ -50,6 +51,10 @@ dependencies {
     implementation ("androidx.constraintlayout:constraintlayout-compose:1.0.0")
 
     implementation ("androidx.compose.material:material-icons-extended:$composeVersion")
+    implementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:$composeVersion")
+
+
 
     //NAVIGATION
     val nav_version = "2.4.2"

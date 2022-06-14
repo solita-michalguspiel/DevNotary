@@ -44,7 +44,7 @@ class NotesListViewModel(dependencyInjection: DI = di) : CommonViewModel() {
         MutableStateFlow(Response.Empty)
     val sharedNotesState: StateFlow<Response<Boolean>> = _sharedNotesState
 
-    private fun getNotes() {
+    fun getNotes() {
         getLocalNotes()
         getSharedNotes()
     }
@@ -63,7 +63,6 @@ class NotesListViewModel(dependencyInjection: DI = di) : CommonViewModel() {
             }
         }
     }
-
 
     fun getSharedNotes() {
         sharedScope.launch {

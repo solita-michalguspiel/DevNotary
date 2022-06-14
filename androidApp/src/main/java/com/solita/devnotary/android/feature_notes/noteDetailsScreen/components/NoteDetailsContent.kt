@@ -63,7 +63,7 @@ fun NoteDetailsContent(
         Column(Modifier.fillMaxSize()) {
             Card(
                 modifier = Modifier
-                    .padding(LocalSpacing.current.small)
+                    .padding(LocalSpacing.current.medium)
                     .weight(1.0f),
                 backgroundColor = NoteColor(displayedNoteState.value.color).getColor(),
                 elevation = LocalElevation.current.medium
