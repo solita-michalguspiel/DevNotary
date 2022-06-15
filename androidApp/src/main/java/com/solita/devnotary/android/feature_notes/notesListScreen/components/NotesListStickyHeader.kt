@@ -2,6 +2,7 @@ package com.solita.devnotary.android.feature_notes.notesListScreen.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -10,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,6 +29,7 @@ fun NotesListStickyHeader(modifier: Modifier = Modifier) {
 
     val viewModel: NotesListViewModel by di.instance()
     val notesSearchPhrase = viewModel.noteSearchPhrase.collectAsState()
+    val focusManager = LocalFocusManager.current
 
     Row(
         modifier
@@ -51,7 +54,8 @@ fun NotesListStickyHeader(modifier: Modifier = Modifier) {
                 .weight(0.8f)
                 .padding(horizontal = LocalSpacing.current.default),
             fontSize = 14.sp,
-            placeholderText = stringResource(id = R.string.search)
+            placeholderText = stringResource(id = R.string.search),
+            keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() })
         )
         Box(modifier = Modifier.weight(0.1f)) {
             IconButton(

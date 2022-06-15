@@ -84,7 +84,6 @@ struct NoteInteractionView : View{
             ZStack{
                 RoundedRectangle(cornerRadius: 20,style: .continuous)
                     .fill(NoteColor.init(color: noteData.displayedNote.color).getColor())
-                GeometryReader{ geo in
                     VStack{
                         TextField("Note title",text: $noteData.title)
                             .font(.title)
@@ -93,16 +92,14 @@ struct NoteInteractionView : View{
                         Divider()
                         TextEditor(text : $noteData.content)
                             .background(.clear)
-                            .frame(height: geo.size.height * 0.7)
                             .textFieldStyle(PlainTextFieldStyle())
                             .padding(.horizontal,10)
                         Divider()
                         BallsRow(
                             chosenColor: noteData.displayedNote.color,
                             pickColor : { color in noteData.viewModel.changeNoteColor(newColor: color)}
-                        ).frame(height: geo.size.height * 0.15,alignment: .center)
+                        ).frame(alignment: .center).padding(.bottom,10)
                     }
-                }
             }.padding()
             HStack{
                 Spacer()

@@ -3,6 +3,7 @@ package com.solita.devnotary.android.feature_notes.notesListScreen.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -23,7 +24,8 @@ fun CustomTextField(
     leadingIcon: (@Composable () -> Unit)? = null,
     trailingIcon: (@Composable () -> Unit)? = null,
     placeholderText: String = "Placeholder",
-    fontSize: TextUnit = MaterialTheme.typography.body2.fontSize
+    fontSize: TextUnit = MaterialTheme.typography.body2.fontSize,
+    keyboardActions: KeyboardActions
 ) {
     BasicTextField(modifier = modifier
         .background(
@@ -39,6 +41,7 @@ fun CustomTextField(
             color = MaterialTheme.colors.onSurface,
             fontSize = fontSize
         ),
+        keyboardActions = keyboardActions,
         decorationBox = { innerTextField ->
             Row(
                 modifier,

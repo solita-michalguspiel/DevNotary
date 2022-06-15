@@ -20,17 +20,15 @@ struct BallsRow: View {
     }
     
     var body: some View {
-        GeometryReader{ geo in
             HStack{
                 Spacer()
                 ForEach(AvailableNoteColors().getAvailableColors()){ color in
                     let isChosen = isChosen(ballColorName: color.colorName, chosenColorName: chosenColor)
-                    Ball.init(color: color,isChosen: isChosen,geo: geo)
+                    Ball.init(color: color,isChosen: isChosen)
                         .onTapGesture {
                             pickColor(color.colorName)}
                 }
                 Spacer()
-            }
         }
     }
     
@@ -47,23 +45,21 @@ struct BallsRow: View {
 struct Ball : View{
     let isChosen : Bool
     let color : AvailableNoteColor
-    let geo : GeometryProxy
     var strokeColor : Color
     let ballWidthPercent = 0.12
     
-    init(color: AvailableNoteColor ,isChosen: Bool,geo : GeometryProxy){
+    init(color: AvailableNoteColor ,isChosen: Bool){
         self.color = color
         self.isChosen = isChosen
-        self.geo = geo
         strokeColor = isChosen ? Color.black : Color.gray
     }
     var body : some View{
-        let ringSize = isChosen ? geo.size.width * ballWidthPercent + 10 : geo.size.width * ballWidthPercent + 5
+        let ringSize : CGFloat = isChosen ? 50 : 48
         ZStack{
             Circle().fill(strokeColor)
-                .frame(width: ringSize,height: ringSize)
+                .frame(width : ringSize, height: ringSize)
             Circle().fill(self.color.color)
-                .frame(width: geo.size.width * ballWidthPercent, height: geo.size.width * ballWidthPercent)
+                .frame(width: 45, height: 45)
         }
     }
 }
