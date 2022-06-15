@@ -33,14 +33,15 @@ class NotesData : ObservableObject{
         var body : some View{
             
             return ZStack{
-                ScrollView{
-                    LazyVStack{
-                        SearchBarView(text: $searchText).onChange(of: searchText){
-                            notesData.viewModel.noteSearchPhrase.setValue($0)
-                        }
-                        .padding(.horizontal,20).padding(.bottom,10)
-                        ForEach(notesData.notes, id: \.self){ note in
-                            NotePreview(note: note).padding(.horizontal,20)
+                VStack{
+                    SearchBarView(text: $searchText).onChange(of: searchText){
+                        notesData.viewModel.noteSearchPhrase.setValue($0)
+                    }.padding(.horizontal,20).padding(.bottom,10)
+                    ScrollView{
+                        VStack{
+                            ForEach(notesData.notes, id: \.self){ note in
+                                NotePreview(note: note).padding(.horizontal,20)
+                            }
                         }
                     }
                 }
@@ -80,6 +81,8 @@ class NotesData : ObservableObject{
                 }
                 .onAppear{
                     notesData.viewModel.getSharedNotes()
+                    searchText = ""
+                    notesData.viewModel.noteSearchPhrase.setValue("")
                 }
         }
     }

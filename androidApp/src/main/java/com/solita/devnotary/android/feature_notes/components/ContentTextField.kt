@@ -1,8 +1,10 @@
 package com.solita.devnotary.android.feature_notes.noteScreen.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -23,6 +25,7 @@ fun ContentTextField(
     isEditEnabled: Boolean,
     onValueChange: (String) -> Unit = {}
 ) {
+    val scroll = rememberScrollState(0)
     val focusManager = LocalFocusManager.current
     TextField(
         value = contentInput,
@@ -30,7 +33,8 @@ fun ContentTextField(
         shape = MaterialTheme.shapes.small,
         textStyle = Typography.body1,
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .verticalScroll(scroll),
         colors = TextFieldDefaults.textFieldColors(
             textColor = Color.Black,
             backgroundColor = Color.White.copy(alpha = 0.0f),

@@ -2,10 +2,8 @@ package com.solita.devnotary.android.feature_notes.noteScreen
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.ScaffoldState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.navigation.NavController
 import com.solita.devnotary.Constants
 import com.solita.devnotary.android.feature_notes.noteInteractionScreen.components.NoteInteractionContent
@@ -30,8 +28,15 @@ fun NoteInteractionScreen(
     val displayedNoteState = viewModel.displayedNote.collectAsState(initial = Constants.CLEAR_NOTE)
     val noteModification = viewModel.noteModificationStatus.collectAsState(Response.Empty).value
     val coroutineScope = rememberCoroutineScope()
-    LaunchedEffect(Unit) {
-        viewModel.prepareNoteScreen(note)
+
+    var wasScreenLaunchedForTheFirstTime by rememberSaveable{
+        mutableStateOf(false)
+    }
+    if(!wasScreenLaunchedForTheFirstTime) {
+        LaunchedEffect(Unit) {
+            viewModel.prepareNoteScreen(note)
+            wasScreenLaunchedForTheFirstTime = true
+        }
     }
 
     LaunchedEffect(noteModification){

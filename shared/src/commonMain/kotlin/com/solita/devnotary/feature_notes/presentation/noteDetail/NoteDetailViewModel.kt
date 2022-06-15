@@ -189,6 +189,7 @@ class NoteDetailViewModel(dependencyInjection: DI = di) : CommonViewModel() {
     }
 
     fun prepareNoteScreen(note: Note?) {
+        println("Preparing note screen!")
         if (note == null) {
             this._displayedNote.value = CLEAR_NOTE
             return
