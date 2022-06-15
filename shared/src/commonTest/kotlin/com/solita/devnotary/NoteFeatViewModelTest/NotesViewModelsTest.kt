@@ -95,7 +95,7 @@ class NotesViewModelsTest {
                 noteDetailViewModel.changeNoteColor(firstNote.color)
                 noteDetailViewModel.addNote(firstNote.noteId)
             }
-            advanceTimeBy(30)
+            advanceTimeBy(5)
             noteDetailViewModel.noteModificationStatus.value shouldBe Response.Loading
             advanceUntilIdle()
             noteDetailViewModel.noteModificationStatus.value should beInstanceOf(Response.Success::class)
@@ -112,7 +112,7 @@ class NotesViewModelsTest {
                 noteDetailViewModel.changeContentInput("ChangedContent")
                 noteDetailViewModel.editNote()
             }
-            advanceTimeBy(50)
+            advanceTimeBy(5)
             noteDetailViewModel.noteModificationStatus.value shouldBe Response.Loading
             advanceUntilIdle()
             noteDetailViewModel.noteModificationStatus.value should beInstanceOf(Response.Success::class)

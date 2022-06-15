@@ -1,8 +1,10 @@
 
+import androidx.compose.ui.graphics.colorspace.ColorSpaces
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import com.solita.devnotary.android.MainActivity
 import com.solita.devnotary.android.MainScreen
+import com.solita.devnotary.android.theme.Colors
 import com.solita.devnotary.android.theme.DevNotaryTheme
 import com.solita.devnotary.android.utils.TestTags
 import com.solita.devnotary.di.*
@@ -11,6 +13,7 @@ import com.solita.devnotary.feature_auth.domain.repository.AuthRepository
 import com.solita.devnotary.feature_auth.presentation.AuthViewModel
 import com.solita.devnotary.feature_notes.presentation.noteDetail.NoteDetailViewModel
 import com.solita.devnotary.feature_notes.presentation.notesList.NotesListViewModel
+import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -86,9 +89,7 @@ class NotesFeatUITest {
     fun givenFABWasClicked_NoteInteractionScreenShouldAppear() {
         clickNotesTab()
         composeTestRule.onNodeWithTag(TestTags.ADD_NOTE_FAB_TAG).performClick()
-        composeTestRule.onNodeWithTag(TestTags.ADD_NOTE_BUTTON_TAG).assertExists()
-        composeTestRule.onNodeWithTag(TestTags.TITLE_TEXT_FIELD_TAG).assertExists()
-        composeTestRule.onNodeWithTag(TestTags.CONTENT_TEXT_FIELD_TAG).assertExists()
+        composeTestRule.onNodeWithTag(TestTags.NOTE_INTERACTION_SCREEN).assertExists()
     }
 
     @Test
@@ -96,7 +97,7 @@ class NotesFeatUITest {
         runTest {
             clickNotesTab()
             launch {
-                repeat(50) {
+                repeat(20) {
                     addNote()
                 }
                 _noteListViewModel.getNotes()
@@ -114,7 +115,7 @@ class NotesFeatUITest {
         runTest {
             clickNotesTab()
             launch {
-                repeat(50) {
+                repeat(15) {
                     addNote()
                 }
                 _noteListViewModel.getNotes()
@@ -135,6 +136,7 @@ class NotesFeatUITest {
         clickNotesTab()
         composeTestRule.onNodeWithTag(TestTags.ADD_NOTE_FAB_TAG).performClick()
         addNoteManually()
+        composeTestRule.mainClock.advanceTimeBy(2000)
         composeTestRule.onNodeWithTag(TestTags.NOTE_DETAILS_SCREEN).assertExists()
     }
 
@@ -144,6 +146,8 @@ class NotesFeatUITest {
             clickNotesTab()
             composeTestRule.onNodeWithTag(TestTags.ADD_NOTE_FAB_TAG).performClick()
             addNoteManually()
+            advanceUntilIdle()
+            Thread.sleep(500)
             composeTestRule.onNodeWithTag(TestTags.NOTE_DETAILS_SCREEN).assertExists()
             launch(Dispatchers.Main) {
                 _noteListViewModel.getNotes()
@@ -176,6 +180,7 @@ class NotesFeatUITest {
             clickNotesTab()
             openNoteDetailsAndClickNewNoteButton()
             addNoteManually()
+            composeTestRule.mainClock.advanceTimeBy(2000)
             composeTestRule.onNodeWithTag(TestTags.NOTE_DETAILS_SCREEN).assertExists()
             composeTestRule.onNodeWithTag(TestTags.NOTE_DETAIL_TITLE_TEXT_FIELD_TAG)
                 .assertTextContains(manuallyAddedNoteTitle)
@@ -201,7 +206,7 @@ class NotesFeatUITest {
     }
 
     @Test
-    fun givenNoteDetailsScreenIsShownAndEditButtonIsPressed_NoteInteractionScreenAppears(){
+    fun givenNoteDetailsScreenIsShownAndEditButtonIsPressed_NoteInteractionScreenAppears() {
         addNote()
         _noteListViewModel.getNotes()
         clickNotesTab()
@@ -212,7 +217,7 @@ class NotesFeatUITest {
     }
 
     @Test
-    fun givenNoteTitleWasEditedAndSaved_NotesListScreenShouldBeVisibleAndShouldContainNewNoteTitle(){
+    fun givenNoteTitleWasEditedAndSaved_NotesListScreenShouldBeVisibleAndShouldContainNewNoteTitle() {
         addNote()
         _noteListViewModel.getNotes()
         clickNotesTab()
@@ -220,12 +225,80 @@ class NotesFeatUITest {
             .performClick()
         composeTestRule.onNodeWithTag(TestTags.EDIT_NOTE_BUTTON_TAG).performClick()
         composeTestRule.onNodeWithTag(TestTags.TITLE_TEXT_FIELD_TAG).performTextClearance()
-        composeTestRule.onNodeWithTag(TestTags.TITLE_TEXT_FIELD_TAG).performTextInput(editedNoteTitle)
+        composeTestRule.onNodeWithTag(TestTags.TITLE_TEXT_FIELD_TAG)
+            .performTextInput(editedNoteTitle)
         composeTestRule.onNodeWithTag(TestTags.SAVE_NOTE_BUTTON_TAG).performClick()
         composeTestRule.mainClock.advanceTimeBy(2000)
         composeTestRule.onNodeWithTag(TestTags.NOTES_LIST_SCREEN).assertExists()
         _noteListViewModel.getNotes()
         composeTestRule.onNodeWithText(editedNoteTitle).assertExists()
+    }
+
+    @Test
+    fun given5NotesGetsAddedOneAfterAnother_EachNoteShouldBeDisplayedAfterAnother() {
+        clickNotesTab()
+        composeTestRule.onNodeWithTag(TestTags.ADD_NOTE_FAB_TAG).performClick()
+        repeat(5) {
+            composeTestRule.onNodeWithTag(TestTags.TITLE_TEXT_FIELD_TAG)
+                .performTextInput(it.toString())
+            composeTestRule.onNodeWithTag(TestTags.CONTENT_TEXT_FIELD_TAG)
+                .performTextInput(it.toString())
+            composeTestRule.onNodeWithTag(TestTags.ADD_NOTE_BUTTON_TAG).performClick()
+            composeTestRule.onNodeWithTag(TestTags.NOTE_DETAILS_SCREEN).assertExists()
+            composeTestRule.onNodeWithTag(TestTags.NOTE_DETAIL_TITLE_TEXT_FIELD_TAG)
+                .assertTextContains(it.toString())
+            composeTestRule.onNodeWithTag(TestTags.NOTE_DETAIL_CONTENT_TEXT_FIELD_TAG)
+                .assertTextContains(it.toString())
+            composeTestRule.onNodeWithTag(TestTags.NEW_NOTE_BUTTON_TAG).performClick()
+        }
+    }
+
+    @Test
+    fun givenTheNoteIsBeingAddedAndNoteColorIsBeingChanged_NoteColorShouldChangeAccordingly() {
+        clickNotesTab()
+        val array = IntArray(20)
+        composeTestRule.onNodeWithTag(TestTags.ADD_NOTE_FAB_TAG).performClick()
+        changeNoteColorAndTakePixelSample("pink",array)
+        array.forEach { it shouldBe Colors().Pink.convert(ColorSpaces.Srgb).hashCode() }
+        changeNoteColorAndTakePixelSample("red",array)
+        array.forEach { it shouldBe Colors().Red.convert(ColorSpaces.Srgb).hashCode() }
+        changeNoteColorAndTakePixelSample("yellow",array)
+        array.forEach { it shouldBe Colors().Yellow.convert(ColorSpaces.Srgb).hashCode() }
+        changeNoteColorAndTakePixelSample("blue",array)
+        array.forEach { it shouldBe Colors().ThemeLightBlue.convert(ColorSpaces.Srgb).hashCode() }
+        changeNoteColorAndTakePixelSample("green",array)
+        array.forEach { it shouldBe Colors().Green.convert(ColorSpaces.Srgb).hashCode() }
+        changeNoteColorAndTakePixelSample("white",array)
+        array.forEach { it shouldBe Colors().White.convert(ColorSpaces.Srgb).hashCode() }
+    }
+
+    @Test
+    fun givenTheRedNoteWasAdded_NotePreviewWithRedColorShouldExistsInNotesList() : TestResult = runTest{
+        clickNotesTab()
+        val array = IntArray(20)
+        composeTestRule.onNodeWithTag(TestTags.ADD_NOTE_FAB_TAG).performClick()
+        composeTestRule.onNodeWithTag("red").performClick()
+        addNoteManually()
+        composeTestRule.onNodeWithTag(TestTags.NOTE_DETAIL_CONTENT_TEXT_FIELD_TAG).captureToImage()
+            .readPixels(array, startY = 500, startX = 200, width = 5, height = 4)
+        array.forEach{it shouldBe Colors().Red.convert(ColorSpaces.Srgb).hashCode()}
+        launch(Dispatchers.Main){
+            _noteListViewModel.getNotes()
+            composeTestRule.activity.onBackPressed()
+        }
+        advanceUntilIdle()
+        composeTestRule.onNodeWithTag(TestTags.NOTE_PREVIEW_TAG).assertExists()
+        composeTestRule.onNodeWithTag(TestTags.NOTE_PREVIEW_TAG).captureToImage().readPixels(
+            array, startY = 20, startX = 20, width = 5, height = 4
+        )
+        array.forEach { it shouldBe Colors().Red.convert(ColorSpaces.Srgb).hashCode() }
+
+    }
+
+    private fun changeNoteColorAndTakePixelSample(color : String,array: IntArray){
+        composeTestRule.onNodeWithTag(color).performClick()
+        composeTestRule.onNodeWithTag(TestTags.CONTENT_TEXT_FIELD_TAG).captureToImage()
+            .readPixels(array, startY = 500, startX = 200, width = 5, height = 4)
     }
 
     private val editedNoteTitle = "EditedNoteTitle"

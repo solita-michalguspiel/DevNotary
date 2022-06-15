@@ -18,7 +18,7 @@ class LocalNotesRepositoryTestImpl : LocalNotesRepository {
         try {
             emit(Response.Loading)
             tempList = tempList + note
-            delay(70)//simulate some delay
+            delay(20)//simulate some delay
             emit(Response.Success(Operation.Add(note.changeToNote())))
         }catch (e : Exception){
             emit(Response.Error(e.message ?: ERROR_MESSAGE))
@@ -42,7 +42,7 @@ class LocalNotesRepositoryTestImpl : LocalNotesRepository {
     override suspend fun editNote(newTitle:String,newContent:String,newColor:String,id:String): Flow<Response<Operation>> = flow{
         try {
             emit(Response.Loading)
-            delay(200) // to simulate some delay
+            delay(20) // to simulate some delay
             val indexOfChangedNote = tempList.map { it.note_id }.indexOf(id)
             val oldNote = tempList.get(indexOfChangedNote)
             val newNote = Local_note(id,newTitle,newContent,oldNote.date_time,newColor)

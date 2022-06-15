@@ -53,7 +53,7 @@ class AuthFeatUITest {
     }
 
     @Test
-    fun givenUserHasSignedIn_SendLinkButtonShouldNotBeVisible_ButSignOutShouldBe(): kotlinx.coroutines.test.TestResult = runTest{
+    fun givenUserHasSignedIn_SendLinkButtonShouldNotBeVisible_ButSignOutShouldBe(): TestResult = runTest{
         composeTestRule.onNodeWithTag(TestTags.SEND_LINK_BUTTON_TAG).assertExists()
         launch {
             _authViewModel.signInWithLink("fakeIntent")
@@ -68,7 +68,6 @@ class AuthFeatUITest {
         launch {
             _authViewModel.changeEmailAddress("notEmptyEmail@gmail.com")
             composeTestRule.onNodeWithTag(TestTags.SEND_LINK_BUTTON_TAG).performClick()
-
         }
         advanceUntilIdle()
         composeTestRule.onNodeWithTag(TestTags.TIMER_TAG).assertExists()

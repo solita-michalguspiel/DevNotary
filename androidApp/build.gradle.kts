@@ -80,6 +80,8 @@ dependencies {
     //GSON
     implementation ("com.google.code.gson:gson:2.8.9")
 
+    //tests
+    implementation("io.kotest:kotest-assertions-core:5.3.0")
 
 
 }
