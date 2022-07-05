@@ -19,8 +19,8 @@ class MainViewModel: ObservableObject{
     @Published var isUserSignedIn = false
     func start(){
         isUserSignedIn = authViewModel.isUserAuthenticated
+        
         authViewModel.watch(authViewModel.userAuthState,block: {state in
-            
             if(state! is ResponseSuccess<AnyObject>){
                 let userAuthState = state! as! ResponseSuccess<KotlinBoolean>
                 self.isUserSignedIn = userAuthState.data as! Bool

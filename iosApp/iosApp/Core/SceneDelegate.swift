@@ -35,12 +35,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity){
-        print("Received link!")
         if let incomingURL = userActivity.webpageURL{
-            print("Incoming URL is \(incomingURL)")
             DynamicLinks.dynamicLinks().handleUniversalLink(incomingURL) { dynamicLink, error in
                 guard error == nil else{
-                    print("Found an error! \(error!.localizedDescription)")
                     return
                 }
                 if let dynamicLink = dynamicLink {
