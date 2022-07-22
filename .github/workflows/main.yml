@@ -70,7 +70,7 @@ jobs:
     ## update readme:
       - name: update_readme
         run: |
-          python3 ./.github/workflows/update_readme.py steps.lines-of-code-reporter.android.outputs.loc_report steps.lines-of-code-reporter.ios.outputs.loc_report steps.lines-of-code-reporter.shared.outputs.loc_report
+          python3 ./.github/workflows/update_readme.py ${{ steps.lines-of-code-reporter.android.outputs.loc_report }} steps.lines-of-code-reporter.ios.outputs.loc_report steps.lines-of-code-reporter.shared.outputs.loc_report
     ## push changes       
       - name: Commit and push changes
         run: |
