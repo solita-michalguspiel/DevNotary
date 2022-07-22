@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import org.kodein.di.DI
 import org.kodein.di.instance
 
-class AuthViewModel(dependencyInjection: DI = di) :
+class AuthViewModel(dependencyInjection: DI = di, private val timer: Timer = Timer(RESEND_EMAIL_TIME)) :
     CommonViewModel() {
 
     private val useCases: AuthUseCases by dependencyInjection.instance()
@@ -102,8 +102,6 @@ class AuthViewModel(dependencyInjection: DI = di) :
         openDialogState.value = false
         errorMessageState.value = ""
     }
-
-    private val timer = Timer(RESEND_EMAIL_TIME)
 
     private fun startTimer() {
         sharedScope.launch {

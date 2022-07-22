@@ -6,6 +6,7 @@ import com.solita.devnotary.feature_auth.data.AuthRepositoryTestImpl
 import com.solita.devnotary.feature_auth.data.fakeUser
 import com.solita.devnotary.feature_auth.domain.use_case.*
 import com.solita.devnotary.feature_auth.presentation.AuthViewModel
+import com.solita.devnotary.utils.Timer
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -69,7 +70,7 @@ class AuthViewModelTest {
     fun givenIntentIsEmptyAndSendEmailLinkIsCalled_SendLinkStateShouldChangeToSuccessTrue(): TestResult =
         runTest {
             launch {
-                viewModel = AuthViewModel(dependencyInjection = testDI)
+                viewModel = AuthViewModel(dependencyInjection = testDI, timer = Timer(1)) // So that we dont wait for timer
                 viewModel.sendLinkState.value shouldBe Response.Empty
                 viewModel.changeEmailAddress("RandomEmailAddress@example.com")
                 viewModel.sendEmailLink()
