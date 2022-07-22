@@ -13,6 +13,6 @@
 ### Shared KMM code:
 #### 2853
 
-### 100% of code = 39.5% (Android) + 20.4% (iOS) + 40.1% Shared KMM code 
+### 100% of code = 39.5% (Android App code) + 20.4% (iOS App code) + 40.1% (Shared KMM code) 
 
 
