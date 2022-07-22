@@ -1,0 +1,68 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    
+    name: Lines of code report
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      # Runs a lines of code reporter
+      # For Android App:
+      - name: lines-of-code-reporter.android
+        uses: PavanMudigonda/lines-of-code-reporter@v1.3
+        with:
+          directory: androidApp/
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          skip_check_run: false
+      - name: print output
+        shell: pwsh
+        run: | 
+          Write-Host 'Total Lines of Code Android App...:  ${{ steps.lines-of-code-reporter.android.outputs.total_lines }}'
+          Write-Host 'Lines of Code Markdown Report Path...:  ${{ steps.lines-of-code-reporter.android.outputs.loc_report }}'
+          
+      ## For iOS app:
+      - name: lines-of-code-reporter.ios
+        uses: PavanMudigonda/lines-of-code-reporter@v1.3
+        with:
+          directory: iosApp/
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          skip_check_run: false
+      - name: print output
+        shell: pwsh
+        run: | 
+          Write-Host 'Total Lines of Code Android App...:  ${{ steps.lines-of-code-reporter.ios.outputs.total_lines }}'
+          Write-Host 'Lines of Code Markdown Report Path...:  ${{ steps.lines-of-code-reporter.ios.outputs.loc_report }}'
+      
+      ## For shared code:
+      - name: lines-of-code-reporter.shared
+        uses: PavanMudigonda/lines-of-code-reporter@v1.3
+        with:
+          directory: androidApp/
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          skip_check_run: false
+      - name: print output
+        shell: pwsh
+        run: | 
+          Write-Host 'Total Lines of Code Android App...:  ${{ steps.lines-of-code-reporter.shared.outputs.total_lines }}'
+          Write-Host 'Lines of Code Markdown Report Path...:  ${{ steps.lines-of-code-reporter.shared.outputs.loc_report }}'
