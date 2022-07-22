@@ -12,5 +12,4 @@ class Crypto {
         val byteKey = key.encodeToByteArray().sumOf { it * key.length }
         return message.map { (it + byteKey).toByte() }.toByteArray().decodeToString()
     }
-
 }
