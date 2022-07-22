@@ -35,10 +35,10 @@ jobs:
           directory: androidApp/
           github_token: ${{ secrets.GITHUB_TOKEN }}
           skip_check_run: false
-      - name: print output
-        run: | 
-          echo 'Total Lines of Code Android App...:  ${{ steps.lines-of-code-reporter.android.outputs.total_lines }}'
-          echo 'Lines of Code Markdown Report Path...:  ${{ steps.lines-of-code-reporter.android.outputs.loc_report }}'
+     ## - name: print output
+     ##   run: | 
+     ##     echo 'Total Lines of Code Android App...:  ${{ steps.lines-of-code-reporter.android.outputs.total_lines }}'
+     ##     echo 'Lines of Code Markdown Report Path...:  ${{ steps.lines-of-code-reporter.android.outputs.loc_report }}'
           
       ## For iOS app:
       - name: lines-of-code-reporter.ios
@@ -47,10 +47,7 @@ jobs:
           directory: iosApp/
           github_token: ${{ secrets.GITHUB_TOKEN }}
           skip_check_run: false
-      - name: print output
-        run: | 
-          echo 'Total Lines of Code iOS App...:  ${{ steps.lines-of-code-reporter.ios.outputs.total_lines }}'
-          echo 'Lines of Code Markdown Report Path...:  ${{ steps.lines-of-code-reporter.ios.outputs.loc_report }}'
+
       
       ## For shared code:
       - name: lines-of-code-reporter.shared
@@ -59,7 +56,4 @@ jobs:
           directory: androidApp/
           github_token: ${{ secrets.GITHUB_TOKEN }}
           skip_check_run: false
-      - name: print output
-        run: | 
-          echo 'Total Lines of Code Shared Module...:  ${{ steps.lines-of-code-reporter.shared.outputs.total_lines }}'
-          echo 'Lines of Code Markdown Report Path...:  ${{ steps.lines-of-code-reporter.shared.outputs.loc_report }}'
+
