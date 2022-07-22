@@ -1,0 +1,29 @@
+name: TestCI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    
+      - name: use this action, with existing test results
+        id: lines-of-code-reporter
+        uses: PavanMudigonda/lines-of-code-reporter@v1.3
+        with:
+          directory: ./
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          skip_check_run: false
+          
+      - name: print output
+        shell: pwsh
+        run: | 
+          Write-Host 'Total Lines of Code...:  ${{ steps.lines-of-code-reporter.outputs.total_lines }}'
+          Write-Host 'Lines of Code Markdown Report Path...:  ${{ steps.lines-of-code-reporter.outputs.loc_report }}' 
+                    
