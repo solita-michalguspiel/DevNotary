@@ -1,11 +1,11 @@
 {"header" : {
   "cloc_url"           : "github.com/AlDanial/cloc",
   "cloc_version"       : "1.94",
-  "elapsed_seconds"    : 0.0376050472259521,
+  "elapsed_seconds"    : 0.0360980033874512,
   "n_files"            : 79,
   "n_lines"            : 3101,
-  "files_per_second"   : 2100.78183189942,
-  "lines_per_second"   : 82462.3349458241,
+  "files_per_second"   : 2188.48669141249,
+  "lines_per_second"   : 85905.028228736,
   "report_file"        : "/home/runner/work/DevNotary/DevNotary/_TMP/loc-results.json"},
 "Kotlin" :{
   "nFiles": 76,
