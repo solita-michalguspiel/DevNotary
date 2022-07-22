@@ -36,6 +36,7 @@ jobs:
           git config --global user.name "solita-michalguspiel"
           git config --global user.email "michal.guspiel@solita.fi"
           git add -A
+          git diff-index --quiet HEAD || git commit -m 'bla'
           git commit -m "update readme"
           git push
 
