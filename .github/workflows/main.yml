@@ -75,6 +75,7 @@ jobs:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
             header: "Code composition:"
-            subhead: "Android App codebase: ${{ steps.lines-of-code-reporter.android.outputs.total_lines }} \n iOS App codebase: ${{ steps.lines-of-code-reporter.ios.outputs.total_lines }} \n Shared codebase: ${{ steps.lines-of-code-reporter.shared.outputs.total_lines }}"
+            repoCount: 0
+            subhead: "Android App codebase: ${{ steps.lines-of-code-reporter.android.outputs.loc_report }} \n iOS App codebase: ${{ steps.lines-of-code-reporter.ios.outputs.loc_report }} \n Shared codebase: ${{ steps.lines-of-code-reporter.shared.outputs.loc_report }}"
             footer: ""
 
