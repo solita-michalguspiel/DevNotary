@@ -55,16 +55,16 @@ Dev Notary is a simple application that lets developers create notes, documentat
 
 # Application Demo
 
-![Running application](/img/kmm-my-first-take/creating-note.gif)
+![Running application](/img/creating-note.gif)
 *Creating notes*
 
-![Sharing note](/img/kmm-my-first-take/sharing-note.gif)
+![Sharing note](/img/sharing-note.gif)
 *Sharing notes*
 
 # Architecture
 Since my stronger side is on Android Development, I've decided to develop this project with common Android pattern, MVVM with clean architecture. With a little help of ViewModel wrapper class on iOS side everything turned out great.
 
-![Architecture diagram](/img/kmm-my-first-take/architecture.png)
+![Architecture diagram](/img/architecture.png)
 
 # Libraries
 
