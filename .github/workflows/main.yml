@@ -67,4 +67,14 @@ jobs:
           Write-Host 'Shared code report: {Shared code report}'
           Write-Host 'Total Lines of Code Shared Code...:  ${{ steps.lines-of-code-reporter.shared.outputs.total_lines }}'
           Write-Host 'Lines of Code Markdown Report Path...:  ${{ steps.lines-of-code-reporter.shared.outputs.loc_report }}'
+          
+      ## Update readme
+      - name: update-readme
+        uses: theboi/github-update-readme@v1.0
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+            header: "Code composition:"
+            subhead: "Android App codebase: ${{ steps.lines-of-code-reporter.android.outputs.total_lines }} \n iOS App codebase: ${{ steps.lines-of-code-reporter.ios.outputs.total_lines }} \n Shared codebase: ${{ steps.lines-of-code-reporter.shared.outputs.total_lines }}"
+            footer: ""
 
