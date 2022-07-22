@@ -36,8 +36,8 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           skip_check_run: false
       - name: print loc android code
-        run: |
-         shell: pwsh
+        shell: pwsh
+        run: | 
           Write Host 'Total Lines of Code Android App...:  ${{ steps.lines-of-code-reporter.android.outputs.total_lines }}'
           Write Host 'Lines of Code Markdown Report Path...:  ${{ steps.lines-of-code-reporter.android.outputs.loc_report }}'
           
@@ -49,8 +49,8 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           skip_check_run: false
       - name: print loc ios code
+        shell: pwsh
         run: |
-         shell: pwsh
           Write Host 'Total Lines of Code iOS App...:  ${{ steps.lines-of-code-reporter.ios.outputs.total_lines }}'
           Write Host 'Lines of Code Markdown Report Path...:  ${{ steps.lines-of-code-reporter.ios.outputs.loc_report }}'
 
@@ -62,8 +62,8 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           skip_check_run: false
       - name: print loc shared code
+        shell: pwsh
         run: |
-         shell: pwsh
           Write Host 'Total Lines of Code Shared Code...:  ${{ steps.lines-of-code-reporter.shared.outputs.total_lines }}'
           Write Host 'Lines of Code Markdown Report Path...:  ${{ steps.lines-of-code-reporter.shared.outputs.loc_report }}'
 
