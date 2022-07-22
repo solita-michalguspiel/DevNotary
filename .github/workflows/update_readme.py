@@ -31,7 +31,7 @@ def returnPercentageOfEachModule(android,ios,shared):
     androidAsPercentage = (android * 100) / total
     iosAsPercentage = (ios * 100) / total
     sharedAsPercentage = (shared * 100) / total
-    result = f'''100% of code = {round(androidAsPercentage,1)}% (Android) + {round(iosAsPercentage,1)}% (iOS) + {round(sharedAsPercentage,1)}% Shared KMM code '''
+    result = f'''100% of code = {round(androidAsPercentage,1)}% (Android App code) + {round(iosAsPercentage,1)}% (iOS App code) + {round(sharedAsPercentage,1)}% (Shared KMM code) '''
     print(result)
     return result
 
